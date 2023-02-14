@@ -1,3 +1,4 @@
+#Video object class
 import cv2
 
 class Video:
