@@ -7,6 +7,7 @@ class Video:
         self.title = title
         self.dateCreated = dateCreated
         self.personalNotes = None
+        self.script = None
     
     def getUserID(self):
         return self.userID
@@ -19,5 +20,9 @@ class Video:
 
     def getDateCreated(self):
         return self.dateCreated
-    
-    
+
+    def setScript(self, script):
+        self.script = script
+
+    def setPersonalNotes(self, personalNotes):
+        self.personalNotes = personalNotes

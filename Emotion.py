@@ -1,3 +1,4 @@
+#Emotion enum class
 import enum
 
 class Emotion(enum.Enum):
