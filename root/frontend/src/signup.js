@@ -70,4 +70,4 @@ function Signup() {
   );
 }
 
-export default App;
+export default Signup;
