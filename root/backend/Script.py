@@ -2,6 +2,21 @@
 
 #Sentiment analysis lib
 from textblob import TextBlob as tb
+import time as t
+
+
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
+
+cred = credentials.Certificate("/Users/christopherlam/Desktop/Purdue Course Work/Spring 23/CS 307/Project/Sentiment/root/backend/serviceAccountKey.json")
+firebase_admin.initialize_app(cred)
+
+db = firestore.client()
+
+db.collection("persons").add({"name" : "John",
+                              "age" : 40})
+
 
 
 class Script:
@@ -78,5 +93,5 @@ def main():
     
     testScript.downloadScript()
     
-main()
+#main()
     
