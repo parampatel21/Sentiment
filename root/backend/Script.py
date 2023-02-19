@@ -51,7 +51,7 @@ class Script:
         """Create formatted text file & download to user's download folder
         """
     def downloadScript(self):
-       with open("~/Desktop/Script.txt", "w") as text_file:
+       with open("Script.txt", "w") as text_file:
         text_file.write("User ID: %s\n" % self.getUserID())
         text_file.write("Date Created: %s\n" %self.getDateCreated())
         text_file.write("Current Script: %s\n" % self.getScriptContent())
