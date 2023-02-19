@@ -1,7 +1,7 @@
 #Performance script class
-import nltk
-nltk.download("text2emotion")
-import text2emotion as te
+
+#Sentiment analysis
+from textblob import TextBlob as tb
 
 
 
@@ -39,5 +39,14 @@ class Script:
 
     def setPersonalNotes(self, personalNotes):
         self.personalNotes = personalNotes
+    
+    def sentimentAnalysis():
+        #TODO
+        print(5)
+        text = "I had a good day"
+        blob = tb(text)
+        tags = blob.sentiment
+        print(tags)
+    
         
     
