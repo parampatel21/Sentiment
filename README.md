@@ -50,10 +50,10 @@ Sentiment is a very straightforward web app. Create an account and follow the si
 
 ## ✍️ Contributors <a name = "contributors"></a>
 
-- [@parampatel21]
-- [@ChrisLam790]
-- [@aysaavedra18]
-- [@mjannetta]
+- @parampatel21
+- @ChrisLam790
+- @aysaavedra18
+- @mjannetta
 
 ## 🎉 Acknowledgements <a name = "acknowledgement"></a>
 
