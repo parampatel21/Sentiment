@@ -9,20 +9,14 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 
-
-
 # Get path to serviceAccKey
 cwd = os.path.dirname(os.path.realpath("serviceAccountKey.json"))
-print(cwd)
 
 #Conect to firestore DB via seviceAccKey
 cred = credentials.Certificate(cwd + "/serviceAccountKey.json")
 firebase_admin.initialize_app(cred)
 
 db = firestore.client()
-# Test connect
-db.collection("persons").add({"name" : "John",
-                              "age" : 30})
 
 
 
@@ -62,26 +56,30 @@ class Script:
     def getDateCreated(self):
         return self.dateCreated
 
+    def getPersonalNotes(self):
+        return self.personalNotes
+
     def setPersonalNotes(self, personalNotes):
         self.personalNotes = personalNotes
         return True
+    
+    def getScriptContent(self):
+        return self.scriptContent
     
     def setScriptContent(self, scriptContent):
         self.scriptContent = scriptContent
         return True
    
    
-        """Create formatted text file & download to user's download folder
+   
+        """TODO Create formatted text file & download to user's download folder
         """
     def downloadScript(self):
        with open("Script.txt", "w") as text_file:
         text_file.write("User ID: %s\n" % self.getUserID())
         text_file.write("Date Created: %s\n" %self.getDateCreated())
         text_file.write("Current Script: %s\n" % self.getScriptContent())
-        
-        
-    def getScriptContent(self):
-        return self.scriptContent
+         
         
     ###TODO
     def sentimentAnalysis():
@@ -91,6 +89,17 @@ class Script:
         tags = blob.tags
         print(tags)
 
+
+        """Upload info into firestore DB
+        """
+    def uploadToDB(self):
+        # Test connect
+        db.collection("Script").add({"userID" : self.getUserID(),
+                                    "title" : self.getTitle(),
+                                    "dateCreated" : self.getDateCreated(),
+                                    "scriptContent" : self.getScriptContent(),
+                                    "personalNotes" : self.getPersonalNotes()})
+    
     
 ###Tester code for creating txt file
 def main():
@@ -99,7 +108,6 @@ def main():
            dateCreated= "02/19/2023",
            scriptContent= "This is a text script. Hello!")
     
-    testScript.downloadScript()
+    testScript.uploadToDB()
     
-#main()
-    
+main()
