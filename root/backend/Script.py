@@ -2,7 +2,8 @@
 
 #Sentiment analysis lib
 from textblob import TextBlob as tb
-import datetime as dt
+from datetime import datetime
+import pytz
 import os
 
 import firebase_admin
@@ -18,15 +19,19 @@ firebase_admin.initialize_app(cred)
 
 db = firestore.client()
 
+#Get the timezone object for New York
+tz_NY = pytz.timezone('America/New_York') 
 
-
+# Get the current time in New York
+datetime_NY = datetime.now(tz_NY)
 
 class Script:
     def __init__(self,userID,title,scriptContent):
         #ID metadata
+        
         self.userID = userID
         self.title = title
-        self.dateCreated = dt.datetime.now()
+        self.dateCreated = datetime_NY.strftime("%Y:%m:%d:%H:%M:%S")
         self.scriptContent = scriptContent
         
         ###TODO Emotional analysis report (For video-script comparisson)
@@ -41,6 +46,16 @@ class Script:
         self.personalNotes = None
         
         
+        # Upload current constructor info to Firstore DB
+        currScriptRef = db.collection("Script").document("" + self.getDateCreated())
+        
+        currScriptRef.set({"userID" : self.getUserID(),
+                                    "title" : self.getTitle(),
+                                    "dateCreated" : self.getDateCreated(),
+                                    "scriptContent" : self.getScriptContent(),
+                                    "personalNotes" : self.getPersonalNotes()})
+        
+        
         
     ###Getters and setters
     def getUserID(self):
@@ -51,6 +66,7 @@ class Script:
     
     def setTitle(self, title):
         self.title = title
+        self.updateToDB()
         return True
 
     def getDateCreated(self):
@@ -61,6 +77,7 @@ class Script:
 
     def setPersonalNotes(self, personalNotes):
         self.personalNotes = personalNotes
+        self.updateToDB()
         return True
     
     def getScriptContent(self):
@@ -68,6 +85,7 @@ class Script:
     
     def setScriptContent(self, scriptContent):
         self.scriptContent = scriptContent
+        self.updateToDB()
         return True
    
    
@@ -90,13 +108,14 @@ class Script:
         print(tags)
 
 
-        """Upload info into firestore DB
+        """Upload info into firestore DB; Updates iff userID already exists
         """
-    def uploadToDB(self):
+    def updateToDB(self):
         # Test connect
-        db.collection("Script").add({"userID" : self.getUserID(),
+        currScriptRef = db.collection("Script").document("" + self.getDateCreated())
+        
+        currScriptRef.set({"userID" : self.getUserID(),
                                     "title" : self.getTitle(),
-                                    "dateCreated" : self.getDateCreated(),
                                     "scriptContent" : self.getScriptContent(),
                                     "personalNotes" : self.getPersonalNotes()})
     
@@ -105,9 +124,9 @@ class Script:
 def main():
     testScript = Script(userID= "ChrisL", 
            title= "New Script",
-           scriptContent= "This is a text script. Hello!")
+           scriptContent= "This is yet another text script! Cool!")
     
-    testScript.uploadToDB()
-
+    testScript.setTitle("A Newer & Even Better Script")
+    testScript.setPersonalNotes("See this again!")
     
 main()
