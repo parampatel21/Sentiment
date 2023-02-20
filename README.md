@@ -1,6 +1,6 @@
 <p align="center">
   <a href="" rel="noopener">
- <img height=200px src="logo/logo-screenshotted.png" alt="Project logo"></a>
+ <img height=400px width=400 src="assets/Sentiment-1.png" alt="Project logo"></a>
 </p>
 
 <h3 align="center">Sentiment</h3>
@@ -16,100 +16,45 @@
 
 ---
 
-<p align="center"> According to Cross River Therapy, about 75% of people experience anxiety, stress, and unpreparedness related to public speaking. Regardless if it's a speech, presentation, or monologue, there is always room for better performance. With Sentiment, users have the opportunity to provide their dialogue of choice and will be able to identify the emotions of the text via a recording of the user’s speech delivery. The first of its kind, Sentiment is software that analyzes dialogue delivery and indicates whether it matches the intended tone of the script using text emotion analysis and facial recognition software.
-
-    <br> 
-</p>
-
 ## 📝 Table of Contents
 
 - [About](#about)
 - [Getting Started](#getting_started)
-- [Deployment](#deployment)
 - [Usage](#usage)
 - [Built Using](#built_using)
-- [TODO](../TODO.md)
-- [Contributing](../CONTRIBUTING.md)
-- [Authors](#authors)
+- [Contributors](#contributors)
 - [Acknowledgments](#acknowledgement)
 
 ## 🧐 About <a name = "about"></a>
 
-Write about 1-2 paragraphs describing the purpose of your project.
+According to Cross River Therapy, about 75% of people experience anxiety, stress, and unpreparedness related to public speaking. Regardless if it's a speech, presentation, or monologue, there is always room for better performance. With Sentiment, users have the opportunity to provide their dialogue of choice and will be able to identify the emotions of the text via a recording of the user’s speech delivery. The first of its kind, Sentiment is software that analyzes dialogue delivery and indicates whether it matches the intended tone of the script using text emotion analysis and facial recognition software.
 
 ## 🏁 Getting Started <a name = "getting_started"></a>
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See [deployment](#deployment) for notes on how to deploy the project on a live system.
+The project is currently deployed to the URL: https://sentiment-6696b.web.app/
 
-### Prerequisites
+Click the link and create a account to get started!
 
-What things you need to install the software and how to install them.
-
-```
-Give examples
-```
-
-### Installing
-
-A step by step series of examples that tell you how to get a development env running.
-
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo.
-
-## 🔧 Running the tests <a name = "tests"></a>
-
-Explain how to run the automated tests for this system.
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
 
 ## 🎈 Usage <a name="usage"></a>
 
-Add notes about how to use the system.
+Sentiment is a very straightforward web app. Create an account and follow the simple UI to begin your first video & audio analysis. You can save your results & edit your input as you go on!
 
-## 🚀 Deployment <a name = "deployment"></a>
-
-Add additional notes about how to deploy this on a live system.
 
 ## ⛏️ Built Using <a name = "built_using"></a>
 
-- [MongoDB](https://www.mongodb.com/) - Database
-- [Express](https://expressjs.com/) - Server Framework
-- [VueJs](https://vuejs.org/) - Web Framework
-- [NodeJs](https://nodejs.org/en/) - Server Environment
+- [Firestore](https://firebase.google.com/docs/firestore) - Database
+- [Firebase Hosting](https://firebase.google.com/docs/hosting) - Web Hosting
+- [Firebase Cloud Functions](https://firebase.google.com/docs/functions) - Backend Solution [written in Python]
+- [React](https://reactjs.org/) - Frontend UI
 
-## ✍️ Authors <a name = "authors"></a>
+## ✍️ Contributors <a name = "contributors"></a>
 
-- [@kylelobo](https://github.com/kylelobo) - Idea & Initial work
-
-See also the list of [contributors](https://github.com/kylelobo/The-Documentation-Compendium/contributors) who participated in this project.
+- @parampatel21
+- @ChrisLam790
+- @aysaavedra18
+- @mjannetta
 
 ## 🎉 Acknowledgements <a name = "acknowledgement"></a>
 
-- Hat tip to anyone whose code was used
-- Inspiration
-- References
+- To be expanded upon soon!
