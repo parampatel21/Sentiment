@@ -3,19 +3,27 @@
 #Sentiment analysis lib
 from textblob import TextBlob as tb
 import time as t
-
+import os
 
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 
-cred = credentials.Certificate("/Users/christopherlam/Desktop/Purdue Course Work/Spring 23/CS 307/Project/Sentiment/root/backend/serviceAccountKey.json")
+
+
+# Get path to serviceAccKey
+cwd = os.path.dirname(os.path.realpath("serviceAccountKey.json"))
+print(cwd)
+
+#Conect to firestore DB via seviceAccKey
+cred = credentials.Certificate(cwd + "/serviceAccountKey.json")
 firebase_admin.initialize_app(cred)
 
 db = firestore.client()
-
+# Test connect
 db.collection("persons").add({"name" : "John",
-                              "age" : 40})
+                              "age" : 30})
+
 
 
 
