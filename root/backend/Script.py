@@ -2,7 +2,7 @@
 
 #Sentiment analysis lib
 from textblob import TextBlob as tb
-import time as t
+import datetime as dt
 import os
 
 import firebase_admin
@@ -22,11 +22,11 @@ db = firestore.client()
 
 
 class Script:
-    def __init__(self,userID,title,dateCreated,scriptContent):
+    def __init__(self,userID,title,scriptContent):
         #ID metadata
         self.userID = userID
         self.title = title
-        self.dateCreated = dateCreated
+        self.dateCreated = dt.datetime.now()
         self.scriptContent = scriptContent
         
         ###TODO Emotional analysis report (For video-script comparisson)
@@ -105,9 +105,9 @@ class Script:
 def main():
     testScript = Script(userID= "ChrisL", 
            title= "New Script",
-           dateCreated= "02/19/2023",
            scriptContent= "This is a text script. Hello!")
     
     testScript.uploadToDB()
+
     
 main()
