@@ -47,7 +47,7 @@ class Script:
         
         
         # Upload current constructor info to Firstore DB
-        currScriptRef = db.collection("Script").document("" + self.getDateCreated())
+        currScriptRef = db.collection("Script").document("" + self.getUserID())
         
         currScriptRef.set({"userID" : self.getUserID(),
                                     "title" : self.getTitle(),
@@ -112,7 +112,7 @@ class Script:
         """
     def updateToDB(self):
         # Test connect
-        currScriptRef = db.collection("Script").document("" + self.getDateCreated())
+        currScriptRef = db.collection("Script").document("" + self.getUserID())
         
         currScriptRef.set({"userID" : self.getUserID(),
                                     "title" : self.getTitle(),
@@ -124,9 +124,9 @@ class Script:
 def main():
     testScript = Script(userID= "ChrisL", 
            title= "New Script",
-           scriptContent= "This is yet another text script! Cool!")
+           scriptContent= "This is the bestest text script! Neat!")
     
-    testScript.setTitle("A Newer & Even Better Script")
-    testScript.setPersonalNotes("See this again!")
+    testScript.setTitle("A New-ish Script")
+    testScript.setPersonalNotes("See this too many times!")
     
 main()
