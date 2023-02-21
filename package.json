@@ -4,4 +4,7 @@
     "firebase": "^9.17.1",
     "react-bootstrap": "^2.7.2"
   }
+  ,"scripts": {
+    "start": "react-scripts start"
+}
 }
