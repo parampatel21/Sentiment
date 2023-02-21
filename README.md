@@ -1,70 +1,60 @@
-# Getting Started with Create React App
+<p align="center">
+  <a href="" rel="noopener">
+ <img height=400px width=400 src="assets/Sentiment-1.png" alt="Project logo"></a>
+</p>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<h3 align="center">Sentiment</h3>
 
-## Available Scripts
+<div align="center">
 
-In the project directory, you can run:
+[![Status](https://img.shields.io/badge/status-active-success.svg)]()
+[![GitHub Issues](https://img.shields.io/github/issues/kylelobo/The-Documentation-Compendium.svg)](https://github.com/kylelobo/The-Documentation-Compendium/issues)
+[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/kylelobo/The-Documentation-Compendium.svg)](https://github.com/kylelobo/The-Documentation-Compendium/pulls)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE)
 
-### `npm start`
+</div>
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 📝 Table of Contents
 
-### `npm test`
+- [About](#about)
+- [Getting Started](#getting_started)
+- [Usage](#usage)
+- [Built Using](#built_using)
+- [Contributors](#contributors)
+- [Acknowledgments](#acknowledgement)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 🧐 About <a name = "about"></a>
 
-### `npm run build`
+According to Cross River Therapy, about 75% of people experience anxiety, stress, and unpreparedness related to public speaking. Regardless if it's a speech, presentation, or monologue, there is always room for better performance. With Sentiment, users have the opportunity to provide their dialogue of choice and will be able to identify the emotions of the text via a recording of the user’s speech delivery. The first of its kind, Sentiment is software that analyzes dialogue delivery and indicates whether it matches the intended tone of the script using text emotion analysis and facial recognition software.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 🏁 Getting Started <a name = "getting_started"></a>
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+The project is currently deployed to the URL: https://sentiment-6696b.web.app/
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Click the link and create a account to get started!
 
-### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## 🎈 Usage <a name="usage"></a>
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Sentiment is a very straightforward web app. Create an account and follow the simple UI to begin your first video & audio analysis. You can save your results & edit your input as you go on!
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## ⛏️ Built Using <a name = "built_using"></a>
 
-## Learn More
+- [Firestore](https://firebase.google.com/docs/firestore) - Database
+- [Firebase Hosting](https://firebase.google.com/docs/hosting) - Web Hosting
+- [Firebase Cloud Functions](https://firebase.google.com/docs/functions) - Backend Solution [written in Python]
+- [React](https://reactjs.org/) - Frontend UI
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## ✍️ Contributors <a name = "contributors"></a>
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- @parampatel21
+- @ChrisLam790
+- @jaysaavedra18
+- @mjannetta
 
-### Code Splitting
+## 🎉 Acknowledgements <a name = "acknowledgement"></a>
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- To be expanded upon soon!
