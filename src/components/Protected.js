@@ -1,26 +1,25 @@
-import React, { useState } from 'react'
-import { Navigate } from 'react-router-dom'
-import { auth } from '../firebase'
+import React from 'react';
+import { AuthProvider } from '../contexts/AuthContext';
+import { Route, Navigate } from 'react-router-dom';
 
-// Protect components from access when user is !authenticated
+export default function Protected(props) {
 
-export default function Protected({ children }) {
-    const [currentUser, setCurrentUser] = useState()
-    const loggedIn = auth.onAuthStateChanged(user => {
-        setCurrentUser(user)
-    })
+    const authValue = useContext(AuthProvider)
+    if (authValue.userDataPresent) {
+        if (authValue.user == null) {
+            return (<Navigate to="/login"></Navigate>)
+        }
+        else {
+            return (
 
+                <Route exact path={props.path}>
+                    {props.children}
 
-    if (!loggedIn) {
-        return <Navigate to="/login" replace />;
+                </Route>)
+        }
     }
-    return children;
+    else {
+
+        return null
+    }
 }
-
-
-
-
-
-
-
-

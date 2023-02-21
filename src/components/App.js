@@ -4,8 +4,9 @@ import { AuthProvider } from "../contexts/AuthContext";
 import Signup from "./Signup";
 import Dashboard from "./Dashboard";
 import Login from "./Login";
+import ForgotPassword from "./ForgotPassword";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Protected from "./Protected";
+import UpdateProfile from "./UpdateProfile";
 
 function App() {
   return (
@@ -16,9 +17,12 @@ function App() {
           <Router>
             <AuthProvider>
               <Routes>
-                <Route exact path="/" element={/*<Protected>*/<Dashboard />/*</Protected>*/} />
+                {/* TODO: PROTECT ROUTES WHEN USER !AUTHENTICATED */}
+                <Route exact path="/" element={<Dashboard />} />
+                <Route path="/update-profile" element={<UpdateProfile />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
               </Routes>
             </AuthProvider>
           </Router>
