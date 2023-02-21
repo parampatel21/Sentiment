@@ -52,7 +52,7 @@ Sentiment is a very straightforward web app. Create an account and follow the si
 
 - @parampatel21
 - @ChrisLam790
-- @aysaavedra18
+- @jaysaavedra18
 - @mjannetta
 
 ## 🎉 Acknowledgements <a name = "acknowledgement"></a>
