@@ -1,1 +1,0 @@
-#Emotional Analysis Metric class- to be implemented in later sprint
