@@ -10,6 +10,8 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 
+import time
+
 # Get path to serviceAccKey
 cwd = os.path.dirname(os.path.realpath("serviceAccountKey.json"))
 
@@ -25,7 +27,8 @@ tz_NY = pytz.timezone('America/New_York')
 # Get the current time in New York
 datetime_NY = datetime.now(tz_NY)
 
-temp = datetime_NY.strftime("%Y:%m:%d:%H:%M:%S")
+
+
 
 class Script:
     def __init__(self,userID,title,scriptContent):
@@ -33,7 +36,6 @@ class Script:
         
         self.userID = userID
         self.title = title
-        self.dateCreated = temp
         self.dateUpdated = datetime_NY.strftime("%Y:%m:%d:%H:%M:%S")
         self.scriptContent = scriptContent
         
@@ -50,16 +52,18 @@ class Script:
         
         
         # Upload current constructor info to Firstore DB
-        currScriptRef = db.collection("Script").document("" + self.getDateCreated())
+        currScriptRef = db.collection(self.getUserID() + " Script").document("Index " + str(0))
         
         currScriptRef.set({"userID" : self.getUserID(),
                                     "title" : self.getTitle(),
-                                    "dateCreated" : self.getDateCreated(),
                                     "dateUpdated" : self.getDateUpdated(),
                                     "scriptContent" : self.getScriptContent(),
                                     "personalNotes" : self.getPersonalNotes()})
-        
-        
+       
+        # Upload current constructor info to Firstore DB
+               
+                    
+       
         
     ###Getters and setters
     def getUserID(self):
@@ -72,9 +76,6 @@ class Script:
         self.title = title
         self.updateToDB()
         return True
-
-    def getDateCreated(self):
-        return self.dateCreated
 
     def getDateUpdated(self):
         return self.dateUpdated
@@ -99,6 +100,7 @@ class Script:
    
         """TODO Create formatted text file & download to user's download folder
         """
+  
     def downloadScript(self):
        with open("Script.txt", "w") as text_file:
         text_file.write("User ID: %s\n" % self.getUserID())
@@ -117,24 +119,27 @@ class Script:
 
         """Upload info into firestore DB; Updates iff userID already exists
         """
+ 
     def updateToDB(self):
         # Test connect
-        currScriptRef = db.collection("Script").document("" + self.getDateCreated())
+        currScriptRef = db.collection("Script").document("Index " + str(0))
         
-        currScriptRef.set({"userID" : self.getUserID(),
+        currScriptRef.update({"userID" : self.getUserID(),
                                     "title" : self.getTitle(),
+                                    "dateUpdated" : self.getDateUpdated(),
                                     "scriptContent" : self.getScriptContent(),
                                     "personalNotes" : self.getPersonalNotes()})
+        
+        
     
     
 ###Tester code for creating txt file
 def main():
-    testScript = Script(userID= "Not ChrisL", 
+    
+    testScript = Script(userID= "PAM", 
            title= "New Script",
            scriptContent= "This text script! Wow!")
     
-    testScript.setTitle("A New-ish Script")
-    testScript.setPersonalNotes("See this too many times!")
-    testScript.updateToDB()
+
     
 main()

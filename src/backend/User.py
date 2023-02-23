@@ -43,3 +43,34 @@ class User:
 class LoginMethod(enum.Enum):
     USERNAME_PASSWORD = 1
     GOOGLE = 2
+    
+    
+
+
+
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
+
+
+# Get path to serviceAccKey
+cwd = os.path.dirname(os.path.realpath("serviceAccountKey.json"))
+
+#Conect to firestore DB via seviceAccKey
+cred = credentials.Certificate(cwd + "/serviceAccountKey.json")
+firebase_admin.initialize_app(cred)
+
+db = firestore.client()
+    
+##TODO index of video
+currScriptRef = db.collection(self.getUserID()).document(str(20))
+ 
+currScriptRef.set({"userID" : self.getUserID(),
+                                    "index" : 0})
+         
+
+##TODO running count
+currScriptRef = db.collection(self.getUserID()).document("runningCount" + str(1))
+ 
+currScriptRef.set({"userID" : self.getUserID(),
+                                    "index" : 0})
