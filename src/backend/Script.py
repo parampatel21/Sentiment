@@ -31,13 +31,15 @@ datetime_NY = datetime.now(tz_NY)
 
 
 class Script:
-    def __init__(self,userID,title,scriptContent):
+    def __init__(self,userID,title,scriptContent,scriptIndex, runningCount):
         #ID metadata
         
         self.userID = userID
         self.title = title
         self.dateUpdated = datetime_NY.strftime("%Y:%m:%d:%H:%M:%S")
         self.scriptContent = scriptContent
+        self.scriptIndex = scriptIndex
+        self.runningCount = runningCount
         
         ###TODO Emotional analysis report (For video-script comparisson)
         self.emotionalReport = None
@@ -52,15 +54,19 @@ class Script:
         
         
         # Upload current constructor info to Firstore DB
-        currScriptRef = db.collection(self.getUserID() + " Script").document("Index " + str(0))
+        currScriptRef = db.collection(self.getUserID() 
+                                      + "/Video Index: " 
+                                      + str(self.getScriptIndex()) 
+                                      + "/Script").document("Script Info ")
         
         currScriptRef.set({"userID" : self.getUserID(),
                                     "title" : self.getTitle(),
                                     "dateUpdated" : self.getDateUpdated(),
                                     "scriptContent" : self.getScriptContent(),
-                                    "personalNotes" : self.getPersonalNotes()})
+                                    "personalNotes" : self.getPersonalNotes(),
+                                    "scriptIndex" : self.getScriptIndex(),
+                                    "runningCount" : self.getRunningCount()})
        
-        # Upload current constructor info to Firstore DB
                
                     
        
@@ -74,7 +80,7 @@ class Script:
     
     def setTitle(self, title):
         self.title = title
-        self.updateToDB()
+        self.updateScriptInfo()
         return True
 
     def getDateUpdated(self):
@@ -85,7 +91,7 @@ class Script:
 
     def setPersonalNotes(self, personalNotes):
         self.personalNotes = personalNotes
-        self.updateToDB()
+        self.updateScriptInfo()
         return True
     
     def getScriptContent(self):
@@ -93,7 +99,7 @@ class Script:
     
     def setScriptContent(self, scriptContent):
         self.scriptContent = scriptContent
-        self.updateToDB()
+        self.updateScriptInfo()
         return True
    
    
@@ -101,13 +107,18 @@ class Script:
         """TODO Create formatted text file & download to user's download folder
         """
   
+    def getScriptIndex(self):
+        return self.scriptIndex
+  
+    def getRunningCount(self):
+        return self.runningCount
+  
     def downloadScript(self):
        with open("Script.txt", "w") as text_file:
         text_file.write("User ID: %s\n" % self.getUserID())
         text_file.write("Date Created: %s\n" %self.getDateCreated())
         text_file.write("Current Script: %s\n" % self.getScriptContent())
-         
-        
+           
     ###TODO
     def sentimentAnalysis():
         print(5)
@@ -120,15 +131,20 @@ class Script:
         """Upload info into firestore DB; Updates iff userID already exists
         """
  
-    def updateToDB(self):
+    def updateScriptInfo(self):
         # Test connect
-        currScriptRef = db.collection("Script").document("Index " + str(0))
-        
-        currScriptRef.update({"userID" : self.getUserID(),
+        currScriptRef = db.collection(self.getUserID() 
+                                      + "/Video Index: " 
+                                      + str(self.getScriptIndex()) 
+                                      + "/Script").document("Script Info ")  
+              
+        currScriptRef.set({"userID" : self.getUserID(),
                                     "title" : self.getTitle(),
                                     "dateUpdated" : self.getDateUpdated(),
                                     "scriptContent" : self.getScriptContent(),
-                                    "personalNotes" : self.getPersonalNotes()})
+                                    "personalNotes" : self.getPersonalNotes(),
+                                    "scriptIndex" : self.getScriptIndex(),
+                                    "runningCount" : self.getRunningCount()})
         
         
     
@@ -137,8 +153,13 @@ class Script:
 def main():
     
     testScript = Script(userID= "PAM", 
-           title= "New Script",
-           scriptContent= "This text script! Wow!")
+           title= "Another New Script",
+           scriptContent= "This another script! Neat!",
+           scriptIndex= 0,
+           runningCount= 5)
+    
+    testScript.setTitle("Brand new!")
+    testScript.updateScriptInfo()
     
 
     
