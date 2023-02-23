@@ -25,13 +25,16 @@ tz_NY = pytz.timezone('America/New_York')
 # Get the current time in New York
 datetime_NY = datetime.now(tz_NY)
 
+temp = datetime_NY.strftime("%Y:%m:%d:%H:%M:%S")
+
 class Script:
     def __init__(self,userID,title,scriptContent):
         #ID metadata
         
         self.userID = userID
         self.title = title
-        self.dateCreated = datetime_NY.strftime("%Y:%m:%d:%H:%M:%S")
+        self.dateCreated = temp
+        self.dateUpdated = datetime_NY.strftime("%Y:%m:%d:%H:%M:%S")
         self.scriptContent = scriptContent
         
         ###TODO Emotional analysis report (For video-script comparisson)
@@ -47,11 +50,12 @@ class Script:
         
         
         # Upload current constructor info to Firstore DB
-        currScriptRef = db.collection("Script").document("" + self.getUserID())
+        currScriptRef = db.collection("Script").document("" + self.getTitle())
         
         currScriptRef.set({"userID" : self.getUserID(),
                                     "title" : self.getTitle(),
                                     "dateCreated" : self.getDateCreated(),
+                                    "dateUpdated" : self.getDateUpdated(),
                                     "scriptContent" : self.getScriptContent(),
                                     "personalNotes" : self.getPersonalNotes()})
         
@@ -71,6 +75,9 @@ class Script:
 
     def getDateCreated(self):
         return self.dateCreated
+
+    def getDateUpdated(self):
+        return self.dateUpdated
 
     def getPersonalNotes(self):
         return self.personalNotes
@@ -112,7 +119,7 @@ class Script:
         """
     def updateToDB(self):
         # Test connect
-        currScriptRef = db.collection("Script").document("" + self.getUserID())
+        currScriptRef = db.collection("Script").document("" + self.getTitle())
         
         currScriptRef.set({"userID" : self.getUserID(),
                                     "title" : self.getTitle(),
@@ -122,11 +129,12 @@ class Script:
     
 ###Tester code for creating txt file
 def main():
-    testScript = Script(userID= "ChrisL", 
+    testScript = Script(userID= "Not ChrisL", 
            title= "New Script",
-           scriptContent= "This is the bestest text script! Neat!")
+           scriptContent= "This text script! Wow!")
     
     testScript.setTitle("A New-ish Script")
     testScript.setPersonalNotes("See this too many times!")
+    testScript.updateToDB()
     
 main()
