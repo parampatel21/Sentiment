@@ -36,7 +36,7 @@ def get_video_type(filename):
     return VIDEO_TYPE['avi']
 
 cap = cv2.VideoCapture(0)
-out = cv2.VideoWriter(cwd + '\\root\demos\\' + filename, get_video_type(filename), 25, get_dims(cap, res))
+out = cv2.VideoWriter(cwd + '\\demos\\' + filename, get_video_type(filename), 25, get_dims(cap, res))
 
 while True:
     ret, frame = cap.read()
