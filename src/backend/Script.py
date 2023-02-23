@@ -1,16 +1,18 @@
 #Performance script class
 
-#Sentiment analysis lib
+#Metric Analysis Libs
 from textblob import TextBlob as tb
+
+#Data Managment Libs
 from datetime import datetime
 import pytz
 import os
 
+#Firebase DB Libs
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 
-import time
 
 # Get path to serviceAccKey
 cwd = os.path.dirname(os.path.realpath("serviceAccountKey.json"))
@@ -41,9 +43,6 @@ class Script:
         self.scriptIndex = scriptIndex
         self.runningCount = runningCount
         
-        ###TODO Emotional analysis report (For video-script comparisson)
-        self.emotionalReport = None
-        
         ###TODO Other report
         self.wordChoiceReport = None
         self.sentenceChoiceReport = None
@@ -71,7 +70,8 @@ class Script:
                     
        
         
-    ###Getters and setters
+    ### Getters and setters 4 Metadata
+
     def getUserID(self):
         return self.userID
 
@@ -101,11 +101,6 @@ class Script:
         self.scriptContent = scriptContent
         self.updateScriptInfo()
         return True
-   
-   
-   
-        """TODO Create formatted text file & download to user's download folder
-        """
   
     def getScriptIndex(self):
         return self.scriptIndex
@@ -113,13 +108,20 @@ class Script:
     def getRunningCount(self):
         return self.runningCount
   
-    def downloadScript(self):
-       with open("Script.txt", "w") as text_file:
-        text_file.write("User ID: %s\n" % self.getUserID())
-        text_file.write("Date Created: %s\n" %self.getDateCreated())
-        text_file.write("Current Script: %s\n" % self.getScriptContent())
-           
-    ###TODO
+  
+    ###Getters & Setters 4 Reports
+        #
+    def getWordChoiceReport(self):
+        return self.wordChoiceReport
+    
+    def getSenetenceChoiceReport(self):
+        return self.sentenceChoiceReport
+    
+    def getCombinedReport(self):
+        return self.combinedReport
+  
+  
+    ###TODO Analysis
     def sentimentAnalysis():
         print(5)
         text = "I had a good day"
@@ -131,6 +133,9 @@ class Script:
         """Upload info into firestore DB; Updates iff userID already exists
         """
  
+ 
+ 
+    ### DB Magangment
     def updateScriptInfo(self):
         # Test connect
         currScriptRef = db.collection(self.getUserID() 
@@ -152,14 +157,15 @@ class Script:
 ###Tester code for creating txt file
 def main():
     
-    testScript = Script(userID= "PAM", 
+    testScript = Script( userID= "PAM", 
            title= "Another New Script",
            scriptContent= "This another script! Neat!",
            scriptIndex= 0,
            runningCount= 5)
     
-    testScript.setTitle("Brand new!")
+    testScript.setTitle(" new!")
     testScript.updateScriptInfo()
+    
     
 
     
