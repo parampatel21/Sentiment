@@ -1,5 +1,4 @@
 #Video object class
-import cv2
 from textblob import TextBlob as tb
 from datetime import datetime
 import pytz
@@ -9,11 +8,13 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 
+tz_NY = pytz.timezone('America/New_York') 
 datetime_NY = datetime.now(tz_NY)
 
 class Video:
-    def __init__(self,userID,title,dateCreated):
+    def __init__(self,userID,title,index,dateCreated):
         self.userID = userID
+        self.index = index
         self.title = title
         self.dateCreated = datetime_NY.strftime("%Y:%m:%d:%H:%M:%S")
         self.script = None
