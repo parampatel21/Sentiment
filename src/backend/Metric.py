@@ -14,8 +14,6 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 
-#Other Files
-import Metric
 
 
 # Get path to serviceAccKey
@@ -47,12 +45,12 @@ class Metric:
         
         
         # Upload current constructor info to Firstore DB
-        currScriptRef = db.collection(self.getUserID() 
+        currMetricRef = db.collection(self.getUserID() 
                                       + "/Video Index: " 
                                       + str(self.getMetricIndex()) 
                                       + "/Script").document("Metric: " + self.getMetricName())
         
-        currScriptRef.set({"userID" : self.getUserID(),
+        currMetricRef.set({"userID" : self.getUserID(),
                                     "metricName" : self.getMetricName(),
                                     "dateUpdated" : self.getDateUpdated(),
                                     "metricIndex" : self.getMetricIndex(),

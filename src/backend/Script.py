@@ -31,7 +31,6 @@ datetime_NY = datetime.now(tz_NY)
 
 
 
-
 class Script:
     def __init__(self,userID,title,scriptContent,scriptIndex, runningCount):
         #ID metadata
@@ -158,13 +157,14 @@ class Script:
 def main():
     
     testScript = Script( userID= "PAM", 
-           title= "Another New Script",
+           title= "Another Script",
            scriptContent= "This another script! Neat!",
            scriptIndex= 0,
            runningCount= 5)
     
-    testScript.setTitle(" new!")
+    testScript.setTitle(" newer!")
     testScript.updateScriptInfo()
+
     
     
 
