@@ -1,12 +1,14 @@
 import React from "react";
 import { Container } from "react-bootstrap";
 import { AuthProvider } from "../contexts/AuthContext";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+// import the page generating function from the respective .js files
+import UpdateProfile from "./UpdateProfile";
 import Signup from "./Signup";
 import Dashboard from "./Dashboard";
 import Login from "./Login";
 import ForgotPassword from "./ForgotPassword";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import UpdateProfile from "./UpdateProfile";
+
 
 function App() {
   return (
@@ -16,6 +18,7 @@ function App() {
         <div className="w-100" style={{ maxWidth: "400px" }}>
           <Router>
             <AuthProvider>
+              {/* Add routes to different pages here using desired path name and .js component name */}
               <Routes>
                 {/* TODO: PROTECT ROUTES WHEN USER !AUTHENTICATED */}
                 <Route exact path="/" element={<Dashboard />} />

@@ -8,9 +8,11 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }) {
+    // initialize vars and reference their set functions (even if the functions are not yet created)
     const [currentUser, setCurrentUser] = useState()
     const [loading, setLoading] = useState(true)
 
+    // Implement the functions to use in the UI components here, typically use auth.<functionFromFirebaseAPI> when able
     function signup(email, password) {
         return auth.createUserWithEmailAndPassword(email, password)
     }
@@ -44,7 +46,7 @@ export function AuthProvider({ children }) {
         return unsubscribe
     }, [])
 
-
+    // Add functions implemented here for exporting to UI components
     const value = {
         currentUser,
         signup,
