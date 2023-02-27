@@ -1,24 +1,21 @@
-from flask import Flask, request
-import firebase_admin
 import os
+import firebase_admin
 from firebase_admin import credentials, storage
 
-app = Flask(__name__)
+# Initialize Firebase Admin SDK
 
 cwd = os.path.dirname(os.path.realpath("serviceAccountKey.json"))
 
 #Conect to firestore DB via seviceAccKey
-cred = credentials.Certificate(cwd + "/serviceAccountKey.json")
-firebase_admin.initialize_app(cred, {
-    'storageBucket': 'sentiment-6696b.appspot.com'
-})
+firebase_admin.initialize_app(cwd, {'storageBucket': 'sentiment-6696b.appspot.com'})
 
-@app.route('/upload', methods=['POST'])
-def upload():
-    file = request.files['file']
-    blob = storage.bucket().blob(file.filename)
-    blob.upload_from_file(file)
-    return 'Upload successful!'
+# Define function to upload video to Firebase Storage
+def upload_video(file_path, file_name):
+    bucket = storage.bucket()
+    blob = bucket.blob(file_name)
+    blob.upload_from_filename(file_path)
 
-if __name__ == '__main__':
-    app.run()
+    # Get the public URL of the uploaded video
+    url = blob.public_url
+
+    return url
