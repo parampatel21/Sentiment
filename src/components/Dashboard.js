@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Button, Card, Alert } from 'react-bootstrap'
 import { useAuth } from '../contexts/AuthContext'
 import { Link, useNavigate } from 'react-router-dom'
-
+import { getStorage, ref } from 'firebase/storage'
 
 export default function Dashboard() {
     const [error, setError] = useState("")
@@ -20,16 +20,17 @@ export default function Dashboard() {
         }
     }
 
+
+    // TODO: below does not work
+
     const [videoFile, setVideoFile] = useState(null);
     const [uploading, setUploading] = useState(false);
-  
-    const handleFileChange = (event) => {
-      setVideoFile(event.target.files[0]);
-    };
+
   
     const handleUpload = (userID) => {
       setUploading(true);
-      const storageRef = firebase.storage().ref();
+      const storage = getStorage();
+      const storageRef = ref(storage);
       const userRef = storageRef.child(`users/${userID}`);
       const videoRef = userRef.child(videoFile.name);
       videoRef.put(videoFile)
@@ -43,6 +44,8 @@ export default function Dashboard() {
         });
     };
 
+    // end TODO
+
     return (
         <>
             <Card>
@@ -51,7 +54,10 @@ export default function Dashboard() {
                     {error && <Alert variant="danger">{error}</Alert>}
                     <strong>Email: </strong>{currentUser.email}
                     <Link to="/update-profile" className="btn btn-primary w-100 mt-3">Update Profile</Link>
-                    <Button disabled={!videoFile || uploading} onClick={handleUpload(currentUser.userID)} className="btn btn-primary w-100 mt-3">Upload Video</Button>
+                    <Button 
+                    // disabled={!videoFile || uploading} 
+                    // onClick={handleUpload(currentUser.userID)} 
+                    className="btn btn-primary w-100 mt-3">Upload Video</Button>
                 </Card.Body>
             </Card>
             <div className='w-100 text-center mt-2'>
