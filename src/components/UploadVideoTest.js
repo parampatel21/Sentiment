@@ -1,3 +1,5 @@
+// THIS FILE IS DEPRECATED AND WILL BE DELETED SOON - PARAM
+
 import React, { useState } from 'react';
 import firebase from 'firebase/app';
 import 'firebase/storage';
