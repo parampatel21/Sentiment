@@ -23,6 +23,15 @@ class User:
         self.password = None
         self.scriptList = None
         self.loginMethod = loginMethod
+        
+        
+        # Upload current constructor info to Firstore DB
+        currUserRef = db.collection(self.getUserID())
+        
+        currUserRef.set({"userID" : self.getUserID()})
+        
+        
+        
     
     def getUserID(self):
         return self.userID
@@ -63,3 +72,17 @@ class User:
 class LoginMethod(enum.Enum):
     USERNAME_PASSWORD = 1
     GOOGLE = 2
+    
+    
+###Tester code for creating user 
+def main():
+    
+    testScript = User( userID= "PAM", 
+                      )
+    
+    testScript.setTitle(" newer!")
+    testScript.updateScriptInfo()
+
+
+    
+main()
