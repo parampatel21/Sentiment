@@ -70,7 +70,13 @@ class User:
  
         currScriptRef.set({"userID" : item.getUserID(),
                                     "index" : 0})
-         
+        
+    def updateAccessInfo(self):
+        # Upload current constructor info to Firstore DB
+        currUserRef = db.collection(self.getUserID()).document("Access Info")
+        
+        currUserRef.set({"userID" : self.getUserID(),
+                         "runningCount" : self.getRunningCount()})
 
     
 
