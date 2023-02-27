@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import firebase from 'firebase/app';
 import 'firebase/storage';
 
-const UploadVideo = () => {
+export default function UploadVideoTest() {
   const [videoFile, setVideoFile] = useState(null);
 
   const handleVideoFileChange = (event) => {
@@ -15,8 +15,16 @@ const UploadVideo = () => {
     }
 
     // Initialize Firebase
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
     const firebaseConfig = {
-      // Add your Firebase project configuration here
+        apiKey: "AIzaSyBeGxpyW7-XKT4scH41JCzn2Tzb3s7sveY",
+        authDomain: "sentiment-6696b.firebaseapp.com",
+        databaseURL: "https://sentiment-6696b-default-rtdb.firebaseio.com",
+        projectId: "sentiment-6696b",
+        storageBucket: "sentiment-6696b.appspot.com",
+        messagingSenderId: "929145383886",
+        appId: "1:929145383886:web:4059c05a3f9aebca45199f",
+        measurementId: "G-38C03L0RC1"
     };
     if (!firebase.apps.length) {
       firebase.initializeApp(firebaseConfig);
@@ -41,4 +49,5 @@ const UploadVideo = () => {
   );
 };
 
-export default UploadVideo;
+
+
