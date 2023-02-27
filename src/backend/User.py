@@ -14,8 +14,8 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 class User:
-    def __init__(self,loginMethod):
-        self.userID = None
+    def __init__(self,userID, loginMethod):
+        self.userID = userID
         self.index = None
         self.videoList = None
         self.username = None
@@ -23,12 +23,14 @@ class User:
         self.password = None
         self.scriptList = None
         self.loginMethod = loginMethod
+        self.runningCount = 0
         
         
         # Upload current constructor info to Firstore DB
-        currUserRef = db.collection(self.getUserID())
+        currUserRef = db.collection(self.getUserID()).document("Access Info")
         
-        currUserRef.set({"userID" : self.getUserID()})
+        currUserRef.set({"userID" : self.getUserID(),
+                         "runningCount" : self.getRunningCount()})
         
         
         
@@ -60,6 +62,9 @@ class User:
     def removeVideo(self, video):
         self.videoList.remove(video)
 
+    def getRunningCount(self):
+        return self.runningCount
+
     def writeToDB(item):
         currScriptRef = db.collection(item.getUserID()).document(str(20))
  
@@ -76,12 +81,8 @@ class LoginMethod(enum.Enum):
     
 ###Tester code for creating user 
 def main():
+    testUser = User(userID= "PAM", loginMethod= 1)
     
-    testScript = User( userID= "PAM", 
-                      )
-    
-    testScript.setTitle(" newer!")
-    testScript.updateScriptInfo()
 
 
     
