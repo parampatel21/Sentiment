@@ -25,9 +25,11 @@ def modifyUser(uid, name):
     db.collection(uid).document("access_info").update({"name" : name})
 
 def getVideoIndex(uid):
-    running_count = db.collection(uid).document("access_info").get("running_count")
-    print(running_count)
-    #return int(running_count)
+    accessInfo_ref = db.collection(uid).document("access_info")
+    accessInfo = accessInfo_ref.get()
+    accessInfo_dict = accessInfo.to_dict()
+    
+    return accessInfo_dict["running_count"]
 
 def writeNewVideo(uid, title, timestamp, script):
     i = getVideoIndex(uid) + 1
@@ -45,10 +47,12 @@ def modifyVideo(uid, index, title, timestamp, script):
     db.collection(uid).document(index).collection("Video").document("video_info").set("")
     db.collection(uid).document(index).collection("Script").document("script").set({"script" : script})
 
-getVideoIndex("uid")
+
 #writeNewUser("uid", "name")
 #writeNewVideo("uid", "video title", datetime_NY.strftime("%Y:%m:%d:%H:%M:%S"), "here is my script")
-'''
+
+
+#Test Input & update; Print current running count 
 def main():
     choice = 0
     while (choice != 3):
@@ -63,6 +67,7 @@ def main():
             uid = input("Uid: ")
             name = input("Name: ")
             writeNewUser(uid, name)
+            
+    print(getVideoIndex("uid"))
 
 main()
-'''
