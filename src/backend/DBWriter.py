@@ -18,38 +18,147 @@ tz_NY = pytz.timezone('America/New_York')
 # Get the current time in New York
 datetime_NY = datetime.now(tz_NY)
 
-def writeNewUser(uid, name):
-    db.collection(uid).document("access_info").set({"running_count" : 0, "name" : name})
+"""
+Write a new user
 
-def modifyUser(uid, name):
-    db.collection(uid).document("access_info").update({"name" : name})
-
-def getVideoIndex(uid):
-    accessInfo_ref = db.collection(uid).document("access_info")
-    accessInfo = accessInfo_ref.get()
-    accessInfo_dict = accessInfo.to_dict()
+@param uid
+    ID for locating user
+@ param name
+    Name assigned to user
     
-    return accessInfo_dict["running_count"]
+@ret True
+    Iff successfult write
 
-def writeNewVideo(uid, title, timestamp, script):
-    i = getVideoIndex(uid) + 1
+"""
+def writeNewUser(uid, name):
+        db.collection(uid).document("access_info").set({"running_count" : 0, "name" : name})
+        return True
+
+
+"""
+Modify an existing user, cited by uid; Throws error if uid !exist
+
+@param uid
+    ID for locating user
+@param name
+    Name to replace existing name
+    
+@ret True 
+    Iff successful modify
+@ret False iff
+    Iff unsuccessful modify
+"""
+def modifyUser(uid, name):
+    try:
+        db.collection(uid).document("access_info").update({"name" : name})
+        return True
+    except:
+        return False
+
+
+"""
+Get the running count of a user
+
+@param uid
+    ID which sources the runningCount
+    
+@ret runningCount
+    Iff successful info pull
+@ret False
+    Iff unsuccessful info pull
+
+"""
+def getRunningCount(uid):
+    try:
+        accessInfo_ref = db.collection(uid).document("access_info")
+        accessInfo = accessInfo_ref.get()
+        accessInfo_dict = accessInfo.to_dict()
+        
+        return accessInfo_dict["running_count"]
+    except:
+        return False
+
+"""
+Update a user's running count by 1; Throws error if user DNE
+
+@param uid
+    ID for locating user
+    
+@ret True 
+    Iff successful modify
+@ret False iff
+    Iff unsuccessful modify
+"""
+def updateRunningCount(uid):
+    try:
+        db.collection(uid).document("access_info").update({"running_count" : getRunningCount(uid=uid) + 1})
+        return True
+    except:
+        return False
+    
+"""
+Write a new Script
+
+@param uid
+    ID for locating user
+@param title
+    Title of script
+@param timestamp
+    Time stamp of addition
+@param script
+    Script content
+    
+@ret True
+    Iff successful creation of script
+"""
+def writeNewScript(uid, title, script):
+    #Temp storage of running count
+    i = getRunningCount(uid) + 1
     index = str(i)
+    
     db.collection(uid).document(index).set(
-        {"timestamp" : timestamp,
+        {"timestamp" : datetime_NY.strftime("%Y:%m:%d:%H:%M:%S"),
         "title" : title})
-    db.collection(uid).document(index).collection("Video").document("video_info").set()
     db.collection(uid).document(index).collection("Script").document("script").set({"script" : script})
-
-def modifyVideo(uid, index, title, timestamp, script):
-    db.collection(uid).document(index).set(
-        {"timestamp" : timestamp,
-        "title" : title})
-    db.collection(uid).document(index).collection("Video").document("video_info").set("")
-    db.collection(uid).document(index).collection("Script").document("script").set({"script" : script})
+    
+    #Update user's access info running count
+    updateRunningCount(uid=uid)
+    return True
 
 
-#writeNewUser("uid", "name")
+"""
+Modify an existing script; Throws error if user DNE
+
+@param uid
+    ID for locating user
+@param index
+    Index of script to be modified
+@param title
+    Title of script
+@param script
+    Script content
+    
+@ret True
+    Iff successful modification of script
+@ret False
+    If unsuccessful modification of script
+    
+    """
+def modifyScript(uid, index, title, script):
+    try:
+        db.collection(uid).document(index).update(
+            {"timestamp" : datetime_NY.strftime("%Y:%m:%d:%H:%M:%S"),
+            "title" : title})
+        db.collection(uid).document(index).collection("Script").document("script").update({"script" : script})
+        return True
+    except:
+        return False
+
+
+modifyScript(uid="uid", index= 1,title="video title",script= "here is my newer script")
 #writeNewVideo("uid", "video title", datetime_NY.strftime("%Y:%m:%d:%H:%M:%S"), "here is my script")
+
+
 
 
 #Test Input & update; Print current running count 
@@ -70,4 +179,4 @@ def main():
             
     print(getVideoIndex("uid"))
 
-main()
+#main()
