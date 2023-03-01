@@ -10,6 +10,7 @@ export default function Signup() {
     const passwordConfirmRef = useRef()
     // import function implemented in AuthContext.js
     const { signup } = useAuth()
+    const { getUID } = useAuth()
     // initialize error and loading vars
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
@@ -31,6 +32,12 @@ export default function Signup() {
             setError('')
             setLoading(true)
             await signup(emailRef.current.value, passwordRef.current.value)
+            // await setDoc(doc(db, getUID, "LA"), {
+            //     name: "Los Angeles",
+            //     state: "CA",
+            //     country: "USA"
+            //     });
+            // console.log(getUID())
             navigate("/")
         } catch {
             setError('Failed to create an account')
