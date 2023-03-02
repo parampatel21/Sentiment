@@ -37,6 +37,7 @@ export default function Signup() {
             const UID = getuser();
             console.log(UID)
             initDBCollection(UID, nameRef.current.value)
+            navigate('/')
         } catch {
             setError('Failed to create an account')
         }
@@ -58,7 +59,7 @@ export default function Signup() {
                     {/* Handle form submission */}
                     <Form onSubmit={handleSubmit}>
                         {/* Form components (Label & Text Box) for Name */}
-                                                <Form.Group id="name">
+                        <Form.Group id="name">
                             <Form.Label>First and Last Name</Form.Label>
                             <Form.Control type="name" ref={nameRef} required />
                         </Form.Group>

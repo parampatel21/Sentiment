@@ -12,6 +12,7 @@ import ViewAllPerformances from "./ViewAllPerformances";
 import ViewAllScripts from "./ViewAllScripts";
 import PerformanceByID from "./PerformanceByID";
 import ScriptByID from "./ScriptByID";
+import RecordPerformance from "./RecordPerformance";
 
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
                 <Route path="/view-all-scripts" element={<ViewAllScripts />} />
                 <Route path="/performance-id" element={<PerformanceByID />} />
                 <Route path="/script-id" element={<ScriptByID />} />
+                <Route path="/record-performance" element={<RecordPerformance />} />
 
               </Routes>
             </AuthProvider>
