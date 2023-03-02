@@ -1,8 +1,7 @@
 import os
 import firebase_admin
 import pytz
-from firebase_admin import credentials
-from firebase_admin import firestore
+from firebase_admin import credentials, storage, firestore
 from datetime import datetime
 
 # Get path to serviceAccKey
@@ -10,7 +9,7 @@ cwd = os.path.dirname(os.path.realpath("serviceAccountKey.json"))
 
 #Conect to firestore DB via seviceAccKey
 cred = credentials.Certificate(cwd + "/serviceAccountKey.json")
-firebase_admin.initialize_app(cred)
+firebase_admin.initialize_app(cred,{'storageBucket' : 'sentiment-6696b.appspot.com'})
 db = firestore.client()
 
 #Get the timezone object for New York
@@ -78,23 +77,41 @@ def getRunningCount(uid):
     except:
         return False
 
+
+def getVideoTitle(uid, index):
+    try:
+        videoInfo_ref = db.collection(uid).document(str(index))
+        videoInfo = videoInfo_ref.get()
+        videoInfo_dict = videoInfo.to_dict()
+        
+        return videoInfo_dict["title"]
+    except:
+        return False
+
+
+
+
 """
 Update a user's running count by 1; Throws error if user DNE
 
 @param uid
     ID for locating user
+
     
-@ret True 
-    Iff successful modify
+
+@ret getRunningCount(uid) 
+    Updated value fo running count
 @ret False iff
     Iff unsuccessful modify
 """
 def updateRunningCount(uid):
-    try:
+    try:        
         db.collection(uid).document("access_info").update({"running_count" : getRunningCount(uid=uid) + 1})
-        return True
+        
+        return getRunningCount(uid="uid")
     except:
         return False
+
     
 """
 Write a new Script
@@ -155,9 +172,90 @@ def modifyScript(uid, index, title, script):
         return False
 
 
-modifyScript(uid="uid", index= 1,title="video title",script= "here is my newer script")
-#writeNewVideo("uid", "video title", datetime_NY.strftime("%Y:%m:%d:%H:%M:%S"), "here is my script")
+"""
+Upload a file into firestore storage; Throws error if unsuccessful; Overwrites if already exists
 
+@param uid
+    ID for defining user to make
+@param index
+    Index of file to be uploaded
+@param localpath
+    localpath of file to be uploaded
+
+@ret True
+    Successful upload
+@ret Exception(FileNotFoundError)
+    var localpath is not found
+@ret False
+    Unsuccessful upload
+    
+"""
+def uploadFile(uid, index, localpath):
+    try: 
+        bucket = storage.bucket()
+        blob = bucket.blob(uid + "_" + str(index))
+        blob.upload_from_filename(localpath)
+        return True
+    except FileNotFoundError:
+        #Should not be thrown iff UI implemented correctly
+        return Exception("FileNotFoundError")
+    except:
+        return False
+
+
+"""
+Download a file from firestore storage; Throws error if unsuccessful
+
+@param uid
+    ID for locating user to download from
+@param index
+    Index of file to be downloaded
+
+@ret True
+    Successful upload
+@ret Exception(FileNotFoundError)
+    var index is not found
+@ret False
+    Unsuccessful upload
+    
+"""
+def downloadFile(uid, index):
+    try:
+        bucket = storage.bucket()
+        blob = bucket.blob(uid + "_" + str(index))
+        blob.download_to_filename(getVideoTitle(uid=uid, index=index) + ".mp4")
+        return True
+    except FileNotFoundError:
+        #Should not be thrown iff UI implemented correctly
+        return Exception("FileNotFoundError") 
+    except:
+        return False
+
+"""
+Delete a file from firestore storage; Throws error if unsuccessful
+
+@param uid
+    ID for locating user to delete
+@param index
+    Index of file to be deleted
+
+@ret True
+    Successful upload
+@ret False
+    Unsuccessful upload
+    
+"""
+def deleteFile(uid, index):
+    try:
+        bucket = storage.bucket()
+        blob = bucket.blob(uid + "_" + str(index))
+        blob.delete()
+        return True
+    except:
+        return False
+
+#print(uploadFile("uid",1, "Script.txt"))
+#print(downloadFile(uid="uid", index=1))
 
 
 
@@ -177,6 +275,5 @@ def main():
             name = input("Name: ")
             writeNewUser(uid, name)
             
-    print(getVideoIndex("uid"))
 
 #main()
