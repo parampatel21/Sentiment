@@ -236,7 +236,6 @@ def downloadFile(uid, index):
         file_ptr = getVideoTitle(uid=uid, index=index) + ".mp4" 
         blob.download_to_filename(file_ptr)
         
-        os.rename(os.path.realpath(file_ptr) + "/" + str(file_ptr), os.path.realpath("Downloads") + "/" + str(file_ptr))
         return True
     except FileNotFoundError:
         #Should not be thrown iff UI implemented correctly
@@ -268,8 +267,7 @@ def deleteFile(uid, index):
         return False
 
 #print(uploadFile("uid",1, "Script.txt"))
-print(downloadFile(uid="uid", index=1))
-
+#print(downloadFile(uid="uid", index=1))
 
 
 #Test Input & update; Print current running count 
