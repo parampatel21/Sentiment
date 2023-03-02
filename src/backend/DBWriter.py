@@ -154,25 +154,91 @@ def modifyScript(uid, index, title, script):
         return False
 
 
-modifyScript(uid="uid", index= 1,title="video title",script= "here is my newer script")
-#writeNewVideo("uid", "video title", datetime_NY.strftime("%Y:%m:%d:%H:%M:%S"), "here is my script")
+"""
+Upload a file into firestore storage; Throws error if unsuccessful; Overwrites if already exists
 
+@param uid
+    ID for defining user to make
+@param index
+    Index of file to be uploaded
+@param localpath
+    localpath of file to be uploaded
+
+@ret True
+    Successful upload
+@ret Exception(FileNotFoundError)
+    var localpath is not found
+@ret False
+    Unsuccessful upload
+    
+"""
 def uploadFile(uid, index, localpath):
-    bucket = storage.bucket()
-    blob = bucket.blob(uid + "_" + str(index))
-    blob.upload_from_filename(localpath)
+    try: 
+        bucket = storage.bucket()
+        blob = bucket.blob(uid + "_" + str(index))
+        blob.upload_from_filename(localpath)
+        return True
+    except FileNotFoundError:
+        #Should not be thrown iff UI implemented correctly
+        return Exception("FileNotFoundError")
+    except:
+        return False
 
+
+"""
+Download a file from firestore storage; Throws error if unsuccessful
+
+@param uid
+    ID for locating user to download from
+@param index
+    Index of file to be downloaded
+@param localname
+    Name of file to be downloaded, as named in Firebase storage
+
+@ret True
+    Successful upload
+@ret Exception(FileNotFoundError)
+    var local_name is not found
+@ret False
+    Unsuccessful upload
+    
+"""
 def downloadFile(uid, index, local_name):
-    bucket = storage.bucket()
-    blob = bucket.blob(uid + "_" + str(index))
-    blob.download_to_filename(local_name)
+    try:
+        bucket = storage.bucket()
+        blob = bucket.blob(uid + "_" + str(index))
+        blob.download_to_filename(local_name)
+        return True
+    except FileNotFoundError:
+        #Should not be thrown iff UI implemented correctly
+        return Exception("FileNotFoundError") 
+    except:
+        return False
 
+"""
+Delete a file from firestore storage; Throws error if unsuccessful
+
+@param uid
+    ID for locating user to delete
+@param index
+    Index of file to be deleted
+
+@ret True
+    Successful upload
+@ret False
+    Unsuccessful upload
+    
+"""
 def deleteFile(uid, index):
-    bucket = storage.bucket()
-    blob = bucket.blob(uid + "_" + str(index))
-    blob.delete()
+    try:
+        bucket = storage.bucket()
+        blob = bucket.blob(uid + "_" + str(index))
+        blob.delete()
+        return True
+    except:
+        return False
 
-deleteFile("uid2",1)
+print(uploadFile("uid",1, "Script.txt"))
 
 #Test Input & update; Print current running count 
 def main():
