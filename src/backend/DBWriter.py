@@ -89,6 +89,15 @@ def getVideoTitle(uid, index):
         return False
 
 
+def readFileToScript(uid, title, file_path):
+    try:
+        with open(file_path, 'r') as file:
+            content = file.read()
+            file.close()
+            writeNewScript(uid, title, content)
+            return True
+    except:
+        return False
 
 
 """
