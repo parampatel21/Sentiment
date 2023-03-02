@@ -268,7 +268,7 @@ def deleteFile(uid, index):
 
 #print(uploadFile("uid",1, "Script.txt"))
 #print(downloadFile(uid="uid", index=1))
-
+print(readFileToScript(uid="uid", title="A test title", file_path="Script.txt"))
 
 #Test Input & update; Print current running count 
 def main():
