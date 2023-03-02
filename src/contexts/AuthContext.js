@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { auth, getauth } from '../firebase'
+import { auth, firestore } from '../firebase'
 
 const AuthContext = React.createContext()
 
@@ -37,10 +37,20 @@ export function AuthProvider({ children }) {
         return currentUser.updatePassword(password)
     }
 
-    // function getuser() {
-    //     const user = getauth.currentUser;
-    //     return user.uid;
-    // }
+    function getuser() {
+        return auth.currentUser.uid;
+    }
+
+    function initDBCollection(userUID, name) {
+        try {
+            firestore.collection(userUID).doc("access_info").set({
+                name: name,
+                running_count: 0
+            })
+        } catch (e) {
+            console.log(e);
+        }
+    }
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(user => {
@@ -60,7 +70,8 @@ export function AuthProvider({ children }) {
         resetPassword,
         updateEmail,
         updatePassword,
-        // getuser
+        getuser,
+        initDBCollection
     }
 
     return (

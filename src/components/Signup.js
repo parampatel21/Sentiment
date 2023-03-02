@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react'
 import { Form, Button, Card, Alert } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
+import { useFirestore } from '../contexts/FirestoreContext'
 
 export default function Signup() {
     // references for user's fields on the ui components
@@ -10,8 +11,8 @@ export default function Signup() {
     const nameRef = useRef()
     const passwordConfirmRef = useRef()
     // import function implemented in AuthContext.js
-    const { signup } = useAuth()
-    const { getuser } = useAuth()
+    const { signup, getuser, initDBCollection } = useAuth()
+    // const { initDBCollection } = useFirestore();
     // initialize error and loading vars
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
@@ -33,8 +34,9 @@ export default function Signup() {
             setError('')
             setLoading(true)
             await signup(emailRef.current.value, passwordRef.current.value)
-            console.log(getuser)
-            navigate("/")
+            const UID = getuser();
+            console.log(UID)
+            initDBCollection(UID, nameRef.current.value)
         } catch {
             setError('Failed to create an account')
         }

@@ -22,6 +22,5 @@ const app = firebase.initializeApp({
 
 // Initialize firebase auth for firebase api functions outside of this file
 export const auth = app.auth()
-// export const getauth = getAuth(app);
-// export const db = getFirestore(app);
+export const firestore = app.firestore();
 export default app
