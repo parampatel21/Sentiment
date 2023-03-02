@@ -89,6 +89,15 @@ def getVideoTitle(uid, index):
         return False
 
 
+def readFileToScript(uid, title, file_path):
+    try:
+        with open(file_path, 'r') as file:
+            content = file.read()
+            file.close()
+            writeNewScript(uid, title, content)
+            return True
+    except:
+        return False
 
 
 """
@@ -219,11 +228,15 @@ Download a file from firestore storage; Throws error if unsuccessful
     Unsuccessful upload
     
 """
+
 def downloadFile(uid, index):
     try:
         bucket = storage.bucket()
         blob = bucket.blob(uid + "_" + str(index))
-        blob.download_to_filename(getVideoTitle(uid=uid, index=index) + ".mp4")
+        file_ptr = getVideoTitle(uid=uid, index=index) + ".mp4" 
+        blob.download_to_filename(file_ptr)
+        
+        os.rename(os.path.realpath(file_ptr) + "/" + str(file_ptr), os.path.realpath("Downloads") + "/" + str(file_ptr))
         return True
     except FileNotFoundError:
         #Should not be thrown iff UI implemented correctly
@@ -255,7 +268,7 @@ def deleteFile(uid, index):
         return False
 
 #print(uploadFile("uid",1, "Script.txt"))
-#print(downloadFile(uid="uid", index=1))
+print(downloadFile(uid="uid", index=1))
 
 
 

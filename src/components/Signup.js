@@ -36,6 +36,7 @@ export default function Signup() {
             await signup(emailRef.current.value, passwordRef.current.value)
             const UID = getuser();
             initDBCollection(UID, nameRef.current.value)
+            navigate('/')
         } catch {
             setError('Failed to create an account')
         }
@@ -57,7 +58,7 @@ export default function Signup() {
                     {/* Handle form submission */}
                     <Form onSubmit={handleSubmit}>
                         {/* Form components (Label & Text Box) for Name */}
-                                                <Form.Group id="name">
+                        <Form.Group id="name">
                             <Form.Label>First and Last Name</Form.Label>
                             <Form.Control type="name" ref={nameRef} required />
                         </Form.Group>
