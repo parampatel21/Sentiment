@@ -1,8 +1,7 @@
 import os
 import firebase_admin
 import pytz
-from firebase_admin import credentials
-from firebase_admin import firestore
+from firebase_admin import credentials, storage, firestore
 from datetime import datetime
 
 # Get path to serviceAccKey
@@ -10,7 +9,7 @@ cwd = os.path.dirname(os.path.realpath("serviceAccountKey.json"))
 
 #Conect to firestore DB via seviceAccKey
 cred = credentials.Certificate(cwd + "/serviceAccountKey.json")
-firebase_admin.initialize_app(cred)
+firebase_admin.initialize_app(cred,{'storageBucket' : 'sentiment-6696b.appspot.com'})
 db = firestore.client()
 
 #Get the timezone object for New York
@@ -158,8 +157,22 @@ def modifyScript(uid, index, title, script):
 modifyScript(uid="uid", index= 1,title="video title",script= "here is my newer script")
 #writeNewVideo("uid", "video title", datetime_NY.strftime("%Y:%m:%d:%H:%M:%S"), "here is my script")
 
+def uploadFile(uid, index, localpath):
+    bucket = storage.bucket()
+    blob = bucket.blob(uid + "_" + str(index))
+    blob.upload_from_filename(localpath)
 
+def downloadFile(uid, index, local_name):
+    bucket = storage.bucket()
+    blob = bucket.blob(uid + "_" + str(index))
+    blob.download_to_filename(local_name)
 
+def deleteFile(uid, index):
+    bucket = storage.bucket()
+    blob = bucket.blob(uid + "_" + str(index))
+    blob.delete()
+
+deleteFile("uid2",1)
 
 #Test Input & update; Print current running count 
 def main():
@@ -177,6 +190,5 @@ def main():
             name = input("Name: ")
             writeNewUser(uid, name)
             
-    print(getVideoIndex("uid"))
 
 #main()
