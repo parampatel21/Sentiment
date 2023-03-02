@@ -26,22 +26,22 @@ export default function Dashboard() {
     const [videoFile, setVideoFile] = useState(null);
     const [uploading, setUploading] = useState(false);
 
-  
+
     const handleUpload = (userID) => {
-      setUploading(true);
-      const storage = getStorage();
-      const storageRef = ref(storage);
-      const userRef = storageRef.child(`users/${userID}`);
-      const videoRef = userRef.child(videoFile.name);
-      videoRef.put(videoFile)
-        .then(() => {
-          console.log("Upload successful!");
-          setUploading(false);
-        })
-        .catch((error) => {
-          console.error(error);
-          setUploading(false);
-        });
+        setUploading(true);
+        const storage = getStorage();
+        const storageRef = ref(storage);
+        const userRef = storageRef.child(`users/${userID}`);
+        const videoRef = userRef.child(videoFile.name);
+        videoRef.put(videoFile)
+            .then(() => {
+                console.log("Upload successful!");
+                setUploading(false);
+            })
+            .catch((error) => {
+                console.error(error);
+                setUploading(false);
+            });
     };
 
     // end TODO
@@ -54,10 +54,10 @@ export default function Dashboard() {
                     {error && <Alert variant="danger">{error}</Alert>}
                     <strong>Email: </strong>{currentUser.email}
                     <Link to="/update-profile" className="btn btn-primary w-100 mt-3">Update Profile</Link>
-                    <Button 
-                    // disabled={!videoFile || uploading} 
-                    // onClick={handleUpload(currentUser.userID)} 
-                    className="btn btn-primary w-100 mt-3">Upload Video</Button>
+                    <Button
+                        // disabled={!videoFile || uploading} 
+                        // onClick={handleUpload(currentUser.userID)} 
+                        className="btn btn-primary w-100 mt-3">Upload Video</Button>
                 </Card.Body>
             </Card>
             <div className='w-100 text-center mt-2'>
