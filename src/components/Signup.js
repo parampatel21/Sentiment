@@ -7,10 +7,11 @@ export default function Signup() {
     // references for user's fields on the ui components
     const emailRef = useRef()
     const passwordRef = useRef()
+    const nameRef = useRef()
     const passwordConfirmRef = useRef()
     // import function implemented in AuthContext.js
     const { signup } = useAuth()
-    const { getUID } = useAuth()
+    const { getuser } = useAuth()
     // initialize error and loading vars
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
@@ -32,12 +33,7 @@ export default function Signup() {
             setError('')
             setLoading(true)
             await signup(emailRef.current.value, passwordRef.current.value)
-            // await setDoc(doc(db, getUID, "LA"), {
-            //     name: "Los Angeles",
-            //     state: "CA",
-            //     country: "USA"
-            //     });
-            // console.log(getUID())
+            console.log(getuser)
             navigate("/")
         } catch {
             setError('Failed to create an account')
@@ -59,6 +55,11 @@ export default function Signup() {
                     {error && <Alert variant="danger">{error}</Alert>}
                     {/* Handle form submission */}
                     <Form onSubmit={handleSubmit}>
+                        {/* Form components (Label & Text Box) for Name */}
+                                                <Form.Group id="name">
+                            <Form.Label>First and Last Name</Form.Label>
+                            <Form.Control type="name" ref={nameRef} required />
+                        </Form.Group>
                         {/* Form components (Label & Text Box) for Email */}
                         <Form.Group id="email">
                             <Form.Label>Email</Form.Label>

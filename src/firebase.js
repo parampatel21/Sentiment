@@ -1,4 +1,5 @@
-import { getFirestore } from "@firebase/firestore"
+// import { getAuth } from "firebase-admin/auth"
+// import { getFirestore } from "firebase-admin/firestore"
 import firebase from "firebase/compat/app"
 import "firebase/compat/auth"
 import 'firebase/compat/firestore'
@@ -21,5 +22,6 @@ const app = firebase.initializeApp({
 
 // Initialize firebase auth for firebase api functions outside of this file
 export const auth = app.auth()
+// export const getauth = getAuth(app);
+// export const db = getFirestore(app);
 export default app
-export const db = getFirestore()
