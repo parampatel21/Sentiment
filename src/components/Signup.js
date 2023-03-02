@@ -35,7 +35,6 @@ export default function Signup() {
             setLoading(true)
             await signup(emailRef.current.value, passwordRef.current.value)
             const UID = getuser();
-            console.log(UID)
             initDBCollection(UID, nameRef.current.value)
         } catch {
             setError('Failed to create an account')
