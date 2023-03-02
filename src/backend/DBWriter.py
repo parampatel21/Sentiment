@@ -132,7 +132,7 @@ def writeNewScript(uid, title, script):
     db.collection(uid).document(index).collection("Script").document("script").set({"script" : script})
     
     #Update user's access info running count
-    increaseRunningCount(uid=uid)
+    updateRunningCount(uid=uid)
     return True
 
 
