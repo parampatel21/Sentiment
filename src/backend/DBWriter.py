@@ -77,28 +77,36 @@ def getRunningCount(uid):
     except:
         return False
 
+
+def getVideoTitle(uid, index):
+    try:
+        videoInfo_ref = db.collection(uid).document(str(index))
+        videoInfo = videoInfo_ref.get()
+        videoInfo_dict = videoInfo.to_dict()
+        
+        return videoInfo_dict["title"]
+    except:
+        return False
+
+
+
+
 """
-Update a user's running count by num; Throws error if user DNE
+Update a user's running count by 1; Throws error if user DNE
 
 @param uid
     ID for locating user
-@param num
-    Running count adjustment number; Can be negative
+
     
-@ret Exception(Arg num error)
-    Adjustment to running count results in a number less than 0
+
 @ret getRunningCount(uid) 
     Updated value fo running count
 @ret False iff
     Iff unsuccessful modify
 """
-def updateRunningCount(uid, num):
-    try:
-        rCount = getRunningCount(uid=uid)
-        if (rCount + num < 0):
-            return Exception("Arg num error")
-        
-        db.collection(uid).document("access_info").update({"running_count" : rCount + num})
+def updateRunningCount(uid):
+    try:        
+        db.collection(uid).document("access_info").update({"running_count" : getRunningCount(uid=uid) + 1})
         
         return getRunningCount(uid="uid")
     except:
@@ -131,7 +139,7 @@ def writeNewScript(uid, title, script):
     db.collection(uid).document(index).collection("Script").document("script").set({"script" : script})
     
     #Update user's access info running count
-    updateRunningCount(uid=uid, num=1)
+    updateRunningCount(uid=uid)
     return True
 
 
@@ -202,22 +210,20 @@ Download a file from firestore storage; Throws error if unsuccessful
     ID for locating user to download from
 @param index
     Index of file to be downloaded
-@param localname
-    Name of file to be downloaded, as named in Firebase storage
 
 @ret True
     Successful upload
 @ret Exception(FileNotFoundError)
-    var local_name is not found
+    var index is not found
 @ret False
     Unsuccessful upload
     
 """
-def downloadFile(uid, index, local_name):
+def downloadFile(uid, index):
     try:
         bucket = storage.bucket()
         blob = bucket.blob(uid + "_" + str(index))
-        blob.download_to_filename(local_name)
+        blob.download_to_filename(getVideoTitle(uid=uid, index=index) + ".mp4")
         return True
     except FileNotFoundError:
         #Should not be thrown iff UI implemented correctly
@@ -249,9 +255,9 @@ def deleteFile(uid, index):
         return False
 
 #print(uploadFile("uid",1, "Script.txt"))
-#print(downloadFile("uid", 1, "Script.txt"))
+#print(downloadFile(uid="uid", index=1))
 
-print(writeNewScript(uid="uid",title="test",script="temp"))
+
 
 #Test Input & update; Print current running count 
 def main():
