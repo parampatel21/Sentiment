@@ -9,6 +9,7 @@ import Dashboard from "./Dashboard";
 import Login from "./Login";
 import ForgotPassword from "./ForgotPassword";
 import ViewAllPerformances from "./ViewAllPerformances";
+import ViewAllScripts from "./ViewAllScripts";
 
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/view-all-performances" element={<ViewAllPerformances />} />
+                <Route path="/view-all-scripts" element={<ViewAllScripts />} />
               </Routes>
             </AuthProvider>
           </Router>

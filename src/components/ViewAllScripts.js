@@ -3,19 +3,19 @@ import { Form, Button, Card, Alert } from 'react-bootstrap'
 import { useAuth } from '../contexts/AuthContext'
 import { Link, useNavigate } from 'react-router-dom'
 
-export default function ViewAllPerformances() {
-    const performances = [
-        'Demo Performance 1... More info....',
-        'Demo Performance 2... More info....',
-        'Demo Performance 3... More info....',
-        'Demo Performance 4... More info....',
-        'Demo Performance 5... More info....',
-        'Demo Performance 6... More info....',
+export default function ViewAllScripts() {
+    const scripts = [
+        'Demo Scripts 1... More info....',
+        'Demo Scripts 2... More info....',
+        'Demo Scripts 3... More info....',
+        'Demo Scripts 4... More info....',
+        'Demo Scripts 5... More info....',
+        'Demo Scripts 6... More info....',
     ];
-    const listItems = performances.map(performance =>
-        <Button>{performance}</Button>
+    const listItems = scripts.map(script =>
+        <Button>{script}</Button>
     );
-    const { fetchPerformanceByID } = useAuth()
+    const { fetchScriptByID } = useAuth()
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
@@ -26,8 +26,8 @@ export default function ViewAllPerformances() {
         try {
             setError('')
             setLoading(true)
-            // await fetchPerfomanceByID(performanceSelected)
-            navigate("/performance-id-${pid}")
+            // await fetchScriptByID(scriptSelected)
+            navigate("/script-id-${sid}")
         } catch {
             setError('Failed to sign in')
         }
@@ -40,7 +40,7 @@ export default function ViewAllPerformances() {
         <>
             <Card>
                 <Card.Body>
-                    <h2 className='text-center mb-4'>View All Performances</h2>
+                    <h2 className='text-center mb-4'>View All Scripts</h2>
                     {error && <Alert variant="danger">{error}</Alert>}
 
                     <ul>{listItems}</ul>
