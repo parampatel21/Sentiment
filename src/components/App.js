@@ -10,6 +10,8 @@ import Login from "./Login";
 import ForgotPassword from "./ForgotPassword";
 import ViewAllPerformances from "./ViewAllPerformances";
 import ViewAllScripts from "./ViewAllScripts";
+import PerformanceByID from "./PerformanceByID";
+import ScriptByID from "./ScriptByID";
 
 
 function App() {
@@ -30,6 +32,9 @@ function App() {
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/view-all-performances" element={<ViewAllPerformances />} />
                 <Route path="/view-all-scripts" element={<ViewAllScripts />} />
+                <Route path="/performance-id" element={<PerformanceByID />} />
+                <Route path="/script-id" element={<ScriptByID />} />
+
               </Routes>
             </AuthProvider>
           </Router>
