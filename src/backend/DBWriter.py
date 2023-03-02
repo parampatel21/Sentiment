@@ -78,22 +78,33 @@ def getRunningCount(uid):
         return False
 
 """
-Update a user's running count by 1; Throws error if user DNE
+Update a user's running count by num; Throws error if user DNE
 
 @param uid
     ID for locating user
+@param num
+    Running count adjustment number; Can be negative
     
+@ret Exception(Arg num error)
+    Adjustment to running count results in a number less than 0
 @ret True 
     Iff successful modify
 @ret False iff
     Iff unsuccessful modify
 """
-def updateRunningCount(uid):
+def updateRunningCount(uid, num):
     try:
-        db.collection(uid).document("access_info").update({"running_count" : getRunningCount(uid=uid) + 1})
+        rCount = getRunningCount(uid=uid)
+        if (rCount + num < 0):
+            return Exception("Arg num error")
+        
+        db.collection(uid).document("access_info").update({"running_count" : rCount + num})
+        
         return True
     except:
         return False
+
+
     
 """
 Write a new Script
@@ -121,7 +132,7 @@ def writeNewScript(uid, title, script):
     db.collection(uid).document(index).collection("Script").document("script").set({"script" : script})
     
     #Update user's access info running count
-    updateRunningCount(uid=uid)
+    increaseRunningCount(uid=uid)
     return True
 
 
