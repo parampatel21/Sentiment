@@ -20,6 +20,24 @@ export default function ViewAllPerformances() {
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
 
+    // GETTING DATA CODE HERE, NONE OF IT IS WORKING YET JUST SKELETON:
+
+    // const { getuser } = useAuth()
+    // const count = 0;
+    // db.collection(getuser()).get().then(function(querySnapshot) {
+    //     count = querySnapshot.size;
+    // });
+
+    // if (count < 2) {
+    //     console.log("DB issue, check schema")
+    // }
+    // if (count == 2) {
+    //     console.log("no videos so far!")
+    // }
+    // if (count > 2) {
+    //     console.log("multiple videos, work on enumeration")
+    // }
+
     async function handleSubmit(e) {
         e.preventDefault()
 
