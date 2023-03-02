@@ -238,7 +238,8 @@ def deleteFile(uid, index):
     except:
         return False
 
-print(uploadFile("uid",1, "Script.txt"))
+#print(uploadFile("uid",1, "Script.txt"))
+print(downloadFile("uid", 1, "Script.txt"))
 
 #Test Input & update; Print current running count 
 def main():
