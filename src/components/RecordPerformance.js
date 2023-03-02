@@ -7,6 +7,7 @@ import { useAuth } from '../contexts/AuthContext'
 export default function RecordPerformance() {
     // references for user's fields on the ui components
     const filePath = ''
+    const videoFile = ''
     // import function implemented in AuthContext.js
     const { recordVideo, uploadScript, saveVideo } = useAuth()
     const { getuser } = useAuth()
@@ -29,18 +30,18 @@ export default function RecordPerformance() {
         try {
             setError('')
             setLoading(true)
-            await (filePath)
+            await saveVideo(videoFile)
             console.log(getuser)
         } catch {
-            setError('Failed to update video data')
+            setError('Failed to save the video')
         }
 
         setLoading(false)
 
     }
 
-    // Function to handle user interaction with the submit button
-    async function handleDelete(e) {
+    // Function to handle user interaction with the upload script button
+    async function handleUpload(e) {
         e.preventDefault()
 
         // return an error if a condition do not match
@@ -52,11 +53,10 @@ export default function RecordPerformance() {
         try {
             setError('')
             setLoading(true)
-            await deleteVideo(videoID)
+            await uploadScript(filePath)
             console.log(getuser)
-            navigate("/view-all-performances")
         } catch {
-            setError('Failed to delete the video')
+            setError('Failed to upload text file')
         }
         setLoading(false)
 
@@ -69,27 +69,16 @@ export default function RecordPerformance() {
             <Card>
                 <Card.Body>
                     {/* Card header  */}
-                    <h2 className='text-center mb-4'>Video Performance</h2>
+                    <h2 className='text-center mb-4'>Record Your Performance</h2>
                     {/* If there is an error caught generate an error message component at the top of this Card */}
                     {error && <Alert variant="danger">{error}</Alert>}
                     {/* Handle form submission */}
                     <Form onSubmit={handleSubmit}>
-                        {/* Form components (Label & Text Box) for Video Title */}
-                        <Form.Group id="title">
-                            <Form.Label>Title</Form.Label>
-                            <Form.Control type="text" ref={titleRef} required />
-                        </Form.Group>
-                        {/* Form components (Label & Text Box) for Password */}
-                        <Form.Group id="description">
-                            <Form.Label>Description</Form.Label>
-                            <Form.Control as="textarea" ref={descriptionRef} required />
-                        </Form.Group>
+
                         <div></div>
                         {/* Disable the submission button if already pressed and submission is in-progress */}
                         <Button disabled={loading} className='w-100' type='submit'>Save</Button>
                     </Form>
-                    <div></div>
-                    <Button disabled={loading} className='w-100' type='submit'>Delete</Button>
                 </Card.Body>
             </Card>
 
