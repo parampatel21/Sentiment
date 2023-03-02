@@ -87,8 +87,8 @@ Update a user's running count by num; Throws error if user DNE
     
 @ret Exception(Arg num error)
     Adjustment to running count results in a number less than 0
-@ret True 
-    Iff successful modify
+@ret getRunningCount(uid) 
+    Updated value fo running count
 @ret False iff
     Iff unsuccessful modify
 """
@@ -100,10 +100,9 @@ def updateRunningCount(uid, num):
         
         db.collection(uid).document("access_info").update({"running_count" : rCount + num})
         
-        return True
+        return getRunningCount(uid="uid")
     except:
         return False
-
 
     
 """
@@ -132,7 +131,7 @@ def writeNewScript(uid, title, script):
     db.collection(uid).document(index).collection("Script").document("script").set({"script" : script})
     
     #Update user's access info running count
-    updateRunningCount(uid=uid)
+    updateRunningCount(uid=uid, num=1)
     return True
 
 
@@ -250,7 +249,9 @@ def deleteFile(uid, index):
         return False
 
 #print(uploadFile("uid",1, "Script.txt"))
-print(downloadFile("uid", 1, "Script.txt"))
+#print(downloadFile("uid", 1, "Script.txt"))
+
+print(writeNewScript(uid="uid",title="test",script="temp"))
 
 #Test Input & update; Print current running count 
 def main():
