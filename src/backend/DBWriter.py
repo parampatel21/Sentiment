@@ -219,6 +219,7 @@ Download a file from firestore storage; Throws error if unsuccessful
     Unsuccessful upload
     
 """
+
 def downloadFile(uid, index):
     try:
         bucket = storage.bucket()
