@@ -53,11 +53,12 @@ export default function Dashboard() {
                     <h2 className='text-center mb-4'>Home</h2>
                     {error && <Alert variant="danger">{error}</Alert>}
                     <strong>Email: </strong>{currentUser.email}
+                    <Link to="/record-performance" className="btn btn-primary w-100 mt-3">Record A Performance</Link>
                     <Link to="/update-profile" className="btn btn-primary w-100 mt-3">Update Profile</Link>
-                    <Button
-                        // disabled={!videoFile || uploading} 
-                        // onClick={handleUpload(currentUser.userID)} 
-                        className="btn btn-primary w-100 mt-3">Upload Video</Button>
+                    {/* <Button
+                        disabled={!videoFile || uploading} 
+                        onClick={handleUpload(currentUser.userID)} 
+                        className="btn btn-primary w-100 mt-3">Upload Video</Button> */}
                 </Card.Body>
             </Card>
             <div className='w-100 text-center mt-2'>

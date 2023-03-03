@@ -3,6 +3,7 @@ import { Form, Button, Card, Alert } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useFirestore } from '../contexts/FirestoreContext'
+import '../styles/styles.css'
 
 export default function Signup() {
     // references for user's fields on the ui components
@@ -79,7 +80,9 @@ export default function Signup() {
                         </Form.Group>
                         <div></div>
                         {/* Disable the submission button if already pressed and submission is in-progress */}
-                        <Button disabled={loading} className='w-100' type='submit'>Sign Up</Button>
+                        <Button disabled={loading} className='bttns' type='submit' style={{ marginBottom: '5px' }}>Sign Up</Button>
+                        <Button disabled={loading} className='bttns' type='button'>Sign Up with Facebook</Button>
+                        <Button disabled={loading} className='bttns' type='button'>Sign Up with Google</Button>
                     </Form>
                 </Card.Body>
             </Card>
