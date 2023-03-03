@@ -78,7 +78,7 @@ def getRunningCount(uid):
         return False
 
 
-def getVideoTitle(uid, index):
+def getTitle(uid, index):
     try:
         videoInfo_ref = db.collection(uid).document(str(index))
         videoInfo = videoInfo_ref.get()
@@ -175,12 +175,30 @@ def modifyScript(uid, index, title, script):
         db.collection(uid).document(index).update(
             {"timestamp" : datetime_NY.strftime("%Y:%m:%d:%H:%M:%S"),
             "title" : title})
-        db.collection(uid).document(index).collection("Script").document("script").update({"script" : script})
+        db.collection(uid).document(str(index)).collection("Script").document("script").update({"script" : script})
         return True
     except:
         return False
 
+def getScript(uid, index):
+    try:
+        index_ref = db.collection(uid).document(str(index)).collection("Script").document("script")
+        index_ref = index_ref.get()
+        index_ref_dict = index_ref.to_dict()
+        return index_ref_dict["script"]
+    except:
+        return None
 
+def downloadScript(uid, index):
+    try:
+        content = getScript(uid, index)
+        file_ptr = getTitle(uid=uid, index=index) + ".txt"
+        with open(file_ptr, "w") as text_file:
+            text_file.write(content)
+        return True
+    except:
+        return False
+    
 """
 Upload a file into firestore storage; Throws error if unsuccessful; Overwrites if already exists
 
@@ -233,7 +251,7 @@ def downloadFile(uid, index):
     try:
         bucket = storage.bucket()
         blob = bucket.blob(uid + "_" + str(index))
-        file_ptr = getVideoTitle(uid=uid, index=index) + ".mp4" 
+        file_ptr = getTitle(uid=uid, index=index) + ".mp4" 
         blob.download_to_filename(file_ptr)
         
         return True
@@ -268,7 +286,7 @@ def deleteFile(uid, index):
 
 #print(uploadFile("uid",1, "Script.txt"))
 #print(downloadFile(uid="uid", index=1))
-print(readFileToScript(uid="uid", title="A test title", file_path="Script.txt"))
+#print(readFileToScript(uid="uid", title="A test title", file_path="Script.txt"))
 
 #Test Input & update; Print current running count 
 def main():
