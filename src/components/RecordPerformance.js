@@ -66,9 +66,9 @@ export default function RecordPerformance() {
     const [buttonText, setButtonText] = useState("Record");
     let button;
     if (buttonText == 'Record') {
-        button = <Button className='bttns' onClick={() => setButtonText("Stop Recording")}>{buttonText}</Button>
+        button = <Button className='button' onClick={() => setButtonText("Stop Recording")}>{buttonText}</Button>
     } else {
-        button = <Button className='bttns' onClick={() => setButtonText("Record")}>{buttonText}</Button>
+        button = <Button className='button' onClick={() => setButtonText("Record")}>{buttonText}</Button>
     }
 
     // return the html to render
@@ -90,7 +90,7 @@ export default function RecordPerformance() {
                         <div></div>
                         {button}
                         {/* Disable the submission button if already pressed and submission is in-progress */}
-                        <Button disabled={loading} className='bttns' type='submit'>Save</Button>
+                        <Button disabled={loading} className='button' type='submit'>Save</Button>
                     </Form>
                 </Card.Body>
             </Card>

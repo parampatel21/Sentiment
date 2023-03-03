@@ -76,6 +76,7 @@ export default function ScriptByID() {
                     <h2 className='text-center mb-4'>Script</h2>
                     {/* If there is an error caught generate an error message component at the top of this Card */}
                     {error && <Alert variant="danger">{error}</Alert>}
+
                     {/* Handle form submission */}
                     <Form onSubmit={handleSubmit}>
                         {/* Form components (Label & Text Box) for Video Title */}
@@ -90,15 +91,12 @@ export default function ScriptByID() {
                         </Form.Group>
                         <div></div>
                         {/* Disable the submission button if already pressed and submission is in-progress */}
-                        <Button disabled={loading} className='w-100' type='submit'>Save</Button>
+                        <Button disabled={loading} className='button' type='submit'>Save</Button>
                     </Form>
                     <div></div>
-                    <Button disabled={loading} className='w-100' type='button'>Delete</Button>
+                    <Button disabled={loading} className='button' type='button'>Delete</Button>
                 </Card.Body>
             </Card>
-
-
-
         </>
     )
 }
