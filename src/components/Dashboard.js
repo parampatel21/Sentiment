@@ -45,7 +45,7 @@ export default function Dashboard() {
                     <h2 className='text-center mb-4'>Home</h2>
                     {error && <Alert variant="danger">{error}</Alert>}
                     <strong>Email: </strong>{currentUser.email}
-                    <Button onClick={use_axios} className='button' type='button'>Test Google Cloud Function</Button>
+                    {/* <Button onClick={use_axios} className='button' type='button'>Test Google Cloud Function</Button> */}
                     <Button href="/record-performance" className='button' type='button'>Record A Performance</Button>
                     <Button href="/update-profile" className='button' type='button'>Update Profile</Button>
                     <Button href="/view-all-performances" className='button' type='button'>View All Performances</Button>
