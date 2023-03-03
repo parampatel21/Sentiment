@@ -373,7 +373,7 @@ def recordVideo():
         return VIDEO_TYPE['mp4']
 
     cap = cv2.VideoCapture(0)
-    out = cv2.VideoWriter(cwd + '\\src\\backend\\' + filename, get_video_type(filename), 25, get_dims(cap, res))
+    out = cv2.VideoWriter(cwd + "\\" + filename, get_video_type(filename), 25, get_dims(cap, res))
 
     while True:
         ret, frame = cap.read()
@@ -477,40 +477,34 @@ def sortScriptByTimeStamp(uid, rOrder):
     
     
 def sortVideosByRunningCount(uid, rOrder):
-    try:
-        dict_List = []
-        bucket = storage.bucket()
-        blobs = bucket.list_blobs()
-        blobs_sorted = sorted(blobs, key=lambda x: x.name)
-        for blob in blobs_sorted:
-            temp = str(blob.name).split("_")
-            if str(temp[0]) == str(uid):
-                dict_List.append({"uid" : temp[0],
-                        "index" : temp[1],
-                        "title" : temp[2]})
-    
-        dict_list_sorted = sorted(dict_List, key=lambda x: x['index'], reverse=rOrder)
-        return dict_list_sorted
-    except:
-        return False
+    dict_List = []
+    bucket = storage.bucket()
+    blobs = bucket.list_blobs()
+    blobs_sorted = sorted(blobs, key=lambda x: x.name)
+    for blob in blobs_sorted:
+        temp = str(blob.name).split("_")
+        if str(temp[0]) == str(uid):
+            dict_List.append({"uid" : temp[0],
+                       "index" : temp[1],
+                       "title" : temp[2]})
+ 
+    dict_list_sorted = sorted(dict_List, key=lambda x: x['index'], reverse=rOrder)
+    return dict_list_sorted
 
 def sortVideosByTitle(uid, rOrder):
-    try: 
-        dict_List = []
-        bucket = storage.bucket()
-        blobs = bucket.list_blobs()
-        blobs_sorted = sorted(blobs, key=lambda x: x.name)
-        for blob in blobs_sorted:
-            temp = str(blob.name).split("_")
-            if str(temp[0]) == str(uid):
-                dict_List.append({"uid" : temp[0],
-                        "index" : temp[1],
-                        "title" : temp[2]})
-    
-        dict_list_sorted = sorted(dict_List, key=lambda x: x['title'], reverse=rOrder)
-        return dict_list_sorted
-    except:
-        return False
+    dict_List = []
+    bucket = storage.bucket()
+    blobs = bucket.list_blobs()
+    blobs_sorted = sorted(blobs, key=lambda x: x.name)
+    for blob in blobs_sorted:
+        temp = str(blob.name).split("_")
+        if str(temp[0]) == str(uid):
+            dict_List.append({"uid" : temp[0],
+                       "index" : temp[1],
+                       "title" : temp[2]})
+ 
+    dict_list_sorted = sorted(dict_List, key=lambda x: x['title'], reverse=rOrder)
+    return dict_list_sorted
         
 #print(uploadFile("uid",1, "Script.txt"))
 #print(downloadFile(uid="uid", index=1))
