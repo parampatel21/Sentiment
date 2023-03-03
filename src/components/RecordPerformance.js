@@ -1,4 +1,3 @@
-import { file } from '@babel/types'
 import React, { useRef, useState } from 'react'
 import { Form, Button, Card, Alert } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
@@ -9,6 +8,8 @@ export default function RecordPerformance() {
     // references for user's fields on the ui components
     const filePath = ''
     const videoFile = ''
+    const scriptRef = useRef()
+
     // import function implemented in AuthContext.js
     const { recordVideo, uploadScript, saveVideo } = useAuth()
     const { getuser } = useAuth()
@@ -32,7 +33,7 @@ export default function RecordPerformance() {
         try {
             setError('')
             setLoading(true)
-            await saveVideo(videoFile)
+            // await saveVideo(videoFile)
             console.log(getuser)
         } catch {
             setError('Failed to save the video')
@@ -42,27 +43,11 @@ export default function RecordPerformance() {
 
     }
 
-    // Function to handle user interaction with the upload script button
-    async function handleUpload(e) {
-        e.preventDefault()
-
-        // return an error if a condition do not match
-        // if (condition to throw an error) {
-        //     return setError('Error message here')
-        // }
-
-        // try to delete performance id provided and await success then redirect to view of all performances
-        try {
-            setError('')
-            setLoading(true)
-            await uploadScript(filePath)
-            console.log(getuser)
-        } catch {
-            setError('Failed to upload text file')
-        }
-        setLoading(false)
-
+    function handleFileSelect(event) {
+        const fileList = event.target.files;
+        console.log(fileList);
     }
+
     const [buttonText, setButtonText] = useState("Record");
     let button;
     if (buttonText == 'Record') {
@@ -87,11 +72,20 @@ export default function RecordPerformance() {
                     {error && <Alert variant="danger">{error}</Alert>}
                     {/* Handle form submission */}
                     <Form onSubmit={handleSubmit}>
-                        <div></div>
+                        {/* Form components (Label & Text Box) for Video Title */}
+                        <Form.Group id="title">
+                            <Form.Label>Type up your script here</Form.Label>
+                            <Form.Control style={{ width: '100%', height: '100%' }} type="text" as='textarea' ref={scriptRef} />
+                        </Form.Group>
+                        <div style={{ marginTop: '5px' }}>
+                            <Form.Label>Upload script here</Form.Label>
+                            <input type="file" onChange={handleFileSelect} />
+                        </div>
                         {button}
                         {/* Disable the submission button if already pressed and submission is in-progress */}
-                        <Button disabled={loading} className='button' type='submit'>Save</Button>
+                        <Button href='/performance-id' disabled={loading} className='button' type='submit'>Save</Button>
                     </Form>
+
                 </Card.Body>
             </Card>
 
