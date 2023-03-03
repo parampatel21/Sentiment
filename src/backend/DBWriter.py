@@ -144,8 +144,10 @@ def writeNewScript(uid, title, script):
     
     db.collection(uid).document(index).set(
         {"timestamp" : datetime_NY.strftime("%Y:%m:%d:%H:%M:%S"),
-        "title" : title})
-    db.collection(uid).document(index).collection("Script").document("script").set({"script" : script})
+        "title" : title,
+        "index" : getRunningCount(uid) + 1})
+    db.collection(uid).document(index).collection("Script").document("script").set({"script" : script,
+                                                                                    "index" : getRunningCount(uid) + 1})
     
     #Update user's access info running count
     updateRunningCount(uid=uid)
@@ -171,13 +173,13 @@ Modify an existing script; Throws error if user DNE
     
     """
 def modifyScript(uid, index, title, script):
-    try:
+    #try:
         db.collection(uid).document(index).update(
             {"timestamp" : datetime_NY.strftime("%Y:%m:%d:%H:%M:%S"),
             "title" : title})
         db.collection(uid).document(str(index)).collection("Script").document("script").update({"script" : script})
         return True
-    except:
+    #except:
         return False
 
 
@@ -332,10 +334,57 @@ def deleteFile(uid, index):
         return True
     except:
         return False
+    
+def sortScriptByRunningCount(uid, rOrder):
+    try:
+        index = getRunningCount(uid=uid)
+        dict_List = []
+        for temp in range(1,index + 1):
+            accessInfo_ref = db.collection(uid).document(str(temp))
+            accessInfo_ref = accessInfo_ref.get()
+            accessInfo_ref = accessInfo_ref.to_dict()
+            dict_List.append(accessInfo_ref)
+            
+            dict_list_sorted = sorted(dict_List, key=lambda x: x['index'], reverse=rOrder)
+            return dict_list_sorted 
+    except:
+        return False
+    
+def sortScriptByTitle(uid, rOrder):
+    try:
+        index = getRunningCount(uid=uid)
+        dict_List = []
+        for temp in range(1,index + 1):
+            accessInfo_ref = db.collection(uid).document(str(temp))
+            accessInfo_ref = accessInfo_ref.get()
+            accessInfo_ref = accessInfo_ref.to_dict()
+            dict_List.append(accessInfo_ref)
+            
+        dict_list_sorted = sorted(dict_List, key=lambda x: x['title'], reverse=rOrder)
+        return dict_list_sorted
+    except:
+        return False
 
+def sortScriptByTimeStamp(uid, rOrder):
+    try:
+        index = getRunningCount(uid=uid)
+        dict_List = []
+        for temp in range(1,index + 1):
+            accessInfo_ref = db.collection(uid).document(str(temp))
+            accessInfo_ref = accessInfo_ref.get()
+            accessInfo_ref = accessInfo_ref.to_dict()
+            dict_List.append(accessInfo_ref)
+            
+        dict_list_sorted = sorted(dict_List, key=lambda x: x['timestamp'], reverse=rOrder)
+        return dict_list_sorted
+    except:
+        return False
 #print(uploadFile("uid",1, "Script.txt"))
 #print(downloadFile(uid="uid", index=1))
 #print(readFileToScript(uid="uid", title="A test title", file_path="Script.txt"))
+
+#print(sortScriptByTitle(uid="uid3", rOrder=True))
+
 
 #Test Input & update; Print current running count 
 def main():
