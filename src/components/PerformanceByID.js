@@ -83,17 +83,18 @@ export default function PerformanceByID() {
                             <Form.Label>Title</Form.Label>
                             <Form.Control type="text" ref={titleRef} required />
                         </Form.Group>
-                        {/* Form components (Label & Text Box) for Password */}
-                        <Form.Group id="description">
+                        {/* Form components (Label & Text Box) for Video Description */}
+                        {/* <Form.Group id="description">
                             <Form.Label>Description</Form.Label>
-                            <Form.Control as="textarea" ref={descriptionRef} required />
-                        </Form.Group>
-                        <div></div>
+                            <Form.Control as="textarea" ref={descriptionRef} style={{ marginBottom: '3px' }} required />
+                        </Form.Group> */}
+                        <Button href='/script-id' className='button' type='button'>View my script</Button>
+
                         {/* Disable the submission button if already pressed and submission is in-progress */}
-                        <Button disabled={loading} className='w-100' type='submit'>Save</Button>
+                        <Button disabled={loading} className='button' type='submit'>Save Changes</Button>
                     </Form>
                     <div></div>
-                    <Button disabled={loading} className='w-100' type='submit'>Delete</Button>
+                    <Button disabled={loading} className='button' type='submit'>Delete</Button>
                 </Card.Body>
             </Card>
 

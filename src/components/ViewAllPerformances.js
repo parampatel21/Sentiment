@@ -71,7 +71,7 @@ export default function ViewAllPerformances() {
                     {/* Video selection and actions */}
                     <div className="button-container">
                         <Button className="button">Download</Button>
-                        <Button className="button">Delete</Button>
+                        <Button href='/view-all-scripts' className="button">Delete</Button>
                         <Button href='/performance-id' className="button">Open</Button>
                     </div>
                     <div>

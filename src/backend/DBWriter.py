@@ -477,34 +477,40 @@ def sortScriptByTimeStamp(uid, rOrder):
     
     
 def sortVideosByRunningCount(uid, rOrder):
-    dict_List = []
-    bucket = storage.bucket()
-    blobs = bucket.list_blobs()
-    blobs_sorted = sorted(blobs, key=lambda x: x.name)
-    for blob in blobs_sorted:
-        temp = str(blob.name).split("_")
-        if str(temp[0]) == str(uid):
-            dict_List.append({"uid" : temp[0],
-                       "index" : temp[1],
-                       "title" : temp[2]})
- 
-    dict_list_sorted = sorted(dict_List, key=lambda x: x['index'], reverse=rOrder)
-    return dict_list_sorted
+    try:
+        dict_List = []
+        bucket = storage.bucket()
+        blobs = bucket.list_blobs()
+        blobs_sorted = sorted(blobs, key=lambda x: x.name)
+        for blob in blobs_sorted:
+            temp = str(blob.name).split("_")
+            if str(temp[0]) == str(uid):
+                dict_List.append({"uid" : temp[0],
+                        "index" : temp[1],
+                        "title" : temp[2]})
+    
+        dict_list_sorted = sorted(dict_List, key=lambda x: x['index'], reverse=rOrder)
+        return dict_list_sorted
+    except:
+        return False
 
 def sortVideosByTitle(uid, rOrder):
-    dict_List = []
-    bucket = storage.bucket()
-    blobs = bucket.list_blobs()
-    blobs_sorted = sorted(blobs, key=lambda x: x.name)
-    for blob in blobs_sorted:
-        temp = str(blob.name).split("_")
-        if str(temp[0]) == str(uid):
-            dict_List.append({"uid" : temp[0],
-                       "index" : temp[1],
-                       "title" : temp[2]})
- 
-    dict_list_sorted = sorted(dict_List, key=lambda x: x['title'], reverse=rOrder)
-    return dict_list_sorted
+    try: 
+        dict_List = []
+        bucket = storage.bucket()
+        blobs = bucket.list_blobs()
+        blobs_sorted = sorted(blobs, key=lambda x: x.name)
+        for blob in blobs_sorted:
+            temp = str(blob.name).split("_")
+            if str(temp[0]) == str(uid):
+                dict_List.append({"uid" : temp[0],
+                        "index" : temp[1],
+                        "title" : temp[2]})
+    
+        dict_list_sorted = sorted(dict_List, key=lambda x: x['title'], reverse=rOrder)
+        return dict_list_sorted
+    except:
+        return False
         
 #print(uploadFile("uid",1, "Script.txt"))
 #print(downloadFile(uid="uid", index=1))

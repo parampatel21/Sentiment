@@ -54,7 +54,7 @@ export default function ViewAllScripts() {
                     {/* Script selection and actions */}
                     <div className="button-container">
                         <Button className="button">Download</Button>
-                        <Button className="button">Delete</Button>
+                        <Button href='/view-all-scripts' className="button">Delete</Button>
                         <Button href='/script-id' className="button">Open</Button>
                     </div>
                     <div>
