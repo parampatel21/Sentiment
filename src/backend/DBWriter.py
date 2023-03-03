@@ -180,6 +180,21 @@ def modifyScript(uid, index, title, script):
     except:
         return False
 
+
+"""
+Get an existing script; Throws error if user DNE
+
+@param uid
+    ID for locating user
+@param index
+    Index of script to be accessed
+    
+@ret Script
+    Iff successful access of script
+@ret False
+    If unsuccessful access of script
+    
+    """
 def getScript(uid, index):
     try:
         index_ref = db.collection(uid).document(str(index)).collection("Script").document("script")
@@ -187,8 +202,42 @@ def getScript(uid, index):
         index_ref_dict = index_ref.to_dict()
         return index_ref_dict["script"]
     except:
-        return None
+        return False
 
+"""
+Clear data from an existing script; Throws error if user DNE
+
+@param uid
+    ID for locating user
+@param index
+    Index of script to be cleared
+
+@ret True
+    Iff successful clearing of script
+@ret False
+    If unsuccessful clearing of script
+    
+    """
+def clearScript(uid, index):
+    try:
+        modifyScript(uid=uid, index=index, title="", script="")
+    except:
+        return False
+
+"""
+Download an existing script; Throws error if user DNE
+
+@param uid
+    ID for locating user
+@param index
+    Index of script to be modified
+    
+@ret True
+    Iff successful modification of script
+@ret False
+    If unsuccessful modification of script
+    
+    """
 def downloadScript(uid, index):
     try:
         content = getScript(uid, index)
