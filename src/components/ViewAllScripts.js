@@ -2,11 +2,12 @@ import React, { useRef, useState } from 'react'
 import { Form, Button, Card, Alert } from 'react-bootstrap'
 import { useAuth } from '../contexts/AuthContext'
 import { Link, useNavigate } from 'react-router-dom'
+import '../styles/styles.css'
 
 export default function ViewAllScripts() {
-    const [selectedOption, setSelectedOption] = useState(null);
-    const handleOptionClick = (option) => {
-        setSelectedOption(option);
+    const [selectedOption, setSelectedOption] = useState('option1');
+    const handleOptionChange = (event) => {
+        setSelectedOption(event.target.text);
     };
     const scripts = [
         { id: 1, text: 'Script 1' },
@@ -16,8 +17,8 @@ export default function ViewAllScripts() {
         { id: 5, text: 'Script 5' },
     ];
     const listItems = scripts.map(script =>
-        <Button href='/script-id' className='button'>{script.text}</Button>
-
+        //<Button href='/script-id' className='button'>{script.text}</Button>
+        <option value={''}>{script.text}</option>
         // <li key={script.id} onClick={() => handleOptionClick(script)}>{script.text}</li>
     );
     const { fetchScriptByID } = useAuth()
@@ -50,7 +51,30 @@ export default function ViewAllScripts() {
                     <h2 className='text-center mb-4'>View All Scripts</h2>
                     {error && <Alert variant="danger">{error}</Alert>}
 
-                    <ul>{listItems}</ul>
+                    {/* Script selection and actions */}
+                    <div className="button-container">
+                        <Button className="button">Download</Button>
+                        <Button className="button">Delete</Button>
+                        <Button href='/script-id' className="button">Open</Button>
+                    </div>
+                    <div>
+                        <select id="select-options" value={selectedOption} onChange={handleOptionChange} style={{ width: '100%' }}>
+                            {listItems}
+                        </select>
+                    </div>
+
+                    {/* Sorting option selection and action */}
+                    <div className="button-container">
+                        <Button href='/view-all-scripts' className="button">Sort By</Button>
+                    </div>
+                    <div>
+                        <select id="select-options" value={selectedOption} onChange={handleOptionChange} style={{ width: '100%' }}>
+                            <option value={'byTitle'}>Title</option>
+                            <option value={'byDateCreated'}>Date Created</option>
+                            <option value={'byDateUpdated'}>Date Updated</option>
+                        </select>
+                    </div>
+
 
                     {/* <Form onSubmit={handleSubmit}>
                         <Form.Group id="allPerformances">
@@ -63,9 +87,6 @@ export default function ViewAllScripts() {
             </Card>
             <div className='w-100 text-center mt-2'>
             </div>
-
-
-
         </>
     )
 }

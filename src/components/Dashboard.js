@@ -56,10 +56,10 @@ export default function Dashboard() {
                     <strong>Email: </strong>{currentUser.email}
 
                     <div></div>
-                    <Button href="/record-performance" className='button' type='button'>Record A Performance</Button>
-                    <Button href="/update-profile" className='button' type='button'>Update Profile</Button>
-                    <Button href="/view-all-performances" className='button' type='button'>View All Performances</Button>
-                    <Button href="/view-all-scripts" className='button' type='button'>View All Scripts</Button>
+                    <a href="/record-performance" className='button' type='button'>Record A Performance</a>
+                    <a href="/update-profile" className='button' type='button'>Update Profile</a>
+                    <a href="/view-all-performances" className='button' type='button'>View All Performances</a>
+                    <a href="/view-all-scripts" className='button' type='button'>View All Scripts</a>
                     {/* <Link to="/record-performance" className="btn btn-primary w-100 mt-3">Record A Performance</Link>
                     <Link to="/update-profile" className="btn btn-primary w-100 mt-3">Update Profile</Link> */}
                     {/* <Button

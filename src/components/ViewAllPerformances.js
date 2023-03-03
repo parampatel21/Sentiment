@@ -4,16 +4,21 @@ import { useAuth } from '../contexts/AuthContext'
 import { Link, useNavigate } from 'react-router-dom'
 
 export default function ViewAllPerformances() {
+    const [selectedOption, setSelectedOption] = useState('option1');
+    const handleOptionChange = (event) => {
+        setSelectedOption(event.target.title);
+    };
     const performances = [
-        'Demo Performance 1... More info....',
-        'Demo Performance 2... More info....',
-        'Demo Performance 3... More info....',
-        'Demo Performance 4... More info....',
-        'Demo Performance 5... More info....',
-        'Demo Performance 6... More info....',
+        { id: 1, title: 'Video Performance 1' },
+        { id: 2, title: 'Video Performance 2' },
+        { id: 3, title: 'Video Performance 3' },
+        { id: 4, title: 'Video Performance 4' },
+        { id: 5, title: 'Video Performance 5' },
     ];
     const listItems = performances.map(performance =>
-        <Button href='/performance-id'>{performance}</Button>
+        //<Button href='/script-id' className='button'>{script.text}</Button>
+        <option value={''}>{performance.title}</option>
+        // <li key={script.id} onClick={() => handleOptionClick(script)}>{script.text}</li>
     );
     const { fetchPerformanceByID } = useAuth()
     const [error, setError] = useState('')
@@ -63,7 +68,29 @@ export default function ViewAllPerformances() {
                     <h2 className='text-center mb-4'>View All Performances</h2>
                     {error && <Alert variant="danger">{error}</Alert>}
 
-                    <ul>{listItems}</ul>
+                    {/* Video selection and actions */}
+                    <div className="button-container">
+                        <Button className="button">Download</Button>
+                        <Button className="button">Delete</Button>
+                        <Button href='/performance-id' className="button">Open</Button>
+                    </div>
+                    <div>
+                        <select id="select-options" value={selectedOption} onChange={handleOptionChange} style={{ width: '100%' }}>
+                            {listItems}
+                        </select>
+                    </div>
+
+                    {/* Sorting option selection and action */}
+                    <div className="button-container">
+                        <Button href='/view-all-performances' className="button">Sort By</Button>
+                    </div>
+                    <div>
+                        <select id="select-options" value={selectedOption} onChange={handleOptionChange} style={{ width: '100%' }}>
+                            <option value={'byTitle'}>Title</option>
+                            <option value={'byDateCreated'}>Date Created</option>
+                            <option value={'byDateUpdated'}>Date Updated</option>
+                        </select>
+                    </div>
 
                     {/* <Form onSubmit={handleSubmit}>
                         <Form.Group id="allPerformances">
