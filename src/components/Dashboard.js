@@ -3,6 +3,7 @@ import { Button, Card, Alert } from 'react-bootstrap'
 import { useAuth } from '../contexts/AuthContext'
 import { Link, useNavigate } from 'react-router-dom'
 import { getStorage, ref } from 'firebase/storage'
+import '../styles/styles.css'
 
 export default function Dashboard() {
     const [error, setError] = useState("")
@@ -53,8 +54,14 @@ export default function Dashboard() {
                     <h2 className='text-center mb-4'>Home</h2>
                     {error && <Alert variant="danger">{error}</Alert>}
                     <strong>Email: </strong>{currentUser.email}
-                    <Link to="/record-performance" className="btn btn-primary w-100 mt-3">Record A Performance</Link>
-                    <Link to="/update-profile" className="btn btn-primary w-100 mt-3">Update Profile</Link>
+
+                    <div></div>
+                    <Button href="/record-performance" className='button' type='button'>Record A Performance</Button>
+                    <Button href="/update-profile" className='button' type='button'>Update Profile</Button>
+                    <Button href="/view-all-performances" className='button' type='button'>View All Performances</Button>
+                    <Button href="/view-all-scripts" className='button' type='button'>View All Scripts</Button>
+                    {/* <Link to="/record-performance" className="btn btn-primary w-100 mt-3">Record A Performance</Link>
+                    <Link to="/update-profile" className="btn btn-primary w-100 mt-3">Update Profile</Link> */}
                     {/* <Button
                         disabled={!videoFile || uploading} 
                         onClick={handleUpload(currentUser.userID)} 

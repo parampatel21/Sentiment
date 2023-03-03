@@ -13,7 +13,7 @@ export default function ViewAllPerformances() {
         'Demo Performance 6... More info....',
     ];
     const listItems = performances.map(performance =>
-        <Button>{performance}</Button>
+        <Button href='/performance-id'>{performance}</Button>
     );
     const { fetchPerformanceByID } = useAuth()
     const [error, setError] = useState('')
@@ -56,6 +56,8 @@ export default function ViewAllPerformances() {
 
     return (
         <>
+            {/* Back button to return to the dashboard */}
+            <a href="/" class="back-button">Back</a>
             <Card>
                 <Card.Body>
                     <h2 className='text-center mb-4'>View All Performances</h2>

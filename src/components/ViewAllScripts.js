@@ -4,16 +4,21 @@ import { useAuth } from '../contexts/AuthContext'
 import { Link, useNavigate } from 'react-router-dom'
 
 export default function ViewAllScripts() {
+    const [selectedOption, setSelectedOption] = useState(null);
+    const handleOptionClick = (option) => {
+        setSelectedOption(option);
+    };
     const scripts = [
-        'Demo Scripts 1... More info....',
-        'Demo Scripts 2... More info....',
-        'Demo Scripts 3... More info....',
-        'Demo Scripts 4... More info....',
-        'Demo Scripts 5... More info....',
-        'Demo Scripts 6... More info....',
+        { id: 1, text: 'Script 1' },
+        { id: 2, text: 'Script 2' },
+        { id: 3, text: 'Script 3' },
+        { id: 4, text: 'Script 4' },
+        { id: 5, text: 'Script 5' },
     ];
     const listItems = scripts.map(script =>
-        <Button>{script}</Button>
+        <Button href='/script-id' className='button'>{script.text}</Button>
+
+        // <li key={script.id} onClick={() => handleOptionClick(script)}>{script.text}</li>
     );
     const { fetchScriptByID } = useAuth()
     const [error, setError] = useState('')
@@ -29,7 +34,7 @@ export default function ViewAllScripts() {
             // await fetchScriptByID(scriptSelected)
             navigate("/script-id-${sid}")
         } catch {
-            setError('Failed to sign in')
+            setError('Failed to fetch the script')
         }
 
         setLoading(false)
@@ -38,6 +43,8 @@ export default function ViewAllScripts() {
 
     return (
         <>
+            {/* Back button to return to the dashboard */}
+            <a href="/" class="back-button">Back</a>
             <Card>
                 <Card.Body>
                     <h2 className='text-center mb-4'>View All Scripts</h2>

@@ -67,6 +67,8 @@ export default function ScriptByID() {
     // return the html to render
     return (
         <>
+            {/* Back button to return to the dashboard */}
+            <a href="/view-all-scripts" class="back-button">Back</a>
             {/* Google react-bootstrap to see how to use the library for easy styled components */}
             <Card>
                 <Card.Body>
