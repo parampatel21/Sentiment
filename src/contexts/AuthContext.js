@@ -71,7 +71,7 @@ export function AuthProvider({ children }) {
         updateEmail,
         updatePassword,
         getuser,
-        initDBCollection
+        initDBCollection,
     }
 
     return (
