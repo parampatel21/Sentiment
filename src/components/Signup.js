@@ -80,9 +80,9 @@ export default function Signup() {
                         </Form.Group>
                         <div></div>
                         {/* Disable the submission button if already pressed and submission is in-progress */}
-                        <Button disabled={loading} className='bttns' type='submit' style={{ marginBottom: '5px' }}>Sign Up</Button>
-                        <Button disabled={loading} className='bttns' type='button'>Sign Up with Facebook</Button>
-                        <Button disabled={loading} className='bttns' type='button'>Sign Up with Google</Button>
+                        <Button disabled={loading} className='button' type='submit' style={{ marginBottom: '5px' }}>Sign Up</Button>
+                        <Button disabled={loading} className='button' type='button'>Sign Up with Facebook</Button>
+                        <Button disabled={loading} className='button' type='button'>Sign Up with Google</Button>
                     </Form>
                 </Card.Body>
             </Card>
