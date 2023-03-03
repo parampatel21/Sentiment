@@ -13,7 +13,10 @@ export default function ScriptByID() {
     // initialize error and loading vars
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
-    const scriptID = ''
+    const scriptID = '2'
+    const scriptTitle = 'This is my amazing script title!'
+    const scriptContent = `Good afternoon. Let begin by saying that although this has been billed as an anti-war rally, I stand before you as someone who is not opposed to war in all circumstances.
+                            The Civil War was one of the bloodiest in history, and yet it was only through the crucible of the sword, the sacrifice of multitudes, that we could begin to perfect this union, and drive the scourge of slavery from our soil.`
     // initialize navigate obj for redirecting
     const navigate = useNavigate()
 
@@ -30,7 +33,7 @@ export default function ScriptByID() {
         try {
             setError('')
             setLoading(true)
-            await updateScript(scriptID)
+            //await updateScript(scriptID)
             console.log(getuser)
             navigate("/view-all-scripts")
         } catch {
@@ -73,7 +76,7 @@ export default function ScriptByID() {
             <Card>
                 <Card.Body>
                     {/* Card header  */}
-                    <h2 className='text-center mb-4'>Script</h2>
+                    <h2 className='text-center mb-4'>Script {scriptID} </h2>
                     {/* If there is an error caught generate an error message component at the top of this Card */}
                     {error && <Alert variant="danger">{error}</Alert>}
 
@@ -82,12 +85,12 @@ export default function ScriptByID() {
                         {/* Form components (Label & Text Box) for Video Title */}
                         <Form.Group id="title">
                             <Form.Label>Title</Form.Label>
-                            <Form.Control type="text" ref={titleRef} required />
+                            <Form.Control type="text" ref={titleRef} required placeholder={scriptTitle} />
                         </Form.Group>
                         {/* Form components (Label & Text Box) for Password */}
                         <Form.Group id="content">
                             <Form.Label>Content</Form.Label>
-                            <Form.Control as="textarea" ref={contentRef} required />
+                            <Form.Control as="textarea" ref={contentRef} required placeholder={scriptContent} />
                         </Form.Group>
                         <div></div>
                         {/* Disable the submission button if already pressed and submission is in-progress */}

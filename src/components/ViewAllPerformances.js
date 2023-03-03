@@ -6,18 +6,18 @@ import { Link, useNavigate } from 'react-router-dom'
 export default function ViewAllPerformances() {
     const [selectedOption, setSelectedOption] = useState('option1');
     const handleOptionChange = (event) => {
-        setSelectedOption(event.target.title);
+        setSelectedOption(event.target.value);
     };
     const performances = [
         { id: 1, title: 'Video Performance 1' },
         { id: 2, title: 'Video Performance 2' },
-        { id: 3, title: 'Video Performance 3' },
+        { id: 3, title: 'This is my video title! Success!' },
         { id: 4, title: 'Video Performance 4' },
         { id: 5, title: 'Video Performance 5' },
     ];
     const listItems = performances.map(performance =>
         //<Button href='/script-id' className='button'>{script.text}</Button>
-        <option value={''}>{performance.title}</option>
+        <option value={performance.title}>{performance.title}</option>
         // <li key={script.id} onClick={() => handleOptionClick(script)}>{script.text}</li>
     );
     const { fetchPerformanceByID } = useAuth()
@@ -52,7 +52,7 @@ export default function ViewAllPerformances() {
             // await fetchPerfomanceByID(performanceSelected)
             navigate("/performance-id-${pid}")
         } catch {
-            setError('Failed to sign in')
+            setError('Failed to fetch performance')
         }
 
         setLoading(false)

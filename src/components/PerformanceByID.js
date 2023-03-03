@@ -13,7 +13,8 @@ export default function PerformanceByID() {
     // initialize error and loading vars
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
-    const videoID = ''
+    const videoID = '3'
+    const videoTitle = 'This is my video title! Success!'
     // initialize navigate obj for redirecting
     const navigate = useNavigate()
 
@@ -30,7 +31,7 @@ export default function PerformanceByID() {
         try {
             setError('')
             setLoading(true)
-            await updateVideo(videoID)
+            // await updateVideo(videoID)
             console.log(getuser)
             navigate("/view-all-performances")
         } catch {
@@ -54,7 +55,7 @@ export default function PerformanceByID() {
         try {
             setError('')
             setLoading(true)
-            await deleteVideo(videoID)
+            // await deleteVideo(videoID)
             console.log(getuser)
             navigate("/view-all-performances")
         } catch {
@@ -63,20 +64,16 @@ export default function PerformanceByID() {
         setLoading(false)
 
     }
-    const currentPath = window.location.pathname;
-    const currentDirectory = currentPath.substring(0, currentPath.lastIndexOf('/'));
-    const src = `${currentDirectory}/temp.mp4`;
-    const [videoSrc, setVideoSrc] = useState(`${currentDirectory}/temp.mp4`);
 
-    // const videoRef = useRef(null);
+    const videoRef = useRef(null);
 
-    // function handlePlay() {
-    //     videoRef.current.play();
-    // }
+    function handlePlay() {
+        videoRef.current.play();
+    }
 
-    // function handlePause() {
-    //     videoRef.current.pause();
-    // }
+    function handlePause() {
+        videoRef.current.pause();
+    }
 
     // return the html to render
     return (
@@ -87,7 +84,7 @@ export default function PerformanceByID() {
             <Card>
                 <Card.Body>
                     {/* Card header  */}
-                    <h2 className='text-center mb-4'>Video Performance</h2>
+                    <h2 className='text-center mb-4'>Video Performance {videoID} </h2>
                     {/* If there is an error caught generate an error message component at the top of this Card */}
                     {error && <Alert variant="danger">{error}</Alert>}
 
@@ -96,21 +93,18 @@ export default function PerformanceByID() {
                         {/* Form components (Label & Text Box) for Video Title */}
                         <Form.Group id="title">
                             <Form.Label>Title</Form.Label>
-                            <Form.Control type="text" ref={titleRef} required />
+                            <Form.Control type="text" ref={titleRef} placeholder={videoTitle} />
                         </Form.Group>
 
                         <div>
-                            <video src={src} controls type="video/mp4" />
-                        </div>
-                        {/* <div>
                             <video ref={videoRef}>
-                                <source src="./temp.mp4" type="video/mp4" />
+                                <source src="temp.mp4" type="video/mp4" />
                             </video>
                             <div>
                                 <Button style={{ width: '48%', marginRight: '3px' }} onClick={handlePlay}>Play</Button>
                                 <Button style={{ width: '48%', marginLeft: '3px' }} onClick={handlePause}>Pause</Button>
                             </div>
-                        </div> */}
+                        </div>
                         {/* Form components (Label & Text Box) for Video Description */}
                         {/* <Form.Group id="description">
                             <Form.Label>Description</Form.Label>

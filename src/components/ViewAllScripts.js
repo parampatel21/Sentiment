@@ -7,18 +7,18 @@ import '../styles/styles.css'
 export default function ViewAllScripts() {
     const [selectedOption, setSelectedOption] = useState('option1');
     const handleOptionChange = (event) => {
-        setSelectedOption(event.target.text);
+        setSelectedOption(event.target.value);
     };
     const scripts = [
-        { id: 1, text: 'Script 1' },
-        { id: 2, text: 'Script 2' },
-        { id: 3, text: 'Script 3' },
-        { id: 4, text: 'Script 4' },
-        { id: 5, text: 'Script 5' },
+        { id: 1, title: 'Script 1' },
+        { id: 2, title: 'This is my amazing script title!' },
+        { id: 3, title: 'Script 3' },
+        { id: 4, title: 'Script 4' },
+        { id: 5, title: 'Script 5' },
     ];
     const listItems = scripts.map(script =>
         //<Button href='/script-id' className='button'>{script.text}</Button>
-        <option value={''}>{script.text}</option>
+        <option value={script.title}>{script.title}</option>
         // <li key={script.id} onClick={() => handleOptionClick(script)}>{script.text}</li>
     );
     const { fetchScriptByID } = useAuth()
