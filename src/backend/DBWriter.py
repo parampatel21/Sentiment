@@ -336,6 +336,21 @@ def deleteFile(uid, index):
     except:
         return False
 
+def playVideo(path):
+    cap = cv2.VideoCapture(path)
+    while cap.isOpened():
+        ret, frame = cap.read()
+        # if frame is read correctly ret is True
+        if not ret:
+            print("Can't receive frame (stream end?). Exiting ...")
+            break
+        color = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        cv2.imshow('frame', color)   
+        if cv2.waitKey(1) == ord('q'):
+            break
+    cap.release()
+    cv2.destroyAllWindows()
+
 
 def recordVideo():
     cwd = os.getcwd()
@@ -387,7 +402,6 @@ def recordVideo():
     out.release()
     cv2.destroyAllWindows()
 
-recordVideo()
 """
 Sort all scripts of a user by running count
 
