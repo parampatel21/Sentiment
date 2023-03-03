@@ -41,6 +41,8 @@ export default function UpdateProfile() {
 
     return (
         <>
+            {/* Back button to return to the dashboard */}
+            <a href="/" class="back-button">Back</a>
             <Card>
                 <Card.Body>
                     <h2 className='text-center mb-4'>Update Profile</h2>
