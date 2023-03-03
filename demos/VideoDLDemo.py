@@ -2,7 +2,7 @@ import os
 import cv2
 
 cwd = os.getcwd()
-filename = 'test.avi'
+filename = 'temp.mp4'
 frames_per_second = 24.0
 res = '720p'
 
@@ -33,7 +33,7 @@ def get_video_type(filename):
     filename, ext = os.path.splitext(filename)
     if ext in VIDEO_TYPE:
       return  VIDEO_TYPE[ext]
-    return VIDEO_TYPE['avi']
+    return VIDEO_TYPE['mp4']
 
 cap = cv2.VideoCapture(0)
 out = cv2.VideoWriter(cwd + '\\demos\\' + filename, get_video_type(filename), 25, get_dims(cap, res))
