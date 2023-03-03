@@ -63,8 +63,10 @@ export default function PerformanceByID() {
         setLoading(false)
 
     }
-
-    const [videoSrc, setVideoSrc] = useState("/temp.mp4")
+    const currentPath = window.location.pathname;
+    const currentDirectory = currentPath.substring(0, currentPath.lastIndexOf('/'));
+    const src = `${currentDirectory}/temp.mp4`;
+    const [videoSrc, setVideoSrc] = useState(`${currentDirectory}/temp.mp4`);
 
     // const videoRef = useRef(null);
 
@@ -98,7 +100,7 @@ export default function PerformanceByID() {
                         </Form.Group>
 
                         <div>
-                            <video src={videoSrc} controls type="video/mp4" />
+                            <video src={src} controls type="video/mp4" />
                         </div>
                         {/* <div>
                             <video ref={videoRef}>
