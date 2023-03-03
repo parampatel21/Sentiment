@@ -387,7 +387,7 @@ def recordVideo():
     out.release()
     cv2.destroyAllWindows()
 
-
+recordVideo()
 """
 Sort all scripts of a user by running count
 
