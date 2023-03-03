@@ -64,6 +64,18 @@ export default function PerformanceByID() {
 
     }
 
+    const [videoSrc, setVideoSrc] = useState("/temp.mp4")
+
+    // const videoRef = useRef(null);
+
+    // function handlePlay() {
+    //     videoRef.current.play();
+    // }
+
+    // function handlePause() {
+    //     videoRef.current.pause();
+    // }
+
     // return the html to render
     return (
         <>
@@ -76,6 +88,7 @@ export default function PerformanceByID() {
                     <h2 className='text-center mb-4'>Video Performance</h2>
                     {/* If there is an error caught generate an error message component at the top of this Card */}
                     {error && <Alert variant="danger">{error}</Alert>}
+
                     {/* Handle form submission */}
                     <Form onSubmit={handleSubmit}>
                         {/* Form components (Label & Text Box) for Video Title */}
@@ -83,6 +96,19 @@ export default function PerformanceByID() {
                             <Form.Label>Title</Form.Label>
                             <Form.Control type="text" ref={titleRef} required />
                         </Form.Group>
+
+                        <div>
+                            <video src={videoSrc} controls type="video/mp4" />
+                        </div>
+                        {/* <div>
+                            <video ref={videoRef}>
+                                <source src="./temp.mp4" type="video/mp4" />
+                            </video>
+                            <div>
+                                <Button style={{ width: '48%', marginRight: '3px' }} onClick={handlePlay}>Play</Button>
+                                <Button style={{ width: '48%', marginLeft: '3px' }} onClick={handlePause}>Pause</Button>
+                            </div>
+                        </div> */}
                         {/* Form components (Label & Text Box) for Video Description */}
                         {/* <Form.Group id="description">
                             <Form.Label>Description</Form.Label>
