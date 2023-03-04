@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Button, Card, Alert } from 'react-bootstrap'
 import { useAuth } from '../contexts/AuthContext'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import '../styles/styles.css'
 import axios from 'axios';
 

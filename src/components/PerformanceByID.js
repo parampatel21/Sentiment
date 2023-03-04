@@ -1,12 +1,14 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { Form, Button, Card, Alert } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
+import { storage } from '../firebase'
+import ReactPlayer from 'react-player';
+
 
 export default function PerformanceByID() {
     // references for user's fields on the ui components
     const titleRef = useRef()
-    const descriptionRef = useRef()
     // import function implemented in AuthContext.js
     const { deleteVideo, updateVideo } = useAuth()
     const { getuser } = useAuth()
@@ -65,15 +67,31 @@ export default function PerformanceByID() {
 
     }
 
-    const videoRef = useRef(null);
-
-    function handlePlay() {
-        videoRef.current.play();
-    }
-
-    function handlePause() {
-        videoRef.current.pause();
-    }
+    const VideoPlayer = () => {
+        const [videoUrl, setVideoUrl] = useState('');
+      
+        useEffect(() => {
+          // Retrieve the video from Firebase storage using the Firebase SDK
+          const storageRef = storage.ref();
+          const videoRef = storageRef.child('videos/uid3_1_temp.mp4');
+          videoRef.getDownloadURL().then(url => {
+            setVideoUrl(url);
+          });
+        }, []);
+      
+        return (
+          <div>
+            {videoUrl && (
+              <ReactPlayer
+                url={videoUrl}
+                controls={true}
+                width="100%"
+                height="auto"
+              />
+            )}
+          </div>
+        );
+      };
 
     // return the html to render
     return (
@@ -97,19 +115,9 @@ export default function PerformanceByID() {
                         </Form.Group>
 
                         <div>
-                            <video ref={videoRef}>
-                                <source src="temp.mp4" type="video/mp4" />
-                            </video>
-                            <div>
-                                <Button style={{ width: '48%', marginRight: '3px' }} onClick={handlePlay}>Play</Button>
-                                <Button style={{ width: '48%', marginLeft: '3px' }} onClick={handlePause}>Pause</Button>
-                            </div>
+                            {VideoPlayer}
                         </div>
                         {/* Form components (Label & Text Box) for Video Description */}
-                        {/* <Form.Group id="description">
-                            <Form.Label>Description</Form.Label>
-                            <Form.Control as="textarea" ref={descriptionRef} style={{ marginBottom: '3px' }} required />
-                        </Form.Group> */}
                         <Button href='/script-id' className='button' type='button'>View my script</Button>
 
                         {/* Disable the submission button if already pressed and submission is in-progress */}

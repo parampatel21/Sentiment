@@ -13,6 +13,7 @@ import ViewAllScripts from "./ViewAllScripts";
 import PerformanceByID from "./PerformanceByID";
 import ScriptByID from "./ScriptByID";
 import RecordPerformance from "./RecordPerformance";
+import TestingGrounds from "./TestingGrounds"
 
 
 function App() {
@@ -20,7 +21,7 @@ function App() {
     <AuthProvider>
       <Container className="d-flex align-items-center justify-content-center"
         style={{ minHeight: "100vh" }}>
-        <div className="w-100" style={{ maxWidth: "400px" }}>
+        <div className="w-100" style={{ maxWidth: "100%" }}>
           <Router>
             <AuthProvider>
               {/* Add routes to different pages here using desired path name and .js component name */}
@@ -36,6 +37,7 @@ function App() {
                 <Route path="/performance-id" element={<PerformanceByID />} />
                 <Route path="/script-id" element={<ScriptByID />} />
                 <Route path="/record-performance" element={<RecordPerformance />} />
+                <Route path="/testing-grounds" element={<TestingGrounds />} />
 
               </Routes>
             </AuthProvider>
