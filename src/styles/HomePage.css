@@ -7,7 +7,7 @@
   }
   
   /* Global styles */
-  
+
   body {
     font-family: 'Roboto', sans-serif;
     font-size: 16px;
@@ -43,6 +43,9 @@
     color: #333;
     font-weight: bold;
   }
+
+
+  
   
   main {
     margin: 50px 0;
@@ -75,6 +78,24 @@
   }
   
   .hero button:hover {
+    background-color: #bf0812;
+  }
+
+  .hero-button {
+    padding: 12px 20px;
+    background-color: #e50914;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 20px;
+  }
+  
+  .hero-button:hover {
     background-color: #bf0812;
   }
   

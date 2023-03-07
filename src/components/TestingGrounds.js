@@ -1,16 +1,21 @@
-import React, { useState, useEffect } from 'react'
-import { Button, Card, Alert } from 'react-bootstrap'
+import React, { useRef, useState } from 'react'
+import { Form, Button, Card, Alert } from 'react-bootstrap'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
-import { useNavigate } from 'react-router-dom'
-import auth from '../firebase'
+import VideoRecorder from './VideoRecorder'
 import '../styles/styles.css'
 import '../styles/HomePage.css'
 
-
 function TestingGrounds() {
-
-    const [error, setError] = useState("")
-    const { currentUser, logout } = useAuth()
+    // references for user's fields
+    const scriptRef = useRef()
+    // import functions implemented in AuthContext.js
+    const { getuser, isAuthenticated, logout } = useAuth()
+    // initialize error and loading vars
+    const [error, setError] = useState('')
+    const [loading, setLoading] = useState(false)
+    const [recording, setRecording] = useState(false)
+    // initialize navigate obj for redirecting
     const navigate = useNavigate()
 
     async function handleLogout() {
@@ -18,31 +23,54 @@ function TestingGrounds() {
 
         try {
             await logout()
-            navigate('/login')
+            // navigate('/login')
+            window.location.reload();
         } catch {
             setError('Failed to log out')
         }
     }
 
-    let section;
-    if (currentUser) {
-        // User is signed in.
-        section = <section className="call-to-action">
-            <h2>Get Started Today</h2>
-            <button>Sign Up</button>
-        </section>;
-        console.log(currentUser)
-    } else {
-        // User is not signed in.
-        console.log(currentUser)
+    // Function to handle user interaction with the save button
+    async function handleSubmit(e) {
+        e.preventDefault()
+
+        // return an error if a condition do not match
+        // if (condition to throw an error) {
+        //     return setError('Error message here')
+        // }
+
+        // try to delete performance id provided and await success then redirect to view of all performances
+        try {
+            setError('')
+            setLoading(true)
+            // await saveVideo(videoFile)
+            console.log(getuser)
+        } catch {
+            setError('Failed to save the video')
+        }
+
+        setLoading(false)
+
     }
 
+    function handleFileSelect(event) {
+        const fileList = event.target.files;
+        // Do something with the file here
+        console.log(fileList);
+    }
 
-
+    // const [buttonText, setButtonText] = useState("Start Recording");
+    // let button;
+    // if (buttonText == 'Start Recording') {
+    //     button = <a className='hero-button' onClick={() => setButtonText("Stop Recording")}>{buttonText}</a>
+    // } else {
+    //     button = <a className='hero-button' onClick={() => setButtonText("Start Recording")}>{buttonText}</a>
+    // }
 
 
     return (
         <div className="container-fluid">
+            {/* Nav bar start */}
             <header>
                 <nav>
                     <ul>
@@ -51,37 +79,45 @@ function TestingGrounds() {
                         <li><a href="/view-all-performances">View Performances</a></li>
                         <li><a href="/view-all-scripts">View Scripts</a></li>
                         <li><a href="/update-profile">Manage Account</a></li>
-                        <li><a onClick={handleLogout}>Logout</a></li>
+                        {isAuthenticated ? (
+                            <li><a href="" onClick={handleLogout}>Logout</a></li>
+                        ) : (
+                            <li><a href="/login">Login</a></li>
+                        )}
+                        {/* <li><a href="" onClick={use_axios}>Test Google Cloud Function</a></li> */}
+
                     </ul>
                 </nav>
             </header>
+            {/* Nav bar end */}
+
             <main>
                 <section className="hero">
-                    <h1>Welcome to Sentiment</h1>
-                    <p>Our application uses advanced technology to analyze emotions and tone via video and audio recordings. Our cutting-edge algorithms can accurately detect and analyze a wide range of emotions and tones, including happiness, sadness, anger, fear, and more.</p>
-                    <p>Whether you're looking to improve your public speaking skills, want to better understand your emotional state, or need to analyze the emotional tone of a conversation, our app can help. Simply record a video or audio clip, and our app will provide you with detailed insights into the emotions and tone present in the recording.</p>
-                    <p>Our application is perfect for individuals, businesses, and organizations looking to improve communication and better understand emotions. With our app, you can gain a deeper understanding of yourself and others, leading to more productive conversations and relationships.</p>
-                    <p>Try our application today and discover the power of emotion and tone analysis.</p>
-                    <button href='/about-us'>Learn More</button>
+                    <h1>Welcome to your Recording Session</h1>
+                    <p>Here you can record a video performance of your public speaking skills and have your technique analyzed via facial and tonal analysis.</p>
+                    <p>Also, feel free to upload or supply a script via the text box below and we'll run our analysis on it to find the tone portrayed through the text.</p>
+                    <p>When you're ready, click start recording below to begin your journey to a more confident speech.</p>
+                    <VideoRecorder />
+                    {/* {button} */}
                 </section>
-                <section className="features">
-                    <div className="feature">
-                        <i className="fas fa-globe"></i>
-                        <h2>Global Reach</h2>
-                        <p>We're hosted on the world wide web. Tell your mom about us.</p>
+
+                {/* Handle form submission */}
+                <Form onSubmit={handleSubmit}>
+                    {/* Form components (Label & Text Box) for Video Title */}
+                    <Form.Group id="title">
+                        <Form.Label>Type up your script here</Form.Label>
+                        <Form.Control style={{ width: '100%', height: '100%' }} type="text" as='textarea' ref={scriptRef} />
+                    </Form.Group>
+                    <div style={{ marginTop: '5px' }}>
+                        <Form.Label>Upload script here:&nbsp;</Form.Label>
+                        <input type="file" onChange={handleFileSelect} />
                     </div>
-                    <div className="feature">
-                        <i className="fas fa-clock"></i>
-                        <h2>24/7 Support</h2>
-                        <p>Just ask. I'll give you my phone number.</p>
-                    </div>
-                    <div className="feature">
-                        <i className="fas fa-lock"></i>
-                        <h2>Secure Transactions</h2>
-                        <p>Don't worry about your credit card information being stolen. We only take cash.</p>
-                    </div>
-                </section>
-                {/* {section} */}
+                    {/* Disable the submission button if already pressed and submission is in-progress */}
+                    <section className="call-to-action">
+                        <a className='hero-button' href='/performance-id'>Save Performance</a>
+                    </section>
+                </Form>
+
             </main>
             <footer>
                 <p>&copy; 2023 Sentiment. All rights reserved.</p>

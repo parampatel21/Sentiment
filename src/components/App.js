@@ -14,6 +14,7 @@ import PerformanceByID from "./PerformanceByID";
 import ScriptByID from "./ScriptByID";
 import RecordPerformance from "./RecordPerformance";
 import TestingGrounds from "./TestingGrounds"
+import AboutUs from "./AboutUs";
 
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
               <Routes>
                 {/* TODO: PROTECT ROUTES WHEN USER !AUTHENTICATED */}
                 <Route exact path="/" element={<Dashboard />} />
+                <Route path="/about-us" element={<AboutUs />} />
                 <Route path="/update-profile" element={<UpdateProfile />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/login" element={<Login />} />

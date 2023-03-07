@@ -2,23 +2,33 @@ import React, { useRef, useState } from 'react'
 import { Form, Button, Card, Alert } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
+import VideoRecorder from './VideoRecorder'
 import '../styles/styles.css'
+import '../styles/HomePage.css'
 
-export default function RecordPerformance() {
-    // references for user's fields on the ui components
-    const filePath = ''
-    const videoFile = ''
+function TestingGrounds() {
+    // references for user's fields
     const scriptRef = useRef()
-
-    // import function implemented in AuthContext.js
-    const { recordVideo, uploadScript, saveVideo } = useAuth()
-    const { getuser } = useAuth()
+    // import functions implemented in AuthContext.js
+    const { getuser, isAuthenticated, logout } = useAuth()
     // initialize error and loading vars
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const [recording, setRecording] = useState(false)
     // initialize navigate obj for redirecting
     const navigate = useNavigate()
+
+    async function handleLogout() {
+        setError('')
+
+        try {
+            await logout()
+            // navigate('/login')
+            window.location.reload();
+        } catch {
+            setError('Failed to log out')
+        }
+    }
 
     // Function to handle user interaction with the save button
     async function handleSubmit(e) {
@@ -45,52 +55,75 @@ export default function RecordPerformance() {
 
     function handleFileSelect(event) {
         const fileList = event.target.files;
+        // Do something with the file here
         console.log(fileList);
     }
 
-    const [buttonText, setButtonText] = useState("Record");
-    let button;
-    if (buttonText == 'Record') {
-        button = <Button className='button' onClick={() => setButtonText("Stop Recording")}>{buttonText}</Button>
-    } else {
-        button = <Button className='button' onClick={() => setButtonText("Record")}>{buttonText}</Button>
-    }
+    // const [buttonText, setButtonText] = useState("Start Recording");
+    // let button;
+    // if (buttonText == 'Start Recording') {
+    //     button = <a className='hero-button' onClick={() => setButtonText("Stop Recording")}>{buttonText}</a>
+    // } else {
+    //     button = <a className='hero-button' onClick={() => setButtonText("Start Recording")}>{buttonText}</a>
+    // }
 
-    // return the html to render
+
     return (
-        <>
-            {/* Back button to return to the dashboard */}
-            <a href="/" class="back-button">Back</a>
+        <div className="container-fluid">
+            {/* Nav bar start */}
+            <header>
+                <nav>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/about-us">About Us</a></li>
+                        <li><a href="/view-all-performances">View Performances</a></li>
+                        <li><a href="/view-all-scripts">View Scripts</a></li>
+                        <li><a href="/update-profile">Manage Account</a></li>
+                        {isAuthenticated ? (
+                            <li><a href="" onClick={handleLogout}>Logout</a></li>
+                        ) : (
+                            <li><a href="/login">Login</a></li>
+                        )}
+                        {/* <li><a href="" onClick={use_axios}>Test Google Cloud Function</a></li> */}
 
-            {/* Google react-bootstrap to see how to use the library for easy styled components */}
-            <Card>
-                <Card.Body>
+                    </ul>
+                </nav>
+            </header>
+            {/* Nav bar end */}
 
-                    {/* Card header  */}
-                    <h2 className='text-center mb-4'>Record Your Performance</h2>
-                    {/* If there is an error caught generate an error message component at the top of this Card */}
-                    {error && <Alert variant="danger">{error}</Alert>}
-                    {/* Handle form submission */}
-                    <Form onSubmit={handleSubmit}>
-                        {/* Form components (Label & Text Box) for Video Title */}
-                        <Form.Group id="title">
-                            <Form.Label>Type up your script here</Form.Label>
-                            <Form.Control style={{ width: '100%', height: '100%' }} type="text" as='textarea' ref={scriptRef} />
-                        </Form.Group>
-                        <div style={{ marginTop: '5px' }}>
-                            <Form.Label>Upload script here</Form.Label>
-                            <input type="file" onChange={handleFileSelect} />
-                        </div>
-                        {button}
-                        {/* Disable the submission button if already pressed and submission is in-progress */}
-                        <Button href='/performance-id' disabled={loading} className='button' type='submit'>Save</Button>
-                    </Form>
+            <main>
+                <section className="hero">
+                    <h1>Welcome to your Recording Session</h1>
+                    <p>Here you can record a video performance of your public speaking skills and have your technique analyzed via facial and tonal analysis.</p>
+                    <p>Also, feel free to upload or supply a script via the text box below and we'll run our analysis on it to find the tone portrayed through the text.</p>
+                    <p>When you're ready, click start recording below to begin your journey to a more confident speech.</p>
+                    <VideoRecorder />
+                    {/* {button} */}
+                </section>
 
-                </Card.Body>
-            </Card>
+                {/* Handle form submission */}
+                <Form onSubmit={handleSubmit}>
+                    {/* Form components (Label & Text Box) for Video Title */}
+                    <Form.Group id="title">
+                        <Form.Label>Type up your script here</Form.Label>
+                        <Form.Control style={{ width: '100%', height: '100%' }} type="text" as='textarea' ref={scriptRef} />
+                    </Form.Group>
+                    <div style={{ marginTop: '5px' }}>
+                        <Form.Label>Upload script here:&nbsp;</Form.Label>
+                        <input type="file" onChange={handleFileSelect} />
+                    </div>
+                    {/* Disable the submission button if already pressed and submission is in-progress */}
+                    <section className="call-to-action">
+                        <a className='hero-button' href='/performance-id'>Save Performance</a>
+                    </section>
+                </Form>
 
-
-
-        </>
-    )
+            </main>
+            <footer>
+                <p>&copy; 2023 Sentiment. All rights reserved.</p>
+            </footer>
+        </div>
+    );
 }
+
+export default TestingGrounds;

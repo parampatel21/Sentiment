@@ -11,17 +11,21 @@ export function AuthProvider({ children }) {
     // initialize vars and reference their set functions (even if the functions are not yet created)
     const [currentUser, setCurrentUser] = useState()
     const [loading, setLoading] = useState(true)
+    const [loggedIn, setLoggedIn] = useState(false)
 
     // Implement the functions to use in the UI components here, typically use auth.<functionFromFirebaseAPI> when able
     function signup(email, password) {
+        setLoggedIn(true)
         return auth.createUserWithEmailAndPassword(email, password)
     }
 
     function login(email, password) {
+        setLoggedIn(true)
         return auth.signInWithEmailAndPassword(email, password)
     }
 
     function logout() {
+        setLoggedIn(false)
         return auth.signOut
     }
 
@@ -39,6 +43,10 @@ export function AuthProvider({ children }) {
 
     function getuser() {
         return auth.currentUser.uid;
+    }
+
+    function isAuthenticated() {
+        return loggedIn;
     }
 
     function initDBCollection(userUID, name) {
@@ -72,6 +80,7 @@ export function AuthProvider({ children }) {
         updatePassword,
         getuser,
         initDBCollection,
+        isAuthenticated
     }
 
     return (
