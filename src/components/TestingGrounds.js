@@ -23,8 +23,7 @@ function TestingGrounds() {
 
         try {
             await logout()
-            // navigate('/login')
-            window.location.reload();
+            navigate('/login')
         } catch {
             setError('Failed to log out')
         }

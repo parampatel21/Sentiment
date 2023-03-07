@@ -3,7 +3,7 @@ import { Button, Card, Alert } from 'react-bootstrap'
 import { useAuth } from '../contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios';
-import '../styles/styles.css'
+// import '../styles/styles.css'
 import '../styles/HomePage.css'
 
 
