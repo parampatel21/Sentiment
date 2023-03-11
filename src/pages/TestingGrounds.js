@@ -1,39 +1,24 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Card, Alert } from 'react-bootstrap'
 import { useAuth } from '../contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios';
 import Navbar from './components/Navbar';
-// import '../styles/styles.css'
 import '../styles/HomePage.css'
-import { auto } from '@popperjs/core';
 
-
-function TestingGrounds() {
+function ViewAllPerformances() {
 
     const [selectedOption, setSelectedOption] = useState('option1');
     const handleOptionChange = (event) => {
         setSelectedOption(event.target.value);
     };
-    const performances = [
-        { id: 1, title: 'Video Performance 1' },
-        { id: 2, title: 'Video Performance 2' },
-        { id: 3, title: 'This is my video title! Success!' },
-        { id: 4, title: 'Video Performance 4' },
-        { id: 5, title: 'Video Performance 5' },
+    const scripts = [
+        { id: 1, title: 'Script 1' },
+        { id: 2, title: 'This is my amazing script title!' },
+        { id: 3, title: 'Script 3' },
+        { id: 4, title: 'Script 4' },
+        { id: 5, title: 'Script 5' },
     ];
-    const listItems = performances.map(performance =>
-        <div>
 
-            <a className='list-button'>{performance.title}</a>
-            <a className='list-button' href='performance-id'>Edit</a>
-            <a className='list-button' href='performance-id'>View</a>
-            <a className='list-button' href='performance-id'>Delete</a>
-            {/* <Button href='/script-id' className='button'>{script.text}</Button> */}
-            {/* <li key={script.id} onClick={() => handleOptionClick(script)}>{script.text}</li> */}
-        </div>
-    );
-    const { fetchPerformanceByID } = useAuth()
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
@@ -72,11 +57,18 @@ function TestingGrounds() {
             </header>
             <main>
                 <div>
-                    <h2>Your Performances</h2>
-                    {performances.map(object => (
+                    <h2>Your Scripts</h2>
+                    <select id="select-options" value={selectedOption} onChange={handleOptionChange} style={{ width: '100%' }}>
+                        <option value={'byTitle'}>Title</option>
+                        <option value={'byDateCreated'}>Date Created</option>
+                        <option value={'byDateUpdated'}>Date Updated</option>
+                    </select>
+                    <button className='sort-button'>Sort By</button>
+                    &nbsp;
+                    {scripts.map(object => (
 
                         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                            <a href='/performance-id' style={{ width: '100%' }} className='list-item'>{object.title}</a>
+                            <a href='/script-id' style={{ width: '100%' }} className='list-item'>{object.title}</a>
                             <button style={{ display: 'inline-block' }} className='hero-button' onClick={() => handleDelete(object.id)}>Delete</button>
                             &nbsp;
                             <button style={{ display: 'inline-block' }} className='hero-button' onClick={() => console.log(`Updating ${object.title}`)}>Update</button>
@@ -92,4 +84,4 @@ function TestingGrounds() {
     );
 }
 
-export default TestingGrounds;
+export default ViewAllPerformances;

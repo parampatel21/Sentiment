@@ -86,7 +86,7 @@
     margin-bottom: 30px;
   }
   
-  .hero button {
+  /* .hero button {
     padding: 12px 20px;
     background-color: #e50914;
     color: #fff;
@@ -95,10 +95,25 @@
     font-size: 1.2rem;
     cursor: pointer;
     transition: background-color 0.3s ease;
-  }
+  } */
   
   .hero button:hover {
     background-color: #bf0812;
+  }
+
+  .sort-button {
+    width: 100%;
+    padding: 6px;
+    background-color: #e50914;
+    color: #fff;
+    border: solid black;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 10px;
   }
 
   .hero-button {

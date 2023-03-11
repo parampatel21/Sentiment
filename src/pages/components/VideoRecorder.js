@@ -11,6 +11,7 @@ const VideoRecorder = () => {
   const handleStartRecording = () => {
     setRecording(true);
     const webcam = webcamRef.current.video;
+    console.log(webcam)
     const recorder = RecordRTC(webcam, {
       type: 'video',
       mimeType: 'video/webm',
@@ -23,6 +24,7 @@ const VideoRecorder = () => {
     setRecording(false);
     recorderRef.current.stopRecording(() => {
       const blob = recorderRef.current.getBlob();
+      console.log(blob)
       setRecordedBlob(blob);
     });
   };
@@ -41,14 +43,14 @@ const VideoRecorder = () => {
   return (
     <div>
       <Webcam ref={webcamRef} />
-      <button onClick={handleStartRecording} disabled={recording}>
+      <button className='hero-button' style={{ marginRight: '3px' }} onClick={handleStartRecording} disabled={recording}>
         Start Recording
       </button>
-      <button onClick={handleStopRecording} disabled={!recording}>
+      <button className='hero-button' style={{ marginRight: '3px' }} onClick={handleStopRecording} disabled={!recording}>
         Stop Recording
       </button>
       {recordedBlob && (
-        <button onClick={handleDownloadRecording}>
+        <button className='hero-button' style={{ marginRight: '3px' }} onClick={handleDownloadRecording}>
           Download Recording
         </button>
       )}

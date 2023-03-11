@@ -5,8 +5,9 @@ import { useAuth } from '../contexts/AuthContext'
 import VideoRecorder from './components/VideoRecorder'
 import '../styles/styles.css'
 import '../styles/HomePage.css'
+import Navbar from './components/Navbar'
 
-function TestingGrounds() {
+function RecordPerformance() {
     // references for user's fields
     const scriptRef = useRef()
     // import functions implemented in AuthContext.js
@@ -70,26 +71,7 @@ function TestingGrounds() {
 
     return (
         <div className="container-fluid">
-            {/* Nav bar start */}
-            <header>
-                <nav>
-                    <ul>
-                        <li><a href="/">Home</a></li>
-                        <li><a href="/about-us">About Us</a></li>
-                        <li><a href="/view-all-performances">View Performances</a></li>
-                        <li><a href="/view-all-scripts">View Scripts</a></li>
-                        <li><a href="/update-profile">Manage Account</a></li>
-                        {isAuthenticated ? (
-                            <li><a href="" onClick={handleLogout}>Logout</a></li>
-                        ) : (
-                            <li><a href="/login">Login</a></li>
-                        )}
-                        {/* <li><a href="" onClick={use_axios}>Test Google Cloud Function</a></li> */}
-
-                    </ul>
-                </nav>
-            </header>
-            {/* Nav bar end */}
+            <Navbar />
 
             <main>
                 <section className="hero">
@@ -126,4 +108,4 @@ function TestingGrounds() {
     );
 }
 
-export default TestingGrounds;
+export default RecordPerformance;

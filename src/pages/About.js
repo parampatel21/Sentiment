@@ -7,7 +7,7 @@ import VideoRecorder from './components/VideoRecorder'
 import '../styles/HomePage.css'
 import Navbar from './components/Navbar'
 
-function AboutUs() {
+function About() {
     const { isAuthenticated, logout } = useAuth()
     const [error, setError] = useState('')
     const navigate = useNavigate()
@@ -68,4 +68,4 @@ function AboutUs() {
     );
 }
 
-export default AboutUs;
+export default About;

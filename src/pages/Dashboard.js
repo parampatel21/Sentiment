@@ -43,10 +43,8 @@ function Dashboard() {
     }
 
     return (
-        <div className="container-fluid">
-            <header>
-                <Navbar />
-            </header>
+        <div className="container">
+            <Navbar />
             <main>
                 <section className="hero">
                     <h1>Welcome to Sentiment</h1>

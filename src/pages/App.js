@@ -8,13 +8,13 @@ import Signup from "./Signup";
 import Dashboard from "./Dashboard";
 import Login from "./Login";
 import ForgotPassword from "./ForgotPassword";
-import ViewAllPerformances from "./ViewAllPerformances";
-import ViewAllScripts from "./ViewAllScripts";
-import PerformanceByID from "./PerformanceByID";
-import ScriptByID from "./ScriptByID";
+import Videos from "./Videos";
+import Scripts from "./Scripts";
+import VideoID from "./VideoID";
+import ScriptID from "./ScriptID";
 import RecordPerformance from "./RecordPerformance";
 import TestingGrounds from "./TestingGrounds"
-import AboutUs from "./AboutUs";
+import AboutUs from "./About";
 
 
 function App() {
@@ -34,10 +34,10 @@ function App() {
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
-                <Route path="/view-all-performances" element={<ViewAllPerformances />} />
-                <Route path="/view-all-scripts" element={<ViewAllScripts />} />
-                <Route path="/performance-id" element={<PerformanceByID />} />
-                <Route path="/script-id" element={<ScriptByID />} />
+                <Route path="/videos" element={<Videos />} />
+                <Route path="/scripts" element={<Scripts />} />
+                <Route path="/video-id" element={<VideoID />} />
+                <Route path="/script-id" element={<ScriptID />} />
                 <Route path="/record-performance" element={<RecordPerformance />} />
                 <Route path="/testing-grounds" element={<TestingGrounds />} />
 

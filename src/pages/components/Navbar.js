@@ -1,46 +1,72 @@
-import React, { useState } from 'react'
-import { useAuth } from '../../contexts/AuthContext'
-import logo from '../../assets/nonsense.png'
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
+import '../../styles/Navbar.css';
 
+const Navbar = () => {
+    const [isOpen, setIsOpen] = useState(false);
 
-export default function Navbar() {
-    const { error, setError } = useState("")
-    const { logout, isAuthenticated } = useAuth()
-    async function handleLogout() {
-        setError('')
-
-        try {
-            await logout()
-            // navigate('/login')
-            window.location.reload();
-        } catch {
-            setError('Failed to log out')
-        }
-    }
+    const toggleMenu = () => {
+        setIsOpen(!isOpen);
+    };
 
     return (
-        <header>
-            <div className="logo">
-                <a href="/">
-                    <img src={logo} alt="Logo" />
-                </a>
+        <nav className="navbar navbar-expand-lg navbar-light bg-light">
+            <div className="container">
+                <Link className="navbar-brand" to="/">
+                    Sentiment
+                </Link>
+                <button className="navbar-toggler" type="button" onClick={toggleMenu}>
+                    <FontAwesomeIcon icon={isOpen ? faTimes : faBars} />
+                </button>
+                <div className={`collapse navbar-collapse ${isOpen ? 'show' : ''}`}>
+                    <ul className="navbar-nav ms-auto">
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/">
+                                Home
+                            </Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/about-us">
+                                About
+                            </Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/videos">
+                                Videos
+                            </Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/scripts">
+                                Scripts
+                            </Link>
+                        </li>
+                        {false ? (
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/profile">
+                                    Profile
+                                </Link>
+                            </li>
+                        ) : (
+                            <>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/login">
+                                        Login
+                                    </Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/signup">
+                                        Signup
+                                    </Link>
+                                </li>
+                            </>
+                        )}
+                    </ul>
+                </div>
             </div>
-            <nav>
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/about-us">About Us</a></li>
-                    <li><a href="/view-all-performances">View Performances</a></li>
-                    <li><a href="/view-all-scripts">View Scripts</a></li>
-                    <li><a href="/update-profile">Manage Account</a></li>
-                    {isAuthenticated ? (
-                        <li><a href="" onClick={handleLogout}>Logout</a></li>
-                    ) : (
-                        <li><a href="/login">Login</a></li>
-                    )}
-                    {/* <li><a href="" onClick={use_axios}>Test Google Cloud Function</a></li> */}
+        </nav>
+    );
+};
 
-                </ul>
-            </nav>
-        </header>
-    )
-}
+export default Navbar;
