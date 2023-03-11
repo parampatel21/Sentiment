@@ -7,7 +7,7 @@ import '../styles/styles.css'
 import '../styles/HomePage.css'
 import Navbar from './components/Navbar'
 
-function RecordPerformance() {
+function Record() {
     // references for user's fields
     const scriptRef = useRef()
     // import functions implemented in AuthContext.js
@@ -108,4 +108,4 @@ function RecordPerformance() {
     );
 }
 
-export default RecordPerformance;
+export default Record;

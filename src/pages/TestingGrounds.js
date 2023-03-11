@@ -1,36 +1,68 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useAuth } from '../contexts/AuthContext'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import axios from 'axios';
+import { Form, Button, Card, Alert } from 'react-bootstrap'
 import Navbar from './components/Navbar';
 import '../styles/HomePage.css'
 
-function ViewAllPerformances() {
 
-    const [selectedOption, setSelectedOption] = useState('option1');
-    const handleOptionChange = (event) => {
-        setSelectedOption(event.target.value);
-    };
-    const scripts = [
-        { id: 1, title: 'Script 1' },
-        { id: 2, title: 'This is my amazing script title!' },
-        { id: 3, title: 'Script 3' },
-        { id: 4, title: 'Script 4' },
-        { id: 5, title: 'Script 5' },
-    ];
-
+function TestingGrounds() {
+    const { logout, isAuthenticated } = useAuth()
+    const emailRef = useRef()
+    const passwordRef = useRef()
+    const { login } = useAuth()
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
 
-    const handleDelete = (objectId) => {
-        console.log('plus u1tra')
-        // axios.delete(`/api/objects/${objectId}`)
-        //     .then(() => {
-        //         setObjects(objects.filter(object => object.id !== objectId));
-        //     })
-        //     .catch(error => console.error(error));
-    };
+    async function handleSubmit(e) {
+        e.preventDefault()
+
+        try {
+            setError('')
+            setLoading(true)
+            await login(emailRef.current.value, passwordRef.current.value)
+            navigate("/")
+        } catch {
+            setError('Failed to sign in')
+        }
+
+        setLoading(false)
+
+    }
+
+    async function handleGoogle(e) {
+        e.preventDefault()
+
+        try {
+            setError('')
+            setLoading(true)
+            // await yourFunctionHere()
+            navigate("/")
+        } catch {
+            setError('Failed to sign in using Google credentials :(')
+        }
+
+        setLoading(false)
+
+    }
+
+    async function handleFacebook(e) {
+        e.preventDefault()
+
+        try {
+            setError('')
+            setLoading(true)
+            // await yourFunctionHere()
+            navigate("/")
+        } catch {
+            setError('Failed to sign in')
+        }
+
+        setLoading(false)
+
+    }
 
     async function use_axios() {
         axios({
@@ -48,40 +80,43 @@ function ViewAllPerformances() {
             });
     }
 
-
-
     return (
-        <div className="container-fluid">
-            <header>
-                <Navbar />
-            </header>
+        <div className="container">
+            {/* <Navbar /> */}
             <main>
-                <div>
-                    <h2>Your Scripts</h2>
-                    <select id="select-options" value={selectedOption} onChange={handleOptionChange} style={{ width: '100%' }}>
-                        <option value={'byTitle'}>Title</option>
-                        <option value={'byDateCreated'}>Date Created</option>
-                        <option value={'byDateUpdated'}>Date Updated</option>
-                    </select>
-                    <button className='sort-button'>Sort By</button>
-                    &nbsp;
-                    {scripts.map(object => (
-
-                        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                            <a href='/script-id' style={{ width: '100%' }} className='list-item'>{object.title}</a>
-                            <button style={{ display: 'inline-block' }} className='hero-button' onClick={() => handleDelete(object.id)}>Delete</button>
-                            &nbsp;
-                            <button style={{ display: 'inline-block' }} className='hero-button' onClick={() => console.log(`Updating ${object.title}`)}>Update</button>
-                        </div>
-
-                    ))}
-                </div>
-            </main >
+                <section className="hero">
+                    <h1>Sentiment: Login</h1>
+                    <p>Try our application today and discover the power of emotion and tone analysis.</p>
+                </section>
+                <section className="call-to-action">
+                    <h2>Get Started Today</h2>
+                    <h2 className='text-center mb-4'>Login</h2>
+                    {error && <Alert variant="danger">{error}</Alert>}
+                    <Form onSubmit={handleSubmit}>
+                        <Form.Group id="email" style={{ marginBottom: '3px' }}>
+                            <Form.Label>Email</Form.Label>
+                            <Form.Control type="email" ref={emailRef} required />
+                        </Form.Group>
+                        <Form.Group id="password" style={{ marginBottom: '3px' }}>
+                            <Form.Label>Password</Form.Label>
+                            <Form.Control type="password" ref={passwordRef} required />
+                        </Form.Group>
+                        <button style={{ width: '100%' }} className='hero-button' onClick={handleSubmit}>Login with Email</button>
+                        <button style={{ width: '100%', backgroundColor: '#f4c20d' }} className='hero-button' onClick={handleGoogle}>Login with Google</button>
+                        <button style={{ width: '100%', backgroundColor: '#3b5998' }} className='hero-button' onClick={handleFacebook}>Login with Facebook</button>
+                        {/* <Button disabled={loading} className='w-100' type='submit'>Login</Button> */}
+                    </Form>
+                    <div className='w-100 text-center mt-3'>
+                        <Link to="/forgot-password">Forgot Password?</Link>
+                    </div>
+                </section>
+            </main>
             <footer>
                 <p>&copy; 2023 Sentiment. All rights reserved.</p>
             </footer>
-        </div >
+        </div>
     );
 }
 
-export default ViewAllPerformances;
+
+export default TestingGrounds;

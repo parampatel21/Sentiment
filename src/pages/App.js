@@ -12,7 +12,7 @@ import Videos from "./Videos";
 import Scripts from "./Scripts";
 import VideoID from "./VideoID";
 import ScriptID from "./ScriptID";
-import RecordPerformance from "./RecordPerformance";
+import Record from "./Record";
 import TestingGrounds from "./TestingGrounds"
 import AboutUs from "./About";
 
@@ -38,7 +38,7 @@ function App() {
                 <Route path="/scripts" element={<Scripts />} />
                 <Route path="/video-id" element={<VideoID />} />
                 <Route path="/script-id" element={<ScriptID />} />
-                <Route path="/record-performance" element={<RecordPerformance />} />
+                <Route path="/record" element={<Record />} />
                 <Route path="/testing-grounds" element={<TestingGrounds />} />
 
               </Routes>

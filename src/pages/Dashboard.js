@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { Button, Card, Alert } from 'react-bootstrap'
 import { useAuth } from '../contexts/AuthContext'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import axios from 'axios';
 import Navbar from './components/Navbar';
-// import '../styles/styles.css'
 import '../styles/HomePage.css'
 
 
@@ -52,7 +51,13 @@ function Dashboard() {
                     <p>Whether you're looking to improve your public speaking skills, want to better understand your emotional state, or need to analyze the emotional tone of a conversation, our app can help. Simply record a video or audio clip, and our app will provide you with detailed insights into the emotions and tone present in the recording.</p>
                     <p>Our application is perfect for individuals, businesses, and organizations looking to improve communication and better understand emotions. With our app, you can gain a deeper understanding of yourself and others, leading to more productive conversations and relationships.</p>
                     <p>Try our application today and discover the power of emotion and tone analysis.</p>
-                    <a className='hero-button' href="/record-performance">Try Today</a>
+                    {isAuthenticated() ? (
+                        <a className='hero-button' href='/record' >Start a Recording</a>
+                    ) : (
+                        <a className='hero-button' href='/signup'>Join Us!</a>
+
+                    )}
+
                 </section>
                 <section className="features">
                     <div className="feature">
@@ -73,10 +78,12 @@ function Dashboard() {
                 </section>
                 <section className="call-to-action">
                     <h2>Get Started Today</h2>
-                    {isAuthenticated ? (
-                        <a className='hero-button' href='/record-performance'>Start a Performance</a>
+                    {isAuthenticated() ? (
+                        <a href="/record">
+                            <button className='hero-button'>Start a Recording</button>
+                        </a>
                     ) : (
-                        <a className='hero-button' href='/signup'>Sign Up</a>
+                        <button className='hero-button' href='/signup'>Sign Up</button>
                     )}
 
                 </section>
