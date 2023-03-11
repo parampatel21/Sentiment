@@ -3,7 +3,7 @@ import { Container } from "react-bootstrap";
 import { AuthProvider } from "../contexts/AuthContext";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 // import the page generating function from the respective .js files
-import UpdateProfile from "./UpdateProfile";
+import Profile from "./Profile";
 import Signup from "./Signup";
 import Dashboard from "./Dashboard";
 import Login from "./Login";
@@ -30,7 +30,7 @@ function App() {
                 {/* TODO: PROTECT ROUTES WHEN USER !AUTHENTICATED */}
                 <Route exact path="/" element={<Dashboard />} />
                 <Route path="/about-us" element={<AboutUs />} />
-                <Route path="/update-profile" element={<UpdateProfile />} />
+                <Route path="/profile" element={<Profile />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
