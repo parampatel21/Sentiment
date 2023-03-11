@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react'
 import { Form, Button, Card, Alert } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
-import VideoRecorder from './VideoRecorder'
+import VideoRecorder from './components/VideoRecorder'
 import '../styles/styles.css'
 import '../styles/HomePage.css'
 

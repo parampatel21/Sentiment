@@ -2,9 +2,10 @@ import React, { useRef, useState } from 'react'
 import { Form, Button, Card, Alert } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
-import VideoRecorder from './VideoRecorder'
+import VideoRecorder from './components/VideoRecorder'
 // import '../styles/styles.css'
 import '../styles/HomePage.css'
+import Navbar from './components/Navbar'
 
 function AboutUs() {
     const { isAuthenticated, logout } = useAuth()
@@ -26,22 +27,7 @@ function AboutUs() {
         <div className="container-fluid">
             {/* Nav bar start */}
             <header>
-                <nav>
-                    <ul>
-                        <li><a href="/">Home</a></li>
-                        <li><a href="/about-us">About Us</a></li>
-                        <li><a href="/view-all-performances">View Performances</a></li>
-                        <li><a href="/view-all-scripts">View Scripts</a></li>
-                        <li><a href="/update-profile">Manage Account</a></li>
-                        {isAuthenticated ? (
-                            <li><a href="" onClick={handleLogout}>Logout</a></li>
-                        ) : (
-                            <li><a href="/login">Login</a></li>
-                        )}
-                        {/* <li><a href="" onClick={use_axios}>Test Google Cloud Function</a></li> */}
-
-                    </ul>
-                </nav>
+                <Navbar />
             </header>
             {/* Nav bar end */}
 

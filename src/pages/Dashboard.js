@@ -3,6 +3,7 @@ import { Button, Card, Alert } from 'react-bootstrap'
 import { useAuth } from '../contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios';
+import Navbar from './components/Navbar';
 // import '../styles/styles.css'
 import '../styles/HomePage.css'
 
@@ -44,22 +45,7 @@ function Dashboard() {
     return (
         <div className="container-fluid">
             <header>
-                <nav>
-                    <ul>
-                        <li><a href="/">Home</a></li>
-                        <li><a href="/about-us">About Us</a></li>
-                        <li><a href="/view-all-performances">View Performances</a></li>
-                        <li><a href="/view-all-scripts">View Scripts</a></li>
-                        <li><a href="/update-profile">Manage Account</a></li>
-                        {isAuthenticated ? (
-                            <li><a href="" onClick={handleLogout}>Logout</a></li>
-                        ) : (
-                            <li><a href="/login">Login</a></li>
-                        )}
-                        {/* <li><a href="" onClick={use_axios}>Test Google Cloud Function</a></li> */}
-
-                    </ul>
-                </nav>
+                <Navbar />
             </header>
             <main>
                 <section className="hero">
@@ -90,11 +76,11 @@ function Dashboard() {
                 <section className="call-to-action">
                     <h2>Get Started Today</h2>
                     {isAuthenticated ? (
-                            <a className='hero-button' href='/record-performance'>Start a Performance</a>
-                        ) : (
-                            <a className='hero-button' href='/signup'>Sign Up</a>
-                        )}
-                    
+                        <a className='hero-button' href='/record-performance'>Start a Performance</a>
+                    ) : (
+                        <a className='hero-button' href='/signup'>Sign Up</a>
+                    )}
+
                 </section>
             </main>
             <footer>
