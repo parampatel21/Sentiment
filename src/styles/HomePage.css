@@ -59,19 +59,16 @@
   margin-bottom: 10px;
 }
 
-  .list-button {
+  .list-item {
     padding: 12px 20px;
-    width: auto;
-    background-color: #e50914;
-    color: #fff;
-    border: none;
+    background-color: #fff;
+    color: #000;
+    border: #000;
+    width: 100%;
     border-radius: 5px;
     font-size: 1.2rem;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    text-decoration: none;
-    display: inline-block;
-    margin-top: 20px;
   }
   
   .hero {

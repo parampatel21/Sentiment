@@ -6,6 +6,7 @@ import axios from 'axios';
 import Navbar from './components/Navbar';
 // import '../styles/styles.css'
 import '../styles/HomePage.css'
+import { auto } from '@popperjs/core';
 
 
 function TestingGrounds() {
@@ -23,7 +24,8 @@ function TestingGrounds() {
     ];
     const listItems = performances.map(performance =>
         <div>
-            {performance.title}
+
+            <a className='list-button'>{performance.title}</a>
             <a className='list-button' href='performance-id'>Edit</a>
             <a className='list-button' href='performance-id'>View</a>
             <a className='list-button' href='performance-id'>Delete</a>
@@ -74,9 +76,9 @@ function TestingGrounds() {
                     {performances.map(object => (
 
                         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                            <h3 className="button-title" style={{ marginRight: '10px', display: 'inline-block' }}>{object.title}</ h3>
+                            <a href='/performance-id' style={{ width: '100%' }} className='list-item'>{object.title}</a>
                             <button style={{ display: 'inline-block' }} className='hero-button' onClick={() => handleDelete(object.id)}>Delete</button>
-                            <button style={{ display: 'inline-block' }} className='hero-button' onClick={() => console.log(`Viewing ${object.title}`)}>View</button>
+                            &nbsp;
                             <button style={{ display: 'inline-block' }} className='hero-button' onClick={() => console.log(`Updating ${object.title}`)}>Update</button>
                         </div>
 
