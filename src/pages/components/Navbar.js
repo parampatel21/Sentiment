@@ -34,28 +34,29 @@ const Navbar = () => {
                 </button>
                 <div className={`collapse navbar-collapse ${isOpen ? 'show' : ''}`}>
                     <ul className="navbar-nav ms-auto">
-                        <li className="nav-item">
-                            <Link className="nav-link" to="/">
-                                Home
-                            </Link>
-                        </li>
-                        <li className="nav-item">
-                            <Link className="nav-link" to="/about-us">
-                                About
-                            </Link>
-                        </li>
-                        <li className="nav-item">
-                            <Link className="nav-link" to="/videos">
-                                Videos
-                            </Link>
-                        </li>
-                        <li className="nav-item">
-                            <Link className="nav-link" to="/scripts">
-                                Scripts
-                            </Link>
-                        </li>
+
                         {isAuthenticated() ? (
                             <>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/">
+                                        Home
+                                    </Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/about-us">
+                                        About
+                                    </Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/videos">
+                                        Videos
+                                    </Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/scripts">
+                                        Scripts
+                                    </Link>
+                                </li>
                                 <li className="nav-item">
                                     <Link className="nav-link" to="/profile">
                                         Profile
@@ -69,6 +70,26 @@ const Navbar = () => {
                             </>
                         ) : (
                             <>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/">
+                                        Home
+                                    </Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/about-us">
+                                        About
+                                    </Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/login">
+                                        Videos
+                                    </Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/login">
+                                        Scripts
+                                    </Link>
+                                </li>
                                 <li className="nav-item">
                                     <Link className="nav-link" to="/login">
                                         Login
