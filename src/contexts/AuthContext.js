@@ -26,7 +26,8 @@ export function AuthProvider({ children }) {
 
     function logout() {
         setLoggedIn(false)
-        return auth.signOut
+        console.log(loggedIn)
+        return auth.signOut()
     }
 
     function resetPassword(email) {
