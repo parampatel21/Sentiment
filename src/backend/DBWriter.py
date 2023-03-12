@@ -550,7 +550,7 @@ def sortVideosByTitle(uid, rOrder):
 #uploadFile(uid="uid3", index="3", localpath="Script.txt")
 #print(sortVideosByRunningCount("uid3", True))
 
-def analyzeVideo(filename):
+def analyzeVideo(filename, depth):
 
     # Load the video file
     video_filename = filename
@@ -560,7 +560,7 @@ def analyzeVideo(filename):
     detector = FER()
 
     # Analyze the video frames
-    result = video.analyze(detector=detector, display=False, frequency=30)
+    result = video.analyze(detector=detector, display=False, frequency=depth)
 
     with open('data.csv', 'r') as file:
 
