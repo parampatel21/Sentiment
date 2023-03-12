@@ -26,22 +26,6 @@ function Dashboard() {
         }
     }
 
-    async function use_axios() {
-        axios({
-            method: 'post',
-            url: 'https://us-central1-sentiment-379415.cloudfunctions.net/test_function',
-            data: {
-                message: 'Hello'
-            }
-        })
-            .then((response) => {
-                console.log(response.data);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    }
-
     return (
         <div className="container">
             <Navbar />
