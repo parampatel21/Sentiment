@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Card, Alert } from 'react-bootstrap'
 import { useAuth } from '../contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios';
 import Navbar from './components/Navbar';
 // import '../styles/styles.css'
 import '../styles/HomePage.css'

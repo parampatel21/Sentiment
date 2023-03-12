@@ -2,7 +2,6 @@ import React, { useRef, useState } from 'react'
 import { Form, Button, Card, Alert } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
-import { useFirestore } from '../contexts/FirestoreContext'
 import '../styles/styles.css'
 
 export default function Signup() {
