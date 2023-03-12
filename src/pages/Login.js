@@ -20,7 +20,7 @@ export default function Login() {
             await login(emailRef.current.value, passwordRef.current.value)
             navigate("/")
         } catch { 
-            setError('Failed to sign in')
+            setError('Failed to sign in. Try Google/Facebook login instead.')
         }
 
         setLoading(false)
@@ -35,7 +35,7 @@ export default function Login() {
             await googleSignIn()
             navigate("/")
         } catch { 
-            setError('Failed to sign in')
+            setError('Failed to sign in. ')
         }
 
         setLoading(false)
