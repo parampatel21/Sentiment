@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { auth, firestore, googleProvider} from '../firebase'
+import { auth, facebookProvider, firestore, googleProvider} from '../firebase'
 
 const AuthContext = React.createContext()
 
@@ -42,6 +42,28 @@ export function AuthProvider({ children }) {
           // The firebase.auth.AuthCredential type that was used.
           var credential = error.credential;
           console.log(errorCode, errorMessage, email, credential);
+        });
+    }
+
+    function facebookSignIn() {
+        auth
+        .signInWithPopup(facebookProvider)
+        .then((result) => {
+          /** @type {firebase.auth.OAuthCredential} */
+          var credential = result.credential;
+          setLoggedIn(true)
+          return credential;
+        })
+        .catch((error) => {
+            setLoggedIn(false);
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            // The email of the user's account used.
+            var email = error.email;
+            // The firebase.auth.AuthCredential type that was used.
+            var credential = error.credential;
+            console.log(errorCode, errorMessage, email, credential);
         });
     }
 
@@ -103,7 +125,8 @@ export function AuthProvider({ children }) {
         getuser,
         initDBCollection,
         isAuthenticated,
-        googleSignIn
+        googleSignIn,
+        facebookSignIn
     }
 
     return (

@@ -6,7 +6,7 @@ import { Link, useNavigate } from 'react-router-dom'
 export default function Login() {
     const emailRef = useRef()
     const passwordRef = useRef()
-    const { login, googleSignIn } = useAuth()
+    const { login, googleSignIn, facebookSignIn } = useAuth()
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
@@ -41,6 +41,17 @@ export default function Login() {
         setLoading(false)
     }
 
+    async function handleFacebookLogin(e) {
+        try {
+            setError('')
+            setLoading(true)
+            await facebookSignIn()
+            navigate("/")
+        } catch { 
+            setError('Failed to sign in. ')
+        }
+    }
+
 
 
     return (
@@ -61,8 +72,8 @@ export default function Login() {
                         <br></br>
                         <Button disabled={loading} className='w-100' type='submit'>Login</Button>
                     </Form>
-                    <br></br>
                     <Button onClick={handleGoogleLogIn} className='w-100' type='submit'>Login with Google</Button>
+                    <Button onClick={handleFacebookLogin}className='w-100' type='submit'>Login with Facebook</Button>
                     <div className='w-100 text-center mt-3'>
                         <Link to="/forgot-password">Forgot Password?</Link>
                     </div>
