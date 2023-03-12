@@ -78,7 +78,20 @@ def getRunningCount(uid):
     except:
         return False
 
+"""
+Get title of a given video
 
+@param uid
+    ID which sources the video
+@param index
+    index of video to be selected
+    
+@ret title
+    Iff successful info pull
+@ret False
+    Iff unsuccessful info pull
+
+"""
 def getTitle(uid, index):
     try:
         videoInfo_ref = db.collection(uid).document(str(index))
@@ -524,7 +537,7 @@ def sortVideosByTitle(uid, rOrder):
 #print(downloadFile(uid="uid", index=1))
 #print(readFileToScript(uid="uid", title="A test title", file_path="Script.txt"))
 #uploadFile(uid="uid3", index="3", localpath="Script.txt")
-print(sortVideosByRunningCount("uid3", True))
+#print(sortVideosByRunningCount("uid3", True))
 
 #Test Input & update; Print current running count 
 def main():
@@ -544,3 +557,12 @@ def main():
             
 
 #main()
+
+def testAll():
+    #print(writeNewUser(uid="TEST_USER", name="TEST"))
+    #print(modifyUser(uid="TEST_USER", name="TEST_NEW_NAME"))
+    #print(writeNewScript(uid="TEST_USER",title="SCRIPT_1", script="SCRIPT_1: Script"))
+
+    recordVideo()
+    
+testAll()
