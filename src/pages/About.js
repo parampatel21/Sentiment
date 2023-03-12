@@ -23,13 +23,12 @@ function About() {
         }
     }
 
-    function handleClick() {
-        fetch('https://us-central1-sentiment-379415.cloudfunctions.net/test_function')
-        .then(response => response.json())
-        .then(data => console.log(data))
-        .catch(error => console.error(error));
-      
-    }
+    // function handleClick() {
+    //     fetch('https://us-central1-sentiment-379415.cloudfunctions.net/test_function')
+    //     .then(response => response.json())
+    //     .then(data => console.log(data))
+    //     .catch(error => console.error(error));
+    // }
 
     return (
         <div className="container-fluid">
@@ -40,7 +39,7 @@ function About() {
             {/* Nav bar end */}
 
             <main>
-            <button onClick={handleClick}>Trigger Cloud Function</button>
+            {/* <button onClick={handleClick}>Trigger Cloud Function</button> */}
                 <div className="hero">
                     <h1>About Us</h1>
                     <p>We are a company that provides great products and services to our customers. We strive to create innovative solutions that meet the needs of our customers.</p>

@@ -30,6 +30,9 @@ export function AuthProvider({ children }) {
         .then((result) => {
           /** @type {firebase.auth.OAuthCredential} */
           var credential = result.credential;
+          if (result.additionalUserInfo.isNewUser == true) {
+            initDBCollection(result.user.uid, result.user.displayName)
+          }
           setLoggedIn(true)
           return credential;
         }).catch((error) => {
@@ -51,6 +54,9 @@ export function AuthProvider({ children }) {
         .then((result) => {
           /** @type {firebase.auth.OAuthCredential} */
           var credential = result.credential;
+          if (result.additionalUserInfo.isNewUser == true) {
+            initDBCollection(result.user.uid, result.user.displayName)
+          }
           setLoggedIn(true)
           return credential;
         })
