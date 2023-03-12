@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { auth, firestore } from '../firebase'
+import { auth, firestore, googleProvider} from '../firebase'
 
 const AuthContext = React.createContext()
 
@@ -24,33 +24,25 @@ export function AuthProvider({ children }) {
         return auth.signInWithEmailAndPassword(email, password)
     }
 
-    function google_login() {
-        // implement function here, change to this React structure
-        // make sure to add update to firesore on first login
-
-        // var provider = new auth.GoogleAuthProvider();
-        // firebase.auth()
-        // .signInWithPopup(provider)
-        // .then((result) => {
-        //     /** @type {firebase.auth.OAuthCredential} */
-        //     var credential = result.credential;
-
-        //     // This gives you a Google Access Token. You can use it to access the Google API.
-        //     var token = credential.accessToken;
-        //     // The signed-in user info.
-        //     var user = result.user;
-        //     // IdP data available in result.additionalUserInfo.profile.
-        //     // ...
-        // }).catch((error) => {
-        //     // Handle Errors here.
-        //     var errorCode = error.code;
-        //     var errorMessage = error.message;
-        //     // The email of the user's account used.
-        //     var email = error.email;
-        //     // The firebase.auth.AuthCredential type that was used.
-        //     var credential = error.credential;
-        //     // ...
-        // });
+    function googleSignIn() {
+        auth
+        .signInWithPopup(googleProvider)
+        .then((result) => {
+          /** @type {firebase.auth.OAuthCredential} */
+          var credential = result.credential;
+          setLoggedIn(true)
+          return credential;
+        }).catch((error) => {
+            setLoggedIn(false);
+          // Handle Errors here.
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          // The email of the user's account used.
+          var email = error.email;
+          // The firebase.auth.AuthCredential type that was used.
+          var credential = error.credential;
+          console.log(errorCode, errorMessage, email, credential);
+        });
     }
 
     function logout() {
@@ -110,7 +102,8 @@ export function AuthProvider({ children }) {
         updatePassword,
         getuser,
         initDBCollection,
-        isAuthenticated
+        isAuthenticated,
+        googleSignIn
     }
 
     return (
