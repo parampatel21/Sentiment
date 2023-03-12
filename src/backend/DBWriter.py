@@ -4,6 +4,9 @@ import pytz
 import cv2
 from firebase_admin import credentials, storage, firestore
 from datetime import datetime
+from fer import Video, FER
+import csv
+
 
 # Get path to serviceAccKey
 cwd = os.path.dirname(os.path.realpath("serviceAccountKey.json"))
@@ -538,6 +541,30 @@ def sortVideosByTitle(uid, rOrder):
 #print(readFileToScript(uid="uid", title="A test title", file_path="Script.txt"))
 #uploadFile(uid="uid3", index="3", localpath="Script.txt")
 #print(sortVideosByRunningCount("uid3", True))
+
+def analyzeVideo(filename):
+
+    # Load the video file
+    video_filename = filename
+    video = Video(video_filename)
+
+    # Initialize the FER detector
+    detector = FER()
+
+    # Analyze the video frames
+    result = video.analyze(detector=detector, display=False, frequency=30)
+
+    with open('data.csv', 'r') as file:
+
+        # Create a CSV reader object
+        reader = csv.reader(file)
+
+        # Loop through each row of data and print it
+        for row in reader:
+            print(row)
+
+
+
 
 #Test Input & update; Print current running count 
 def main():
