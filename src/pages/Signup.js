@@ -2,7 +2,6 @@ import React, { useRef, useState } from 'react'
 import { Form, Button, Card, Alert } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
-import { useFirestore } from '../contexts/FirestoreContext'
 import '../styles/styles.css'
 
 export default function Signup() {
@@ -39,7 +38,7 @@ export default function Signup() {
             initDBCollection(UID, nameRef.current.value)
             navigate('/')
         } catch {
-            setError('Failed to create an account')
+            setError('Failed to create an account. Account may already exist under the same email.')
         }
 
         setLoading(false)
@@ -81,8 +80,6 @@ export default function Signup() {
                         <div></div>
                         {/* Disable the submission button if already pressed and submission is in-progress */}
                         <Button disabled={loading} className='button' type='submit' style={{ marginBottom: '5px' }}>Sign Up</Button>
-                        <Button disabled={loading} className='button' type='button'>Sign Up with Facebook</Button>
-                        <Button disabled={loading} className='button' type='button'>Sign Up with Google</Button>
                     </Form>
                 </Card.Body>
             </Card>

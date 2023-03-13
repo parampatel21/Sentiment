@@ -1,12 +1,16 @@
+# ISSUES:
+#   1. Need to consolidate all functions into one master function
+#   2. Need to figure out how to authenticate Firebase Storage and Firestore (either from client side in function parameter or in cloud function)
+#       i. Probably upload ServiceAccountKey and function in tandem
+#   3. Find a way to setup Github Actions to deploy straight to firebase functions
+#       i. probably this thing: https://github.com/marketplace/actions/cloud-functions-deploy
+
 import os
 import firebase_admin
 import pytz
 import cv2
 from firebase_admin import credentials, storage, firestore
 from datetime import datetime
-from fer import Video, FER
-import csv
-
 
 # Get path to serviceAccKey
 cwd = os.path.dirname(os.path.realpath("serviceAccountKey.json"))
@@ -20,6 +24,36 @@ db = firestore.client()
 tz_NY = pytz.timezone('America/New_York') 
 # Get the current time in New York
 datetime_NY = datetime.now(tz_NY)
+
+"""
+SELECTING A FUNCTION FOR USE EXAMPLES:
+firebase_function("writeNewUser", uid="user123", name="John Doe")
+firebase_function("modifyUser", uid="user123", name="Jane Smith")
+"""
+
+def firebase_function(selector, *args, **kwargs):
+    if selector == "writeNewUser":
+        return writeNewUser(*args, **kwargs)
+    elif selector == "modifyUser":
+        return modifyUser(*args, **kwargs)
+    elif selector == "getRunningCount":
+        return getRunningCount(*args, **kwargs)
+    elif selector == "getTitle":
+        return getTitle(*args, **kwargs)
+    elif selector == "readFileToScript":
+        return readFileToScript(*args, **kwargs)
+    elif selector == "updateRunningCount":
+        return updateRunningCount(*args, **kwargs)
+    elif selector == "writeNewScript":
+        return writeNewScript(*args, **kwargs)
+    elif selector == "modifyScript":
+        return modifyScript(*args, **kwargs)
+    elif selector == "getScript":
+        return getScript(*args, **kwargs)
+    else:
+        raise ValueError("Invalid function selector")
+    
+# region (for VScode organization)
 
 """
 Write a new user
@@ -81,20 +115,7 @@ def getRunningCount(uid):
     except:
         return False
 
-"""
-Get title of a given video
 
-@param uid
-    ID which sources the video
-@param index
-    index of video to be selected
-    
-@ret title
-    Iff successful info pull
-@ret False
-    Iff unsuccessful info pull
-
-"""
 def getTitle(uid, index):
     try:
         videoInfo_ref = db.collection(uid).document(str(index))
@@ -368,63 +389,55 @@ def playVideo(path):
     cv2.destroyAllWindows()
 
 
-def recordVideo(path,filename):
-    # Create an object to read
-    # from camera
-    video = cv2.VideoCapture(path)
+def recordVideo():
+    cwd = os.getcwd()
+    filename = 'temp.mp4'
+    frames_per_second = 24.0
+    res = '720p'
 
-    # We need to check if camera
-    # is opened previously or not
-    if (video.isOpened() == False):
-        print("Error reading video file")
+    def change_res(cap, width, height):
+        cap.set(3, width)
+        cap.set(4, height)
 
-    # We need to set resolutions.
-    # so, convert them from float to integer.
-    frame_width = int(video.get(3))
-    frame_height = int(video.get(4))
+    STD_DIMENSIONS =  {
+        "480p": (640, 480),
+        "720p": (1280, 720),
+        "1080p": (1920, 1080),
+        "4k": (3840, 2160),
+    }
 
-    size = (frame_width, frame_height)
+    def get_dims(cap, res='1080p'):
+        width, height = STD_DIMENSIONS["480p"]
+        if res in STD_DIMENSIONS:
+            width,height = STD_DIMENSIONS[res]
+        change_res(cap, width, height)
+        return width, height
 
-    # Below VideoWriter object will create
-    # a frame of above defined The output
-    # is stored in 'filename.avi' file.
-    result = cv2.VideoWriter(filename + '.avi',
-                            cv2.VideoWriter_fourcc(*'MJPG'),
-                            10, size)
-        
-    while(True):
-        ret, frame = video.read()
+    VIDEO_TYPE = {
+        'avi': cv2.VideoWriter_fourcc(*'XVID'),
+        'mp4': cv2.VideoWriter_fourcc(*'XVID'),
+    }
 
-        if ret == True:
+    def get_video_type(filename):
+        filename, ext = os.path.splitext(filename)
+        if ext in VIDEO_TYPE:
+            return  VIDEO_TYPE[ext]
+        return VIDEO_TYPE['mp4']
 
-            # Write the frame into the
-            # file 'filename.avi'
-            result.write(frame)
+    cap = cv2.VideoCapture(0)
+    out = cv2.VideoWriter(cwd + "\\" + filename, get_video_type(filename), 25, get_dims(cap, res))
 
-            # Display the frame
-            # saved in the file
-            cv2.imshow('Frame', frame)
-
-            # Press Q on keyboard
-            # to stop the process
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
-
-        # Break the loop
-        else:
+    while True:
+        ret, frame = cap.read()
+        out.write(frame)
+        cv2.imshow('frame',frame)
+        #click q to stop recording
+        if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
-    # When everything done, release
-    # the video capture and video
-    # write objects
-    video.release()
-    result.release()
-        
-    # Closes all the frames
+    cap.release()
+    out.release()
     cv2.destroyAllWindows()
-
-    return True
-
 
 """
 Sort all scripts of a user by running count
@@ -543,61 +556,5 @@ def sortVideosByTitle(uid, rOrder):
  
     dict_list_sorted = sorted(dict_List, key=lambda x: x['title'], reverse=rOrder)
     return dict_list_sorted
-        
-#print(uploadFile("uid",1, "Script.txt"))
-#print(downloadFile(uid="uid", index=1))
-#print(readFileToScript(uid="uid", title="A test title", file_path="Script.txt"))
-#uploadFile(uid="uid3", index="3", localpath="Script.txt")
-#print(sortVideosByRunningCount("uid3", True))
 
-def analyzeVideo(filename, depth):
-
-    # Load the video file
-    video_filename = filename
-    video = Video(video_filename)
-
-    # Initialize the FER detector
-    detector = FER()
-
-    # Analyze the video frames
-    result = video.analyze(detector=detector, display=False, frequency=depth)
-
-    with open('data.csv', 'r') as file:
-
-        # Create a CSV reader object
-        reader = csv.reader(file)
-
-        # Loop through each row of data and print it
-        for row in reader:
-            print(row)
-
-
-
-
-#Test Input & update; Print current running count 
-def main():
-    choice = 0
-    while (choice != 3):
-        choice = int(input("Enter 1 for new user, 2 for update, 3 for quit: "))
-        if choice == 1:
-            print("New User:")
-            uid = input("Uid: ")
-            name = input("Name: ")
-            writeNewUser(uid, name)
-        elif choice == 2:
-            print("Update User:\n")
-            uid = input("Uid: ")
-            name = input("Name: ")
-            writeNewUser(uid, name)
-            
-
-#main()
-
-def testAll():
-    #print(writeNewUser(uid="TEST_USER", name="TEST"))
-    #print(modifyUser(uid="TEST_USER", name="TEST_NEW_NAME"))
-    #print(writeNewScript(uid="TEST_USER",title="SCRIPT_1", script="SCRIPT_1: Script"))
-
-    recordVideo()
-    
-testAll()
+# endregion

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Card, Alert } from 'react-bootstrap'
 import { useAuth } from '../contexts/AuthContext'
-import { useNavigate, Link } from 'react-router-dom'
-import axios from 'axios';
+
+import { useNavigate } from 'react-router-dom'
 import Navbar from './components/Navbar';
 import '../styles/HomePage.css'
 
@@ -23,22 +22,6 @@ function Dashboard() {
         } catch {
             setError('Failed to log out')
         }
-    }
-
-    async function use_axios() {
-        axios({
-            method: 'post',
-            url: 'https://us-central1-sentiment-379415.cloudfunctions.net/test_function',
-            data: {
-                message: 'Hello'
-            }
-        })
-            .then((response) => {
-                console.log(response.data);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
     }
 
     return (

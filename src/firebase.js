@@ -22,7 +22,9 @@ const app = firebase.initializeApp({
 })
 
 // Initialize firebase auth for firebase api functions outside of this file
-export const auth = app.auth()
+export const auth = app.auth();
 export const storage = firebase.storage();
+export const googleProvider = new firebase.auth.GoogleAuthProvider();
+export const facebookProvider = new firebase.auth.FacebookAuthProvider();
 export const firestore = app.firestore();
 export default app

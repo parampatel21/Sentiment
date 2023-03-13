@@ -6,7 +6,7 @@ import { Link, useNavigate } from 'react-router-dom'
 export default function Login() {
     const emailRef = useRef()
     const passwordRef = useRef()
-    const { login } = useAuth()
+    const { login, googleSignIn, facebookSignIn } = useAuth()
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
@@ -19,13 +19,40 @@ export default function Login() {
             setLoading(true)
             await login(emailRef.current.value, passwordRef.current.value)
             navigate("/")
-        } catch {
-            setError('Failed to sign in')
+        } catch { 
+            setError('Failed to sign in. Try Google/Facebook login instead.')
         }
 
         setLoading(false)
-
     }
+
+    async function handleGoogleLogIn(e) {
+        e.preventDefault()
+
+        try {
+            setError('')
+            setLoading(true)
+            await googleSignIn()
+            navigate("/")
+        } catch { 
+            setError('Failed to sign in. ')
+        }
+
+        setLoading(false)
+    }
+
+    async function handleFacebookLogin(e) {
+        try {
+            setError('')
+            setLoading(true)
+            await facebookSignIn()
+            navigate("/")
+        } catch { 
+            setError('Failed to sign in. ')
+        }
+    }
+
+
 
     return (
         <>
@@ -42,8 +69,11 @@ export default function Login() {
                             <Form.Label>Password</Form.Label>
                             <Form.Control type="password" ref={passwordRef} required />
                         </Form.Group>
+                        <br></br>
                         <Button disabled={loading} className='w-100' type='submit'>Login</Button>
                     </Form>
+                    <Button onClick={handleGoogleLogIn} className='w-100' type='submit'>Login with Google</Button>
+                    <Button onClick={handleFacebookLogin}className='w-100' type='submit'>Login with Facebook</Button>
                     <div className='w-100 text-center mt-3'>
                         <Link to="/forgot-password">Forgot Password?</Link>
                     </div>
