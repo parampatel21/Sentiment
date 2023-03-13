@@ -34,9 +34,7 @@ function ViewAllScripts() {
 
     return (
         <div className="container-fluid">
-            <header>
-                <Navbar />
-            </header>
+            <Navbar />
             <main>
                 <div>
                     <h2>Your Scripts</h2>

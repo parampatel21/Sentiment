@@ -25,11 +25,7 @@ function About() {
 
     return (
         <div className="container-fluid">
-            {/* Nav bar start */}
-            <header>
-                <Navbar />
-            </header>
-            {/* Nav bar end */}
+            <Navbar />
 
             <main>
                 <div className="hero">

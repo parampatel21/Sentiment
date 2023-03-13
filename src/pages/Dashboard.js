@@ -59,17 +59,7 @@ function Dashboard() {
                         <p>Don't worry about your credit card information being stolen. We only take cash.</p>
                     </div>
                 </section>
-                <section className="call-to-action">
-                    <h2>Get Started Today</h2>
-                    {isAuthenticated() ? (
-                        <a href="/record">
-                            <button className='hero-button'>Start a Recording</button>
-                        </a>
-                    ) : (
-                        <button className='hero-button' href='/signup'>Sign Up</button>
-                    )}
 
-                </section>
             </main>
             <footer>
                 <p>&copy; 2023 Sentiment. All rights reserved.</p>
