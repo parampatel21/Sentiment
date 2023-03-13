@@ -1,74 +1,66 @@
-import React, { useRef, useState } from 'react'
-import { Form, Button, Card, Alert } from 'react-bootstrap'
-import { Link, useNavigate } from 'react-router-dom'
+import React, { useState, useEffect, useRef } from 'react'
 import { useAuth } from '../contexts/AuthContext'
-import '../styles/styles.css'
+import { useNavigate, Link } from 'react-router-dom'
+import axios from 'axios';
+import { Form, Button, Card, Alert } from 'react-bootstrap'
+import Navbar from './components/Navbar';
+import '../styles/HomePage.css'
 
-export default function Signup() {
-    // references for user's fields on the ui components
+
+function Signup() {
     const emailRef = useRef()
     const passwordRef = useRef()
     const nameRef = useRef()
     const passwordConfirmRef = useRef()
-    // import function implemented in AuthContext.js
     const { signup, getuser, initDBCollection } = useAuth()
-    // const { initDBCollection } = useFirestore();
-    // initialize error and loading vars
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
-    // initialize navigate obj for redirecting
     const navigate = useNavigate()
 
-    // Function to handle user interaction with the submit button
     async function handleSubmit(e) {
         e.preventDefault()
-
         // return an error if the password and passwordConfirm do not match
         if (passwordRef.current.value !==
             passwordConfirmRef.current.value) {
             return setError('Passwords do not match')
         }
 
-        // try to signup credentials provided and await success then redirect to dashboard
         try {
             setError('')
             setLoading(true)
             await signup(emailRef.current.value, passwordRef.current.value)
-            const UID = getuser();
+            const UID = getuser()
             initDBCollection(UID, nameRef.current.value)
-            navigate('/')
+            navigate("/")
         } catch {
-            setError('Failed to create an account. Account may already exist under the same email.')
+            setError('Failed to sign in')
         }
 
         setLoading(false)
 
     }
 
-    // return the html to render
     return (
-        <>
-            {/* Google react-bootstrap to see how to use the library for easy styled components */}
-            <Card>
-                <Card.Body>
-                    {/* Card header  */}
-                    <h2 className='text-center mb-4'>Sign Up</h2>
-                    {/* If there is an error caught generate an error message component at the top of this Card */}
+        <div className="container">
+            {/* <Navbar /> */}
+            <main>
+                <section className="hero">
+                    <h1>Sentiment</h1>
+                    <p style={{ marginBottom: '4px' }}>Try our application today and discover the power of emotion and tone analysis.</p>
+                    <p style={{ fontSize: '40px', marginBottom: '20px' }}>Signup</p>
+                    {/* <h1>Signup</h1> */}
                     {error && <Alert variant="danger">{error}</Alert>}
-                    {/* Handle form submission */}
                     <Form onSubmit={handleSubmit}>
                         {/* Form components (Label & Text Box) for Name */}
                         <Form.Group id="name">
                             <Form.Label>First and Last Name</Form.Label>
                             <Form.Control type="name" ref={nameRef} required />
                         </Form.Group>
-                        {/* Form components (Label & Text Box) for Email */}
-                        <Form.Group id="email">
+                        <Form.Group id="email" style={{ marginBottom: '3px' }}>
                             <Form.Label>Email</Form.Label>
                             <Form.Control type="email" ref={emailRef} required />
                         </Form.Group>
-                        {/* Form components (Label & Text Box) for Password */}
-                        <Form.Group id="password">
+                        <Form.Group id="password" style={{ marginBottom: '3px' }}>
                             <Form.Label>Password</Form.Label>
                             <Form.Control type="password" ref={passwordRef} required />
                         </Form.Group>
@@ -78,18 +70,21 @@ export default function Signup() {
                             <Form.Control type="password" ref={passwordConfirmRef} required />
                         </Form.Group>
                         <div></div>
-                        {/* Disable the submission button if already pressed and submission is in-progress */}
-                        <Button disabled={loading} className='button' type='submit' style={{ marginBottom: '5px' }}>Sign Up</Button>
+                        <button style={{ width: '50%' }} className='hero-button' onClick={handleSubmit}>Sign Up</button>
+                        {/* <Button disabled={loading} className='w-100' type='submit'>Login</Button> */}
                     </Form>
-                </Card.Body>
-            </Card>
-            {/* Link to login page if the user already has an account */}
-            <div className='w-100 text-center mt-2'>
-                Already have an account? <Link to="/login">Log In</Link>
-            </div>
-
-
-
-        </>
-    )
+                    {/* Link to login page if the user already has an account */}
+                    <div className='w-100 text-center mt-2'>
+                        Already have an account? <Link to="/login">Log In</Link>
+                    </div>
+                </section>
+            </main>
+            <footer>
+                <p>&copy; 2023 Sentiment. All rights reserved.</p>
+            </footer>
+        </div>
+    );
 }
+
+
+export default Signup;

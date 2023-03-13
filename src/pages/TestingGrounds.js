@@ -8,21 +8,29 @@ import '../styles/HomePage.css'
 
 
 function TestingGrounds() {
-    const { logout, isAuthenticated } = useAuth()
     const emailRef = useRef()
     const passwordRef = useRef()
-    const { login } = useAuth()
+    const nameRef = useRef()
+    const passwordConfirmRef = useRef()
+    const { signup, getuser, initDBCollection } = useAuth()
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
 
     async function handleSubmit(e) {
         e.preventDefault()
+        // return an error if the password and passwordConfirm do not match
+        if (passwordRef.current.value !==
+            passwordConfirmRef.current.value) {
+            return setError('Passwords do not match')
+        }
 
         try {
             setError('')
             setLoading(true)
-            await login(emailRef.current.value, passwordRef.current.value)
+            await signup(emailRef.current.value, passwordRef.current.value)
+            const UID = getuser()
+            initDBCollection(UID, nameRef.current.value)
             navigate("/")
         } catch {
             setError('Failed to sign in')
@@ -30,54 +38,6 @@ function TestingGrounds() {
 
         setLoading(false)
 
-    }
-
-    async function handleGoogle(e) {
-        e.preventDefault()
-
-        try {
-            setError('')
-            setLoading(true)
-            // await yourFunctionHere()
-            navigate("/")
-        } catch {
-            setError('Failed to sign in using Google credentials :(')
-        }
-
-        setLoading(false)
-
-    }
-
-    async function handleFacebook(e) {
-        e.preventDefault()
-
-        try {
-            setError('')
-            setLoading(true)
-            // await yourFunctionHere()
-            navigate("/")
-        } catch {
-            setError('Failed to sign in')
-        }
-
-        setLoading(false)
-
-    }
-
-    async function use_axios() {
-        axios({
-            method: 'post',
-            url: 'https://us-central1-sentiment-379415.cloudfunctions.net/test_function',
-            data: {
-                message: 'Hello'
-            }
-        })
-            .then((response) => {
-                console.log(response.data);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
     }
 
     return (
@@ -85,14 +45,17 @@ function TestingGrounds() {
             {/* <Navbar /> */}
             <main>
                 <section className="hero">
-                    <h1>Sentiment: Login</h1>
-                    <p>Try our application today and discover the power of emotion and tone analysis.</p>
-                </section>
-                <section className="call-to-action">
-                    <h2>Get Started Today</h2>
-                    <h2 className='text-center mb-4'>Login</h2>
+                    <h1>Sentiment</h1>
+                    <p style={{ marginBottom: '4px' }}>Try our application today and discover the power of emotion and tone analysis.</p>
+                    <p style={{ fontSize: '40px', marginBottom: '4px' }}>Signup</p>
+                    {/* <h1>Signup</h1> */}
                     {error && <Alert variant="danger">{error}</Alert>}
                     <Form onSubmit={handleSubmit}>
+                        {/* Form components (Label & Text Box) for Name */}
+                        <Form.Group id="name">
+                            <Form.Label>First and Last Name</Form.Label>
+                            <Form.Control type="name" ref={nameRef} required />
+                        </Form.Group>
                         <Form.Group id="email" style={{ marginBottom: '3px' }}>
                             <Form.Label>Email</Form.Label>
                             <Form.Control type="email" ref={emailRef} required />
@@ -101,13 +64,18 @@ function TestingGrounds() {
                             <Form.Label>Password</Form.Label>
                             <Form.Control type="password" ref={passwordRef} required />
                         </Form.Group>
-                        <button style={{ width: '100%' }} className='hero-button' onClick={handleSubmit}>Login with Email</button>
-                        <button style={{ width: '100%', backgroundColor: '#f4c20d' }} className='hero-button' onClick={handleGoogle}>Login with Google</button>
-                        <button style={{ width: '100%', backgroundColor: '#3b5998' }} className='hero-button' onClick={handleFacebook}>Login with Facebook</button>
+                        {/* Form components (Label & Text Box) for Password-Confirmation */}
+                        <Form.Group id="password-confirm">
+                            <Form.Label>Confirm Password</Form.Label>
+                            <Form.Control type="password" ref={passwordConfirmRef} required />
+                        </Form.Group>
+                        <div></div>
+                        <button style={{ width: '50%' }} className='hero-button' onClick={handleSubmit}>Sign Up</button>
                         {/* <Button disabled={loading} className='w-100' type='submit'>Login</Button> */}
                     </Form>
-                    <div className='w-100 text-center mt-3'>
-                        <Link to="/forgot-password">Forgot Password?</Link>
+                    {/* Link to login page if the user already has an account */}
+                    <div className='w-100 text-center mt-2'>
+                        Already have an account? <Link to="/login">Log In</Link>
                     </div>
                 </section>
             </main>
