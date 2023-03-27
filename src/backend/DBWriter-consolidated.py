@@ -5,25 +5,25 @@
 #   3. Find a way to setup Github Actions to deploy straight to firebase functions
 #       i. probably this thing: https://github.com/marketplace/actions/cloud-functions-deploy
 
-import os
-import firebase_admin
-import pytz
-import cv2
-from firebase_admin import credentials, storage, firestore
-from datetime import datetime
+# import os
+# import firebase_admin
+# import pytz
+# import cv2
+# from firebase_admin import credentials, storage, firestore
+# from datetime import datetime
 
-# Get path to serviceAccKey
-cwd = os.path.dirname(os.path.realpath("serviceAccountKey.json"))
+# # Get path to serviceAccKey
+# cwd = os.path.dirname(os.path.realpath("serviceAccountKey.json"))
 
-#Conect to firestore DB via seviceAccKey
-cred = credentials.Certificate(cwd + "/serviceAccountKey.json")
-firebase_admin.initialize_app(cred,{'storageBucket' : 'sentiment-6696b.appspot.com'})
-db = firestore.client()
+# #Conect to firestore DB via seviceAccKey
+# cred = credentials.Certificate(cwd + "/serviceAccountKey.json")
+# firebase_admin.initialize_app(cred,{'storageBucket' : 'sentiment-6696b.appspot.com'})
+# db = firestore.client()
 
-#Get the timezone object for New York
-tz_NY = pytz.timezone('America/New_York') 
-# Get the current time in New York
-datetime_NY = datetime.now(tz_NY)
+# #Get the timezone object for New York
+# tz_NY = pytz.timezone('America/New_York') 
+# # Get the current time in New York
+# datetime_NY = datetime.now(tz_NY)
 
 """
 SELECTING A FUNCTION FOR USE EXAMPLES:
