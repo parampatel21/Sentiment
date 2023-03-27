@@ -14,3 +14,5 @@ function invocationGCPparameters() {
       console.log(data); // prints "Hello, John!"
     });
 }
+
+// TODO:complete GCP guide here
