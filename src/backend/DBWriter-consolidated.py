@@ -403,55 +403,63 @@ def master_func(request):
         cv2.destroyAllWindows()
 
 
-    def recordVideo():
-        cwd = os.getcwd()
-        filename = 'temp.mp4'
-        frames_per_second = 24.0
-        res = '720p'
+    def recordVideo(path,filename):
+        # Create an object to read
+        # from camera
+        video = cv2.VideoCapture(path)
 
-        def change_res(cap, width, height):
-            cap.set(3, width)
-            cap.set(4, height)
+        # We need to check if camera
+        # is opened previously or not
+        if (video.isOpened() == False):
+            print("Error reading video file")
 
-        STD_DIMENSIONS =  {
-            "480p": (640, 480),
-            "720p": (1280, 720),
-            "1080p": (1920, 1080),
-            "4k": (3840, 2160),
-        }
+        # We need to set resolutions.
+        # so, convert them from float to integer.
+        frame_width = int(video.get(3))
+        frame_height = int(video.get(4))
 
-        def get_dims(cap, res='1080p'):
-            width, height = STD_DIMENSIONS["480p"]
-            if res in STD_DIMENSIONS:
-                width,height = STD_DIMENSIONS[res]
-            change_res(cap, width, height)
-            return width, height
+        size = (frame_width, frame_height)
 
-        VIDEO_TYPE = {
-            'avi': cv2.VideoWriter_fourcc(*'XVID'),
-            'mp4': cv2.VideoWriter_fourcc(*'XVID'),
-        }
+        # Below VideoWriter object will create
+        # a frame of above defined The output
+        # is stored in 'filename.avi' file.
+        result = cv2.VideoWriter(filename + '.avi',
+                                cv2.VideoWriter_fourcc(*'MJPG'),
+                                10, size)
+            
+        while(True):
+            ret, frame = video.read()
 
-        def get_video_type(filename):
-            filename, ext = os.path.splitext(filename)
-            if ext in VIDEO_TYPE:
-                return  VIDEO_TYPE[ext]
-            return VIDEO_TYPE['mp4']
+            if ret == True:
 
-        cap = cv2.VideoCapture(0)
-        out = cv2.VideoWriter(cwd + "\\" + filename, get_video_type(filename), 25, get_dims(cap, res))
+                # Write the frame into the
+                # file 'filename.avi'
+                result.write(frame)
 
-        while True:
-            ret, frame = cap.read()
-            out.write(frame)
-            cv2.imshow('frame',frame)
-            #click q to stop recording
-            if cv2.waitKey(1) & 0xFF == ord('q'):
+                # Display the frame
+                # saved in the file
+                cv2.imshow('Frame', frame)
+
+                # Press Q on keyboard
+                # to stop the process
+                if cv2.waitKey(1) & 0xFF == ord('q'):
+                    break
+
+            # Break the loop
+            else:
                 break
 
-        cap.release()
-        out.release()
+        # When everything done, release
+        # the video capture and video
+        # write objects
+        video.release()
+        result.release()
+            
+        # Closes all the frames
         cv2.destroyAllWindows()
+
+        return True
+
 
     """
     Sort all scripts of a user by running count
@@ -570,6 +578,32 @@ def master_func(request):
     
         dict_list_sorted = sorted(dict_List, key=lambda x: x['title'], reverse=rOrder)
         return dict_list_sorted
+    
+    def analyzeVideo(filename, depth):
+
+        # Load the video file
+        video_filename = filename
+        video = Video(video_filename)
+
+        # Initialize the FER detector
+        detector = FER()
+
+        total_frames = video.get(cv2.CAP_PROP_FRAME_COUNT)
+
+        while (depth >= total_frames / 5 and depth < 30):
+            depth /= 2
+        
+        # Analyze the video frames
+        result = video.analyze(detector=detector, display=False, frequency=depth)
+
+        with open('data.csv', 'r') as file:
+
+            # Create a CSV reader object
+            reader = csv.reader(file)
+
+            # Loop through each row of data and print it
+            for row in reader:
+                print(row)
 
     # endregion
 
