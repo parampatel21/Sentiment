@@ -76,6 +76,12 @@ def master_func(request):
             return modifyScript(*args, **kwargs)
         elif selector == "getScript":
             return getScript(*args, **kwargs)
+        elif selector == "sortScriptByRunningCount":
+            return sortScriptByRunningCount(*args, **kwargs)
+        elif selector == "sortScriptByTimeStamp":
+            return sortScriptByTimeStamp(*args, **kwargs)
+        elif selector == "sortScriptByTitle":
+            return sortScriptByTitle(*args, **kwargs)
         else:
             return ("Invalid function selector")
         
