@@ -1,17 +1,3 @@
-# ISSUES:
-#   1. Need to consolidate all functions into one master function
-#   2. Need to figure out how to authenticate Firebase Storage and Firestore (either from client side in function parameter or in cloud function)
-#       i. Probably upload ServiceAccountKey and function in tandem
-#   3. Find a way to setup Github Actions to deploy straight to firebase functions
-#       i. probably this thing: https://github.com/marketplace/actions/cloud-functions-deploy
-
-import os
-import firebase_admin
-import pytz
-# import cv2
-from firebase_admin import credentials, storage, firestore
-from datetime import datetime
-
 def master_func(request):
     # Set CORS headers for the preflight request
     if request.method == 'OPTIONS':
@@ -30,12 +16,21 @@ def master_func(request):
         'Access-Control-Allow-Origin': '*'
     }
 
+    import os
+    import firebase_admin
+    import pytz
+    # import cv2
+    from firebase_admin import credentials, storage, firestore
+    from datetime import datetime
+
     # Get path to serviceAccKey
     cwd = os.path.dirname(os.path.realpath("serviceAccountKey.json"))
 
     #Conect to firestore DB via seviceAccKey
-    cred = credentials.Certificate(cwd + "/serviceAccountKey.json")
-    firebase_admin.initialize_app(cred,{'storageBucket' : 'sentiment-6696b.appspot.com'})
+    if not firebase_admin._apps:
+        cred = credentials.Certificate(cwd + "/serviceAccountKey.json") 
+        firebase_admin.initialize_app(cred,{'storageBucket' : 'sentiment-6696b.appspot.com'})
+    
     db = firestore.client()
 
     #Get the timezone object for New York
@@ -43,39 +38,34 @@ def master_func(request):
     # Get the current time in New York
     datetime_NY = datetime.now(tz_NY)
 
-    """
-    SELECTING A FUNCTION FOR USE EXAMPLES:
-    firebase_function("writeNewUser", uid="user123", name="John Doe")
-    firebase_function("modifyUser", uid="user123", name="Jane Smith")
-    """
 
-    selector = request.args.get('selector')
-    args = request.args.get('args')
-    kwargs = request.args.get('kwargs')
-
-    firebase_function(selector, args, kwargs)
+    # DEFINE FUNCTION PARAMETERS HERE 
+    kwargs_list = list(request.args.items())
+    kwargs_dict = dict(kwargs_list)
+    if 'selector' in kwargs_dict:
+        selector = kwargs_dict.pop('selector')
 
     def firebase_function(selector, *args, **kwargs):
         if selector == "writeNewUser":
-            return (writeNewUser(*args, **kwargs), 200, headers)
+            return writeNewUser(*args, **kwargs)
         elif selector == "modifyUser":
-            return (modifyUser(*args, **kwargs), 200, headers)
+            return modifyUser(*args, **kwargs)
         elif selector == "getRunningCount":
-            return (getRunningCount(*args, **kwargs), 200, headers)
+            return getRunningCount(*args, **kwargs)
         elif selector == "getTitle":
-            return (getTitle(*args, **kwargs), 200, headers)
+            return getTitle(*args, **kwargs)
         elif selector == "readFileToScript":
-            return (readFileToScript(*args, **kwargs), 200, headers)
+            return readFileToScript(*args, **kwargs)
         elif selector == "updateRunningCount":
-            return (updateRunningCount(*args, **kwargs), 200, headers)
+            return updateRunningCount(*args, **kwargs)
         elif selector == "writeNewScript":
-            return (writeNewScript(*args, **kwargs), 200, headers)
+            return writeNewScript(*args, **kwargs)
         elif selector == "modifyScript":
-            return (modifyScript(*args, **kwargs), 200, headers)
+            return modifyScript(*args, **kwargs)
         elif selector == "getScript":
-            return (getScript(*args, **kwargs), 200, headers)
+            return getScript(*args, **kwargs)
         else:
-            return ("Invalid function selector: " + str(selector), 200, headers)
+            return ("Invalid function selector")
         
     # region (for VScode organization)
 
@@ -582,3 +572,6 @@ def master_func(request):
         return dict_list_sorted
 
     # endregion
+
+    return (str(firebase_function(selector, **kwargs_dict)), 200, headers)
+
