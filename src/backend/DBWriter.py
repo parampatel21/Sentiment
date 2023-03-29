@@ -1,3 +1,15 @@
+
+"""
+
+REMINDER: UPDATE THE CODE ON GOOGLE CLOUD FUNCTIONS EVERY SINGLE TIME YOU PUSH A NEW FEATURE ONTO GITHUB
+YOU ALSO NEED TO ADD THE SAID FUNCTION TO firebase_function SUCH THAT IT CAN BE SELECTED VIA ARGUMENTS
+THE GOOGLE CLOUD FUNCTION YOU ARE UPDATING IS CALLED: firebase_operational
+THE TRIGGER FOR THIS FUNCTION IS: https://us-central1-sentiment-379415.cloudfunctions.net/firebase_operational
+MORE INSTRUCTIONS ARE ON GCP GUIDE JS FILE
+
+"""
+
+
 def master_func(request):
     # Set CORS headers for the preflight request
     if request.method == 'OPTIONS':

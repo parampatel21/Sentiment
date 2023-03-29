@@ -9,3 +9,5 @@ function invocationGCPparameterstest() {
 // add parameters to trigger link as shown above
 // check DBwriter.py to see what each argument does
 // in order to manipulate the output, take data variable and do whatever you desire with it
+// REMINDER: UPDATE THE CODE ON GOOGLE CLOUD FUNCTIONS EVERY SINGLE TIME YOU PUSH A NEW FEATURE ONTO GITHUB
+// THE GOOGLE CLOUD FUNCTION YOU ARE UPDATING IS CALLED: firebase_operational
