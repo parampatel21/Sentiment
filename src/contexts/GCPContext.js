@@ -7,12 +7,12 @@ function invocationGCPbasic(trigger_link) {
     });
 } // function without parameters
 
-function invocationGCPparameters() {
-  fetch('https://[REGION]-[PROJECT_ID].cloudfunctions.net/[FUNCTION_NAME]?name=John') // Hello World function with parameters (look at end of link)
+function invocationGCPparameterstest() {
+  fetch('https://us-central1-sentiment-379415.cloudfunctions.net/test_function' + '?name=John' + "&name2=Patel") // Hello World function with parameters (look at end of link)
     .then(response => response.text())
     .then(data => {
       console.log(data); // prints "Hello, John!"
     });
-}
+} // function with multiple parameters
 
 // TODO:complete GCP guide here
