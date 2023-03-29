@@ -11,3 +11,9 @@ function invocationGCPparameterstest() {
 // in order to manipulate the output, take data variable and do whatever you desire with it
 // REMINDER: UPDATE THE CODE ON GOOGLE CLOUD FUNCTIONS EVERY SINGLE TIME YOU PUSH A NEW FEATURE ONTO GITHUB
 // THE GOOGLE CLOUD FUNCTION YOU ARE UPDATING IS CALLED: firebase_operational
+
+// for michael and chris:
+
+// if you want to update the function in the cloud, paste it in the function console
+// for debugging, do NOT use the browser console, use the google cloud console: https://console.cloud.google.com/logs/query?project=sentiment-379415
+// this will print every single thing regarding the function -- errors, print statements, invocations, etc.
