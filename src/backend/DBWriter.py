@@ -559,6 +559,11 @@ def analyzeVideo(filename, depth):
     # Initialize the FER detector
     detector = FER()
 
+    total_frames = video.get(cv2.CAP_PROP_FRAME_COUNT)
+
+    while (depth >= total_frames / 5 and depth < 30):
+        depth /= 2
+    
     # Analyze the video frames
     result = video.analyze(detector=detector, display=False, frequency=depth)
 
