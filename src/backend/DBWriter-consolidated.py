@@ -49,10 +49,11 @@ def master_func(request):
     firebase_function("modifyUser", uid="user123", name="Jane Smith")
     """
 
-        # Your function logic goes here
+    selector = request.args.get('selector')
+    args = request.args.get('args')
+    kwargs = request.args.get('kwargs')
 
-
-
+    firebase_function(selector, args, kwargs)
 
     def firebase_function(selector, *args, **kwargs):
         if selector == "writeNewUser":
@@ -74,7 +75,7 @@ def master_func(request):
         elif selector == "getScript":
             return (getScript(*args, **kwargs), 200, headers)
         else:
-            raise ValueError("Invalid function selector")
+            return ("Invalid function selector: " + str(selector), 200, headers)
         
     # region (for VScode organization)
 

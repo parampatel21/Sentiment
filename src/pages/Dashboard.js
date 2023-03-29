@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '../contexts/AuthContext'
-
 import { useNavigate } from 'react-router-dom'
 import Navbar from './components/Navbar';
 import '../styles/HomePage.css'
@@ -11,6 +10,14 @@ function Dashboard() {
     const [error, setError] = useState("")
     const { logout, isAuthenticated } = useAuth()
     const navigate = useNavigate()
+
+    async function invocationGCPparameterstest() {
+        fetch('https://us-central1-sentiment-379415.cloudfunctions.net/test_function' + '?name=John' + "&name2=Patel") // Hello World function with parameters (look at end of link)
+          .then(response => response.text())
+          .then(data => {
+            console.log(data); // prints "Hello, John!"
+          });
+      }
 
     async function handleLogout() {
         setError('')
@@ -29,6 +36,7 @@ function Dashboard() {
             <Navbar />
             <main>
                 <section className="hero">
+                    <button onClick={invocationGCPparameterstest}>Test GCP</button>
                     <h1>Welcome to Sentiment</h1>
                     <p>Our application uses advanced technology to analyze emotions and tone via video and audio recordings. Our cutting-edge algorithms can accurately detect and analyze a wide range of emotions and tones, including happiness, sadness, anger, fear, and more.</p>
                     <p>Whether you're looking to improve your public speaking skills, want to better understand your emotional state, or need to analyze the emotional tone of a conversation, our app can help. Simply record a video or audio clip, and our app will provide you with detailed insights into the emotions and tone present in the recording.</p>
