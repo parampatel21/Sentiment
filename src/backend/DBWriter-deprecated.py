@@ -285,11 +285,11 @@ Upload a file into firestore storage; Throws error if unsuccessful; Overwrites i
     Unsuccessful upload
     
 """
-def uploadFile(uid, index, localpath):
+def uploadFile(uid, index, localpath, filename):
     try: 
         bucket = storage.bucket()
-        blob = bucket.blob(uid + "_" + str(index) + "_" + str(localpath) )
-        blob.upload_from_filename(localpath)
+        blob = bucket.blob(uid + "_" + str(index) + "_" + str(localpath))
+        blob.upload_from_filename(filename)
         return True
     except FileNotFoundError:
         #Should not be thrown iff UI implemented correctly
@@ -319,7 +319,7 @@ def downloadFile(uid, index, filename):
     try:
         bucket = storage.bucket()
         blob = bucket.blob(uid + "_" + str(index) + "_" + str(filename))
-        blob.download_to_filename(filename)
+        blob.download_to_filename(uid + "_" + str(index) + "_" + filename)
         
         return True
     except FileNotFoundError:
@@ -560,7 +560,7 @@ def analyzeVideo(filename, depth, outputname):
     # Analyze the video frames
     result = video.analyze(detector=detector, display=False, frequency=depth)
 
-    with open('Data.csv', 'r') as file, open(outputname + '_data.txt', "w") as file2:
+    with open('Data.csv', 'r') as file, open(outputname + '_facial_data.txt', "w") as file2:
 
         # Create a CSV reader object
         reader = csv.reader(file)
@@ -599,7 +599,7 @@ def testVideoAnalysis(uid, index, filename):
     
     #Ensure no file exists on firestore
     deleteFile(uid=uid, index=index, filename= filename + ".avi")
-    deleteFile(uid=uid, index=index, filename= filename + "_data.txt")
+    deleteFile(uid=uid, index=index, filename= filename + "_facial_data.txt")
 
     #Pause while show firestore free
     tempContinue = input("Type 'N' to continue\n")
@@ -608,13 +608,15 @@ def testVideoAnalysis(uid, index, filename):
 
 
     #Record and upload video
-    uploadFile(uid="uid4",index=2, localpath=filename + ".avi") 
+    uploadFile(uid="uid4",index=2, localpath=filename + ".avi", 
+               filename=uid + "_" + index + "_" + filename + ".avi") 
     
     #Analyze video, and download as a .csv and a .txt; Upload
-    analyzeVideo(filename= filename + ".avi", depth=30, 
+    analyzeVideo(filename= uid + "_" + index + "_" + filename + ".avi", depth=30, 
                  outputname= uid + "_" + index + "_" + filename)
     
-    #uploadFile(uid=uid, index= index, localpath= filename + "_data.txt")
+    uploadFile(uid=uid, index= index, localpath= filename + "_facial_data.txt", 
+               filename=uid + "_" + index + "_" + filename + "_facial_data.txt")
     
     
     
@@ -626,9 +628,9 @@ def testVideoDownload(uid, index, filename):
     
     #Download video
     downloadFile(uid=uid, index=index, filename= filename + ".avi")
-    downloadFile(uid=uid, index=index, filename= filename + "_data.txt")  
+    downloadFile(uid=uid, index=index, filename= filename + "_facial_data.txt")  
     
     
     
-testVideoAnalysis(uid="uid4", index="2", filename="temp")#
-# testVideoDownload(uid="uid4", index="2", filename="temp")
+#testVideoAnalysis(uid="uid4", index="2", filename="temp")#
+testVideoDownload(uid="uid4", index="2", filename="temp")
