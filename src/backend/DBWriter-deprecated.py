@@ -634,3 +634,9 @@ def testVideoDownload(uid, index, filename):
     
 #testVideoAnalysis(uid="uid4", index="2", filename="temp")#
 testVideoDownload(uid="uid4", index="2", filename="temp")
+
+"""FOR UPLOAD/DOWNLOAD:
+            Replace the strings '_file_data_txt' w/ whatever metric being measured + format file.
+            Essentially, treat this string as a ending 'tag' attached to each video take
+            
+"""
