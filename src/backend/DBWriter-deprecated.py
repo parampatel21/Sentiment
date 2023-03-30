@@ -6,7 +6,7 @@ from firebase_admin import credentials, storage, firestore
 from datetime import datetime
 from fer import Video, FER
 import csv
-
+import time
 
 # Get path to serviceAccKey
 cwd = os.path.dirname(os.path.realpath("serviceAccountKey.json"))
@@ -288,7 +288,7 @@ Upload a file into firestore storage; Throws error if unsuccessful; Overwrites i
 def uploadFile(uid, index, localpath):
     try: 
         bucket = storage.bucket()
-        blob = bucket.blob(uid + "_" + str(index) + "_" + str(localpath))
+        blob = bucket.blob(uid + "_" + str(index) + "_" + str(localpath) )
         blob.upload_from_filename(localpath)
         return True
     except FileNotFoundError:
@@ -315,12 +315,11 @@ Download a file from firestore storage; Throws error if unsuccessful
     
 """
 
-def downloadFile(uid, index):
+def downloadFile(uid, index, filename):
     try:
         bucket = storage.bucket()
-        blob = bucket.blob(uid + "_" + str(index))
-        file_ptr = getTitle(uid=uid, index=index) + ".mp4" 
-        blob.download_to_filename(file_ptr)
+        blob = bucket.blob(uid + "_" + str(index) + "_" + str(filename))
+        blob.download_to_filename(filename)
         
         return True
     except FileNotFoundError:
@@ -343,10 +342,10 @@ Delete a file from firestore storage; Throws error if unsuccessful
     Unsuccessful upload
     
 """
-def deleteFile(uid, index):
+def deleteFile(uid, index, filename):
     try:
         bucket = storage.bucket()
-        blob = bucket.blob(uid + "_" + str(index))
+        blob = bucket.blob(uid + "_" + str(index) + "_" + str(filename))
         blob.delete()
         return True
     except:
@@ -550,34 +549,27 @@ def sortVideosByTitle(uid, rOrder):
 #uploadFile(uid="uid3", index="3", localpath="Script.txt")
 #print(sortVideosByRunningCount("uid3", True))
 
-def analyzeVideo(filename, depth):
+def analyzeVideo(filename, depth, outputname):
 
     # Load the video file
-    video_filename = filename
-    video = Video(video_filename)
+    video = Video(filename)
 
     # Initialize the FER detector
     detector = FER()
-
-    total_frames = video.get(cv2.CAP_PROP_FRAME_COUNT)
-
-    while (depth >= total_frames / 5 and depth < 30):
-        depth /= 2
     
     # Analyze the video frames
     result = video.analyze(detector=detector, display=False, frequency=depth)
 
-    with open('data.csv', 'r') as file:
+    with open('Data.csv', 'r') as file, open(outputname + '_data.txt', "w") as file2:
 
         # Create a CSV reader object
         reader = csv.reader(file)
 
-        # Loop through each row of data and print it
+        # Loop through each row of data and put it into a txt file
         for row in reader:
-            print(row)
-
-
-
+                file2.write(str(row) + "\n")
+    return result
+    
 
 #Test Input & update; Print current running count 
 def main():
@@ -598,11 +590,45 @@ def main():
 
 #main()
 
-def testAll():
+def testVideoAnalysis(uid, index, filename):
     #print(writeNewUser(uid="TEST_USER", name="TEST"))
     #print(modifyUser(uid="TEST_USER", name="TEST_NEW_NAME"))
     #print(writeNewScript(uid="TEST_USER",title="SCRIPT_1", script="SCRIPT_1: Script"))
 
-    recordVideo()
+
     
-testAll()
+    #Ensure no file exists on firestore
+    deleteFile(uid=uid, index=index, filename= filename + ".avi")
+    deleteFile(uid=uid, index=index, filename= filename + "_data.txt")
+
+    #Pause while show firestore free
+    tempContinue = input("Type 'N' to continue\n")
+    while tempContinue != "N":
+        tempContinue = input("Type 'N' to continue\n")
+
+
+    #Record and upload video
+    uploadFile(uid="uid4",index=2, localpath=filename + ".avi") 
+    
+    #Analyze video, and download as a .csv and a .txt; Upload
+    analyzeVideo(filename= filename + ".avi", depth=30, 
+                 outputname= uid + "_" + index + "_" + filename)
+    
+    #uploadFile(uid=uid, index= index, localpath= filename + "_data.txt")
+    
+    
+    
+def testVideoDownload(uid, index, filename):
+    #Pause while manually delete video locally
+    tempContinue = input("Type 'N' to continue\n")
+    while tempContinue != "N":
+        tempContinue = input("Type 'N' to continue\n")
+    
+    #Download video
+    downloadFile(uid=uid, index=index, filename= filename + ".avi")
+    downloadFile(uid=uid, index=index, filename= filename + "_data.txt")  
+    
+    
+    
+testVideoAnalysis(uid="uid4", index="2", filename="temp")#
+# testVideoDownload(uid="uid4", index="2", filename="temp")
