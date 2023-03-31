@@ -60,13 +60,13 @@ function Record() {
         console.log(fileList);
     }
 
-    // const [buttonText, setButtonText] = useState("Start Recording");
-    // let button;
-    // if (buttonText == 'Start Recording') {
-    //     button = <a className='hero-button' onClick={() => setButtonText("Stop Recording")}>{buttonText}</a>
-    // } else {
-    //     button = <a className='hero-button' onClick={() => setButtonText("Start Recording")}>{buttonText}</a>
-    // }
+        // const [buttonText, setButtonText] = useState("Start Recording");
+        // let button;
+        // if (buttonText == 'Start Recording') {
+        //     button = <a className='hero-button' onClick={() => setButtonText("Stop Recording")}>{buttonText}</a>
+        // } else {
+        //     button = <a className='hero-button' onClick={() => setButtonText("Start Recording")}>{buttonText}</a>
+        // }
 
 
     return (

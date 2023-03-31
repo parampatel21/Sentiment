@@ -6,7 +6,7 @@ import Navbar from './components/Navbar';
 import '../styles/HomePage.css'
 
 function ViewAllPerformances() {
-
+    const { getuser} = useAuth()
     const [selectedOption, setSelectedOption] = useState('option1');
     const handleOptionChange = (event) => {
         setSelectedOption(event.target.value);
@@ -105,9 +105,10 @@ function ViewAllPerformances() {
     };
   
     const handleUpload = () => {
-      const storageRef = storage;
+      const storageRef = storage.ref();
       const fileName = `${Date.now()}.mp4`;
-      const videoRef = storageRef.child(`videos/${fileName}`);
+      const UID = getuser()
+      const videoRef = storageRef.child(UID + `/${fileName}`);
   
       videoRef.put(videoBlob).then((snapshot) => {
         console.log('Uploaded a blob or file!', snapshot);
@@ -143,7 +144,7 @@ function ViewAllPerformances() {
                     ))}
                 </div>
 
-                {videoSrc ? (
+                        {videoSrc ? (
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <video
                     src={videoSrc}
