@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '../contexts/AuthContext'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import Navbar from './components/Navbar';
 import '../styles/HomePage.css'
 
@@ -34,10 +34,9 @@ function Dashboard() {
                     <p>Our application is perfect for individuals, businesses, and organizations looking to improve communication and better understand emotions. With our app, you can gain a deeper understanding of yourself and others, leading to more productive conversations and relationships.</p>
                     <p>Try our application today and discover the power of emotion and tone analysis.</p>
                     {isAuthenticated() ? (
-                        <a className='hero-button' href='/record' >Start a Recording</a>
+                        <Link className='hero-button' to='/record' >Start a Recording</Link>
                     ) : (
-                        <a className='hero-button' href='/signup'>Join Us!</a>
-
+                        <Link className='hero-button' to='/signup'>Join Us!</Link>
                     )}
 
                 </section>

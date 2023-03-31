@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react'
 import { Form, Button, Card, Alert } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
+import Navbar from './components/Navbar'
 
 export default function Profile() {
     const emailRef = useRef()
@@ -40,37 +41,46 @@ export default function Profile() {
     }
 
     return (
-        <>
-            {/* Back button to return to the dashboard */}
-            <a href="/" class="back-button">Back</a>
-            <Card>
-                <Card.Body>
-                    <h2 className='text-center mb-4'>Update Profile</h2>
-                    {error && <Alert variant="danger">{error}</Alert>}
-                    <Form onSubmit={handleSubmit}>
-                        <Form.Group id="email">
-                            <Form.Label>Email</Form.Label>
-                            <Form.Control type="email" ref={emailRef} required defaultValue={currentUser.email} />
-                        </Form.Group>
-                        <Form.Group id="password">
-                            <Form.Label>New Password</Form.Label>
-                            <Form.Control type="password" ref={passwordRef} placeholder='Leave blank for no changes' />
-                        </Form.Group>
-                        <Form.Group id="password-confirm">
-                            <Form.Label>Confirm New Password</Form.Label>
-                            <Form.Control type="password" ref={passwordConfirmRef} placeholder='Leave blank for no changes' />
-                        </Form.Group>
-                        <div></div>
-                        <Button disabled={loading} className='w-100' type='submit'>Save Changes</Button>
-                    </Form>
-                </Card.Body>
-            </Card>
-            <div className='w-100 text-center mt-2'>
-                <Link to="/">Cancel</Link>
-            </div>
+        <div className="container-fluid">
+            <Navbar />
 
+            <main>
+                <section className="hero">
+                    <h1>Welcome to your Profile page</h1>
+                    <p>Here you can update your email and/or password. When you're ready, click save changes.</p>
 
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    </div>
 
-        </>
-    )
+                    {/* {button} */}
+                </section>
+
+                {/* Handle form submission */}
+                <Form onSubmit={handleSubmit}>
+                    {/* Form components (Label & Text Box) for Video Title */}
+                    <Form.Group id="email" style={{ marginBottom: '3px' }}>
+                        <Form.Label>Email</Form.Label>
+                        <Form.Control type="email" ref={emailRef} defaultValue={currentUser.email} required />
+                    </Form.Group>
+                    <Form.Group id="password" style={{ marginBottom: '3px' }}>
+                        <Form.Label>Password</Form.Label>
+                        <Form.Control type="password" ref={passwordRef} required />
+                    </Form.Group>
+                    <Form.Group id="password-confirm" style={{ marginBottom: '3px' }}>
+                        <Form.Label>Confirm Password</Form.Label>
+                        <Form.Control type="password" ref={passwordConfirmRef} required />
+                    </Form.Group>
+                    {/* Disable the submission button if already pressed and submission is in-progress */}
+                    <section className="call-to-action">
+                        <a className='hero-button' onClick={handleSubmit} href='/'>Save Changes</a>
+                    </section>
+                </Form>
+
+            </main>
+            <footer>
+                <p>&copy; 2023 Sentiment. All rights reserved.</p>
+            </footer>
+        </div>
+    );
 }
+

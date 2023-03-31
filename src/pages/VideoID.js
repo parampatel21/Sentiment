@@ -245,6 +245,13 @@ function VideoID() {
                     ) : (
                         <div>
                             <div>Video fetch failed</div>
+                            <br/>
+
+                            <div>
+                                Text Analysis:<br />
+                                    {textAnalysis}
+                            </div>
+
                         </div>
                     )}
                     {/* {button} */}
@@ -252,7 +259,7 @@ function VideoID() {
 
                 <Form.Group id="title">
                     <Form.Label>Title</Form.Label>
-                    <Form.Control type="text" ref={titleRef} required onChange={(e) => setTitle(e.target.value)} />
+                    <Form.Control type="text" ref={titleRef} required onChange={(e) => setTitle(e.target.value)} defaultValue={titleRef} />
                 </Form.Group>
 
                 {/* Handle form submission */}
