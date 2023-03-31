@@ -147,7 +147,20 @@ def master_func(request):
         except:
             return False
 
+    """
+    Get title of a given video
 
+    @param uid
+        ID which sources the video
+    @param index
+        index of video to be selected
+        
+    @ret title
+        Iff successful info pull
+    @ret False
+        Iff unsuccessful info pull
+
+    """
     def getTitle(uid, index):
         try:
             videoInfo_ref = db.collection(uid).document(str(index))
@@ -338,11 +351,11 @@ def master_func(request):
         Unsuccessful upload
         
     """
-    def uploadFile(uid, index, localpath):
+    def uploadFile(uid, index, localpath, filename):
         try: 
             bucket = storage.bucket()
             blob = bucket.blob(uid + "_" + str(index) + "_" + str(localpath))
-            blob.upload_from_filename(localpath)
+            blob.upload_from_filename(filename)
             return True
         except FileNotFoundError:
             #Should not be thrown iff UI implemented correctly
@@ -368,12 +381,11 @@ def master_func(request):
         
     """
 
-    def downloadFile(uid, index):
+    def downloadFile(uid, index, filename):
         try:
             bucket = storage.bucket()
-            blob = bucket.blob(uid + "_" + str(index))
-            file_ptr = getTitle(uid=uid, index=index) + ".mp4" 
-            blob.download_to_filename(file_ptr)
+            blob = bucket.blob(uid + "_" + str(index) + "_" + str(filename))
+            blob.download_to_filename(uid + "_" + str(index) + "_" + filename)
             
             return True
         except FileNotFoundError:
@@ -396,10 +408,10 @@ def master_func(request):
         Unsuccessful upload
         
     """
-    def deleteFile(uid, index):
+    def deleteFile(uid, index, filename):
         try:
             bucket = storage.bucket()
-            blob = bucket.blob(uid + "_" + str(index))
+            blob = bucket.blob(uid + "_" + str(index) + "_" + str(filename))
             blob.delete()
             return True
         except:
@@ -566,7 +578,6 @@ def master_func(request):
             return False
         
         
-        
     def sortVideosByRunningCount(uid, rOrder):
         dict_List = []
         bucket = storage.bucket()
@@ -596,32 +607,28 @@ def master_func(request):
     
         dict_list_sorted = sorted(dict_List, key=lambda x: x['title'], reverse=rOrder)
         return dict_list_sorted
-    
-    def analyzeVideo(filename, depth):
+            
+
+    def analyzeVideo(filename, depth, outputname):
 
         # Load the video file
-        video_filename = filename
-        video = Video(video_filename)
+        video = Video(filename)
 
         # Initialize the FER detector
         detector = FER()
-
-        total_frames = video.get(cv2.CAP_PROP_FRAME_COUNT)
-
-        while (depth >= total_frames / 5 and depth < 30):
-            depth /= 2
         
         # Analyze the video frames
         result = video.analyze(detector=detector, display=False, frequency=depth)
 
-        with open('data.csv', 'r') as file:
+        with open('data.csv', 'r') as file, open(outputname + '_facial_data.txt', "w") as file2:
 
             # Create a CSV reader object
             reader = csv.reader(file)
 
-            # Loop through each row of data and print it
+            # Loop through each row of data and put it into a txt file
             for row in reader:
-                print(row)
+                    file2.write(str(row) + "\n")
+        return result
 
     # endregion
 
