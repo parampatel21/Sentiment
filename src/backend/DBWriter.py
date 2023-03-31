@@ -40,6 +40,7 @@ def master_func(request):
     import time
     import pandas as pd
     import numpy as np
+    import re
 
     # Get path to serviceAccKey
     cwd = os.path.dirname(os.path.realpath("serviceAccountKey.json"))
@@ -102,6 +103,7 @@ def master_func(request):
             return ("Invalid function selector")
         
     # region (for VScode organization)
+    
     """
     Write a new user
 
@@ -577,24 +579,34 @@ def master_func(request):
     @ret False
         Unsuccessful sorting
     """  
-    def sortScriptByTimeStamp(uid, rOrder):
+    def sortStorageByTimeStamp(uid, rOrder, filetype):
         try:
-            index = getRunningCount(uid=uid)
             dict_List = []
-            for temp in range(1,index + 1):
-                accessInfo_ref = db.collection(uid).document(str(temp))
-                accessInfo_ref = accessInfo_ref.get()
-                accessInfo_ref = accessInfo_ref.to_dict()
-                dict_List.append(accessInfo_ref)
-                
-            dict_list_sorted = sorted(dict_List, key=lambda x: x['timestamp'], reverse=int(rOrder))
-            return dict_list_sorted
+            bucket = storage.bucket()
+            blobs = bucket.list_blobs()
+            
+                # Find files containing a specific string in their name
+            string_to_find = str(uid)
+            matching_files = []
+            for file in blobs:
+                if re.search(string_to_find, file.name) and file.name.endswith(str(filetype)):
+                    matching_files.append(file)
+
+            # Sort the matching files by creation time
+            sorted_files = sorted(matching_files, key=lambda x: x.created, reverse=rOrder)
+
+            # Print the sorted files as a dictionary
+            for file in sorted_files:
+                print({'name': file.name, 'created': file.time_created})
+            
+
+            return sorted_files
         except:
             return False
         
         
         
-    def sortVideosByRunningCount(uid, rOrder):
+    def sortStorageVideosByRunningCount(uid, rOrder):
         dict_List = []
         bucket = storage.bucket()
         blobs = bucket.list_blobs()
@@ -609,20 +621,30 @@ def master_func(request):
         dict_list_sorted = sorted(dict_List, key=lambda x: x['index'], reverse=rOrder)
         return dict_list_sorted
 
-    def sortVideosByTitle(uid, rOrder):
-        dict_List = []
-        bucket = storage.bucket()
-        blobs = bucket.list_blobs()
-        blobs_sorted = sorted(blobs, key=lambda x: x.name)
-        for blob in blobs_sorted:
-            temp = str(blob.name).split("_")
-            if str(temp[0]) == str(uid):
-                dict_List.append({"uid" : temp[0],
-                        "index" : temp[1],
-                        "title" : temp[2]})
-    
-        dict_list_sorted = sorted(dict_List, key=lambda x: x['title'], reverse=int(rOrder))
-        return dict_list_sorted
+    def sortStorageByTitle(uid, rOrder, filetype):    
+        try:
+            dict_List = []
+            bucket = storage.bucket()
+            blobs = bucket.list_blobs()
+            
+                # Find files containing a specific string in their name
+            string_to_find = str(uid)
+            matching_files = []
+            for file in blobs:
+                if re.search(string_to_find, file.name) and file.name.endswith(str(filetype)):
+                    matching_files.append(file)
+
+            # Sort the matching files by creation time
+            sorted_files = sorted(matching_files, key=lambda x: x.name, reverse=rOrder)
+
+            # Print the sorted files as a dictionary
+            for file in sorted_files:
+                print({'name': file.name, 'created': file.time_created})
+            
+
+            return sorted_files
+        except:
+            return False
             
     #print(uploadFile("uid",1, "Script.txt"))
     #print(downloadFile(uid="uid", index=1))
@@ -674,37 +696,6 @@ def master_func(request):
             
         return result
 
-    """
-    Analyze text emotion
-    """
-    def analyzeText(uid, index):
-        doc = NRCLex(getScript(uid, index))
-
-        # get the raw emotion scores
-        emotions = doc.raw_emotion_scores
-
-        # get the lowest three emotion values
-        lowest_emotions = sorted(emotions.items(), key=lambda x: x[1])[:3]
-
-        # write the raw emotion scores and the lowest three emotion values to a file
-        with open(uid + "_" + index + "_text_analysis.txt", 'w') as f:
-            # write the raw emotion scores
-            for emotion, score in emotions.items():
-                f.write(f'{emotion}: {score}\n')
-            # write the lowest three emotion values
-            f.write('\nAreas of Possible Improvement:\n')
-            for emotion, score in lowest_emotions:
-                f.write(f'{emotion}: {score}\n')
-        return emotions
-    
-    def deleteAnalysis(uid, index):
-        try:
-            bucket = storage.bucket()
-            blob = bucket.blob(uid + "_" + index + "_text_analysis.txt", 'w')
-            blob.delete()
-            return True
-        except:
-            return False
     # endregion
 
     return (str(firebase_function(selector, **kwargs_dict)), 200, headers)
