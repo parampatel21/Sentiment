@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '../contexts/AuthContext'
+// import { useGCP } from '../contexts/GCPContext';
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios';
 import Navbar from './components/Navbar';
+// import firebase_function from '';
 import '../styles/HomePage.css'
 
 function ViewAllScripts() {
@@ -11,13 +13,9 @@ function ViewAllScripts() {
     const handleOptionChange = (event) => {
         setSelectedOption(event.target.value);
     };
-    const scripts = [
-        { id: 1, title: 'Script 1' },
-        { id: 2, title: 'This is my amazing script title!' },
-        { id: 3, title: 'Script 3' },
-        { id: 4, title: 'Script 4' },
-        { id: 5, title: 'Script 5' },
-    ];
+    const { getuser } = useAuth()
+    const UID = getuser()
+    const scripts = []
 
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
@@ -31,6 +29,20 @@ function ViewAllScripts() {
         //     })
         //     .catch(error => console.error(error));
     };
+
+    function sortScriptByTitle() {
+        // HOW TO PUT VAR IN STRING IN JS, ADD UID, AND REVERSEORDER
+        fetch('https://us-central1-sentiment-379415.cloudfunctions.net/firebase_operational' + '?selector=sortScriptByTitle' + '&uid=${UID}' + '&rOrder=0') // Hello World function with parameters (look at end of link)
+            .then(response => response.text())
+            .then(data => {
+                console.log(data); // prints "Hello, John!"
+            });
+    } // function with multiple parameters
+
+    sortScriptByTitle()
+
+    // const ret = invocationGCPparameterstest("sortScriptByTitle", getuser(), 0)
+    // console.log(ret)
 
     return (
         <div className="container-fluid">

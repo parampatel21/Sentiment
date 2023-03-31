@@ -94,6 +94,8 @@ def master_func(request):
             return sortVideosByTitle(*args, **kwargs)
         elif selector == "analyzeVideo":
             return analyzeVideo(*args, **kwargs)
+        elif selector == "uploadFile":
+            return uploadFile(*args, **kwargs)
         else:
             return ("Invalid function selector")
         

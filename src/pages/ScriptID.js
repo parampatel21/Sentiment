@@ -1,105 +1,199 @@
 import React, { useRef, useState } from 'react'
-import { Form, Button, Card, Alert } from 'react-bootstrap'
-import { Link, useNavigate } from 'react-router-dom'
+import { Form } from 'react-bootstrap'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
+import '../styles/styles.css'
+import '../styles/HomePage.css'
+import { storage, firestore } from '../firebase'
+import Navbar from './components/Navbar'
 
-export default function ScriptByID() {
-    // references for user's fields on the ui components
-    const titleRef = useRef()
-    const contentRef = useRef()
-    // import function implemented in AuthContext.js
-    const { deleteScript, updateScript } = useAuth()
-    const { getuser } = useAuth()
-    // initialize error and loading vars
-    const [error, setError] = useState('')
-    const [loading, setLoading] = useState(false)
-    const scriptID = '2'
-    const scriptTitle = 'This is my amazing script title!'
-    const scriptContent = `Good afternoon. Let begin by saying that although this has been billed as an anti-war rally, I stand before you as someone who is not opposed to war in all circumstances.
-                            The Civil War was one of the bloodiest in history, and yet it was only through the crucible of the sword, the sacrifice of multitudes, that we could begin to perfect this union, and drive the scourge of slavery from our soil.`
-    // initialize navigate obj for redirecting
-    const navigate = useNavigate()
+function ScriptID() {
+    const scriptRef = useRef();
+    const titleRef = useRef();
+    const { getuser, isAuthenticated, logout } = useAuth();
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+    const [videoBlob, setVideoBlob] = useState(null);
+    const [videoSrc, setVideoSrc] = useState(null);
+    const [playing, setPlaying] = useState(false);
+    const [currentTime, setCurrentTime] = useState(0);
+    const [uploaded, setUploaded] = useState(false);
+    const videoRef = useRef(null);
+    const [title, setTitle] = useState('');
 
-    // Function to handle user interaction with the submit button
+    async function handleLogout() {
+        setError('')
+
+        try {
+            await logout()
+            // navigate('/login')
+            window.location.reload();
+        } catch {
+            setError('Failed to log out')
+        }
+    }
+
+    // Function to handle user interaction with the save button
     async function handleSubmit(e) {
         e.preventDefault()
+        const script = scriptRef.current.value;
+        if (!script || script.length < 100) {
+            alert("The script should be at least 100 characters long.");
+            return;
+        }
 
-        // return an error if a condition do not match
-        // if (condition to throw an error) {
-        //     return setError('Error message here')
-        // }
+        if (!title || title.length < 5) {
+            alert("The title should be at least 5 characters long.");
+            return;
+        }
 
-        // try to delete performance id provided and await success then redirect to view of all performances
+        const UID = getuser();
+        const new_count = firestore.collection(UID).doc('access_info').get('running_count') + 1
+        console.log(new_count)
+
+        const handleUpload = () => {
+            const storageRef = storage.ref();
+            const fileName = new_count.toString() + `.mp4`;
+            const UID = getuser()
+            const videoRef = storageRef.child(UID + `/${fileName}`);
+
+            videoRef.put(videoBlob).then((snapshot) => {
+                console.log('Uploaded a blob or file!', snapshot);
+                setUploaded(true);
+            });
+        };
+
+        async function handleScriptUpload() {
+            const script = scriptRef.current.value.trim();
+            const UID = getuser();
+            const storageRef = storage.ref();
+            const fileName = new_count + `.txt`;
+            const scriptRefstorage = storageRef.child(UID + `/${fileName}`);
+            await scriptRefstorage.putString(script);
+            console.log('Uploaded a blob or file!');
+            setUploaded(true);
+        }
+
+        async function handleFirestoreUpdate() {
+            const title = titleRef.current.value.trim();
+            const script = scriptRef.current.value.trim();
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = (now.getMonth() + 1).toString().padStart(2, '0');
+            const day = now.getDate().toString().padStart(2, '0');
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const seconds = now.getSeconds().toString().padStart(2, '0');
+            const currentDate = `${year}:${month}:${day}:${hours}:${minutes}:${seconds}`;
+
+
+            firestore.collection(UID).doc("access_info").set({
+                running_count: new_count.toString()
+            }, { merge: true })
+            firestore.collection(UID).doc(new_count).set({
+                title: title,
+                timestamp: currentDate,
+            })
+            console.log('Updated firestore!');
+            setUploaded(true);
+        }
+
+
         try {
             setError('')
             setLoading(true)
-            //await updateScript(scriptID)
-            console.log(getuser)
-            navigate("/view-all-scripts")
+            handleUpload()
         } catch {
-            setError('Failed to update script data')
+            setError('Failed to upload the video')
         }
 
+        try {
+            setError('')
+            setLoading(true)
+            handleScriptUpload()
+        } catch {
+            setError('Failed to upload the script')
+        }
+
+        try {
+            setError('')
+            setLoading(true)
+            handleFirestoreUpdate()
+        } catch {
+            setError('Failed to update the database')
+        }
+
+        alert('Upload successful!')
         setLoading(false)
 
     }
 
-    // Function to handle user interaction with the submit button
-    async function handleDelete(e) {
-        e.preventDefault()
+    function handleFileSelect(event) {
+        const file = event.target.files[0];
+        const fileType = file.type;
 
-        // return an error if a condition do not match
-        // if (condition to throw an error) {
-        //     return setError('Error message here')
-        // }
-
-        // try to delete performance id provided and await success then redirect to view of all performances
-        try {
-            setError('')
-            setLoading(true)
-            await deleteScript(scriptID)
-            console.log(getuser)
-            navigate("/view-all-scripts")
-        } catch {
-            setError('Failed to delete the script')
+        // Only accept text-based file types
+        if (!fileType.startsWith('text/')) {
+            alert('Invalid file type. Please select a text-based file.');
+            return;
         }
-        setLoading(false)
 
+        const reader = new FileReader();
+        reader.onload = function (event) {
+            const fileContents = event.target.result;
+            console.log(fileContents);
+            // Set the text box value to the file contents
+            scriptRef.current.value = fileContents;
+        };
+        reader.readAsText(file);
     }
 
-    // return the html to render
     return (
-        <>
-            {/* Back button to return to the dashboard */}
-            <a href="/view-all-scripts" class="back-button">Back</a>
-            {/* Google react-bootstrap to see how to use the library for easy styled components */}
-            <Card>
-                <Card.Body>
-                    {/* Card header  */}
-                    <h2 className='text-center mb-4'>Script {scriptID} </h2>
-                    {/* If there is an error caught generate an error message component at the top of this Card */}
-                    {error && <Alert variant="danger">{error}</Alert>}
+        <div className="container-fluid">
+            <Navbar />
 
-                    {/* Handle form submission */}
-                    <Form onSubmit={handleSubmit}>
-                        {/* Form components (Label & Text Box) for Video Title */}
-                        <Form.Group id="title">
-                            <Form.Label>Title</Form.Label>
-                            <Form.Control type="text" ref={titleRef} required placeholder={scriptTitle} />
-                        </Form.Group>
-                        {/* Form components (Label & Text Box) for Password */}
-                        <Form.Group id="content">
-                            <Form.Label>Content</Form.Label>
-                            <Form.Control as="textarea" ref={contentRef} required placeholder={scriptContent} />
-                        </Form.Group>
-                        <div></div>
-                        {/* Disable the submission button if already pressed and submission is in-progress */}
-                        <Button disabled={loading} className='button' type='submit'>Save</Button>
-                    </Form>
-                    <div></div>
-                    <Button disabled={loading} className='button' type='button'>Delete</Button>
-                </Card.Body>
-            </Card>
-        </>
-    )
+            <main>
+                <section className="hero">
+                    <h1>Welcome to Script Creation</h1>
+                    <p>Here you can record a video performance of your public speaking skills and have your technique analyzed via facial and tonal analysis.</p>
+                    <p>Also, feel free to upload or supply a script via the text box below and we'll run our analysis on it to find the tone portrayed through the text.</p>
+                    <p>When you're ready, click start recording below to begin your journey to a more confident speech.</p>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    </div>
+
+                    {/* {button} */}
+                </section>
+
+                <Form.Group id="title">
+                    <Form.Label>Title</Form.Label>
+                    <Form.Control type="text" ref={titleRef} required onChange={(e) => setTitle(e.target.value)} />
+                </Form.Group>
+
+                {/* Handle form submission */}
+                <Form onSubmit={handleSubmit}>
+                    {/* Form components (Label & Text Box) for Video Title */}
+                    <Form.Group id="title">
+                        <Form.Label>Type up your script here</Form.Label>
+                        <Form.Control style={{ width: '100%', height: '100%' }} type="text" as='textarea' ref={scriptRef} />
+                    </Form.Group>
+                    <div style={{ marginTop: '5px' }}>
+                        <Form.Label>Upload script here:&nbsp;</Form.Label>
+                        <input type="file" onChange={handleFileSelect} />
+                    </div>
+                    {/* Disable the submission button if already pressed and submission is in-progress */}
+                    <section className="call-to-action">
+                        <a className='hero-button' onClick={handleSubmit} href='/performance-id'>Save Performance</a>
+                    </section>
+                </Form>
+
+            </main>
+            <footer>
+                <p>&copy; 2023 Sentiment. All rights reserved.</p>
+            </footer>
+        </div>
+    );
 }
+
+export default ScriptID;
