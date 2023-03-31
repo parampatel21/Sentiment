@@ -92,17 +92,22 @@ function Record() {
     // Function to handle user interaction with the save button
     async function handleSubmit(e) {
         e.preventDefault()
+        const script = scriptRef.current.value;
+        if (!script || script.length < 100) {
+            alert("The script should be at least 100 characters long.");
+            return;
+        }
+
+        if (!videoBlob) {
+            alert("No video has been recorded.");
+            return;
+        }
 
         const handleUpload = () => {
-            if (!videoBlob) {
-                alert("No video has been recorded.");
-                return;
-            }
-                
           const storageRef = storage.ref();
           const fileName = `${Date.now()}.mp4`;
           const UID = getuser()
-          const videoRef = storageRef.child(UID + `/${fileName}`);
+          const videoRef = storageRef.child(UID + `/videos/${fileName}`);
       
           videoRef.put(videoBlob).then((snapshot) => {
             console.log('Uploaded a blob or file!', snapshot);
@@ -111,8 +116,15 @@ function Record() {
         };  
 
         async function handleScriptUpload() {
-            console.log('to be implemented')
-        }
+            const script = scriptRef.current.value.trim();
+            const UID = getuser();
+            const storageRef = storage.ref();
+            const fileName = `${Date.now()}.txt`;
+            const scriptRefstorage = storageRef.child(UID + `/scripts/${fileName}`);
+            await scriptRefstorage.putString(script);
+            console.log('Uploaded a blob or file!');
+            setUploaded(true);
+          }
 
         try {
             setError('')
@@ -127,27 +139,32 @@ function Record() {
             setLoading(true)
             handleScriptUpload()
         } catch {
-            setError('Failed to upload the video')
+            setError('Failed to upload the script')
         }
-
+        alert('Upload successful!')
         setLoading(false)
 
     }
 
     function handleFileSelect(event) {
-        const fileList = event.target.files;
-        // Do something with the file here
-        console.log(fileList);
-    }
-
-        // const [buttonText, setButtonText] = useState("Start Recording");
-        // let button;
-        // if (buttonText == 'Start Recording') {
-        //     button = <a className='hero-button' onClick={() => setButtonText("Stop Recording")}>{buttonText}</a>
-        // } else {
-        //     button = <a className='hero-button' onClick={() => setButtonText("Start Recording")}>{buttonText}</a>
-        // }
-
+        const file = event.target.files[0];
+        const fileType = file.type;
+        
+        // Only accept text-based file types
+        if (!fileType.startsWith('text/')) {
+          alert('Invalid file type. Please select a text-based file.');
+          return;
+        }
+      
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          const fileContents = event.target.result;
+          console.log(fileContents);
+          // Set the text box value to the file contents
+          scriptRef.current.value = fileContents;
+        };
+        reader.readAsText(file);
+      }
 
         return (
             <div className="container-fluid">
@@ -217,7 +234,7 @@ function Record() {
                         </div>
                         {/* Disable the submission button if already pressed and submission is in-progress */}
                         <section className="call-to-action">
-                            <a className='hero-button' href='/performance-id'>Save Performance</a>
+                            <a className='hero-button' onClick={handleSubmit} href='/performance-id'>Save Performance</a>
                         </section>
                     </Form>
 
