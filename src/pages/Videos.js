@@ -51,7 +51,7 @@ function ViewAllPerformances() {
         }
     }
 
-    console.log(getPerformances(1,uid))
+    console.log(getPerformances(1, uid))
 
     const handleDelete = (objectId) => {
             // TODO: not finished
