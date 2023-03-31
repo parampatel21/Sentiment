@@ -18,7 +18,10 @@ function ViewAllPerformances() {
         { id: 3, title: 'This is my video title! Success!' },
         { id: 4, title: 'Video Performance 4' },
         { id: 5, title: 'Video Performance 5' },
+    
     ];
+
+
     const listItems = performances.map(performance =>
         <div>
 
@@ -34,24 +37,44 @@ function ViewAllPerformances() {
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
 
-    function getPerformances(type, uid) {
-        if (type == 1) {
-            fetch('https://us-central1-sentiment-379415.cloudfunctions.net/firebase_operational' + '?selector=sortVideosByRunningCount' + '&uid=' + uid + '&rOrder=False') // Hello World function with parameters (look at end of link)
-            .then(response => response.text())
-            .then(data => {
-                console.log(data); // prints "Hello, John!"
+    // function getPerformances(type, uid) {
+    //     if (type == 1) {
+    //         fetch('https://us-central1-sentiment-379415.cloudfunctions.net/firebase_operational' + '?selector=sortVideosByRunningCount' + '&uid=' + uid + '&rOrder=False') // Hello World function with parameters (look at end of link)
+    //         .then(response => response.text())
+    //         .then(data => {
+    //             console.log(data); // prints "Hello, John!"
+    //         });
+    //     }
+    //     if (type == 2) {
+    //         fetch('https://us-central1-sentiment-379415.cloudfunctions.net/firebase_operational' + '?selector=sortVideosByTitle' + '&uid=' + uid + '&rOrder=False') // Hello World function with parameters (look at end of link)
+    //         .then(response => response.text())
+    //         .then(data => {
+    //             console.log(data); // prints "Hello, John!"
+    //         });
+    //     }
+    // }
+
+    function loadTitlesFromCollection(uid) {
+        const performances = document.getElementById("performances");
+        const counter = 0
+        firestore.collection(uid)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              counter = counter + 1
+              const title = doc.data().title;
+              const titleElement = document.createElement("p");
+              titleElement.textContent = title;
+              performances.appendChild({ id: counter, title: titleElement});
             });
-        }
-        if (type == 2) {
-            fetch('https://us-central1-sentiment-379415.cloudfunctions.net/firebase_operational' + '?selector=sortVideosByTitle' + '&uid=' + uid + '&rOrder=False') // Hello World function with parameters (look at end of link)
-            .then(response => response.text())
-            .then(data => {
-                console.log(data); // prints "Hello, John!"
-            });
-        }
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
+          });
     }
 
-    console.log(getPerformances(1, uid))
+    loadTitlesFromCollection(uid);
+
 
     const handleDelete = (objectId) => {
             // TODO: not finished
@@ -88,6 +111,31 @@ function ViewAllPerformances() {
               });
         }
 
+        const handleUpdate = (objectId) => {
+        const selectedPerformance = performances.find(p => p.id === objectId);
+        const newTitle = prompt('Enter a new name:', selectedPerformance.title);
+        if (newTitle) {
+            const docRef = firestore.collection(uid).doc(selectedPerformance);
+            const query = docRef.where('title', '==', selectedPerformance.title);
+            query.get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                doc.ref.update({ title: newTitle })
+                    .then(() => {
+                    console.log('Document successfully updated!');
+                    })
+                    .catch((error) => {
+                    console.error('Error updating document: ', error);
+                    });
+                });
+            })
+            .catch((error) => {
+                console.error('Error querying documents: ', error);
+            });
+        }
+        };
+
+
     return (
         <div className="container-fluid">
             <Navbar />
@@ -107,9 +155,9 @@ function ViewAllPerformances() {
                             <Link to='/video-id' style={{ width: '100%' }} className='list-item'>{object.title}</Link>
                             <button style={{ display: 'inline-block' }} className='hero-button' onClick={() => handleDelete(object.id)}>Delete</button>
                             &nbsp;
-                            <button style={{ display: 'inline-block' }} className='hero-button' onClick={() => console.log(`Updating ${object.title}`)}>Update</button>
+                            <button style={{ display: 'inline-block' }} className='hero-button' onClick={() => handleUpdate(object.id)}>Update</button>
                             &nbsp;
-                            <button style={{ display: 'inline-block' }} className='hero-button' onClick={() => console.log(`Downloading ${object.title}`)}>Download</button>
+                            <button style={{ display: 'inline-block' }} className='hero-button' onClick={() =>  handleDownload(object.id)}>Download</button>
                             &nbsp;
                         </div>
                     ))}
