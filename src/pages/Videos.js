@@ -1,12 +1,13 @@
 import React, { useState, useRef } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
-import {storage} from '../firebase'
+import {storage, firestore} from '../firebase'
 import Navbar from './components/Navbar';
 import '../styles/HomePage.css'
 
 function ViewAllPerformances() {
     const { getuser} = useAuth()
+    const uid = getuser()
     const [selectedOption, setSelectedOption] = useState('option1');
     const handleOptionChange = (event) => {
         setSelectedOption(event.target.value);
@@ -33,14 +34,59 @@ function ViewAllPerformances() {
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
 
+    function getPerformances(type, uid) {
+        if (type == 1) {
+            fetch('https://us-central1-sentiment-379415.cloudfunctions.net/firebase_operational' + '?selector=sortVideosByRunningCount' + '&uid=' + uid + '&rOrder=False') // Hello World function with parameters (look at end of link)
+            .then(response => response.text())
+            .then(data => {
+                console.log(data); // prints "Hello, John!"
+            });
+        }
+        if (type == 2) {
+            fetch('https://us-central1-sentiment-379415.cloudfunctions.net/firebase_operational' + '?selector=sortVideosByTitle' + '&uid=' + uid + '&rOrder=False') // Hello World function with parameters (look at end of link)
+            .then(response => response.text())
+            .then(data => {
+                console.log(data); // prints "Hello, John!"
+            });
+        }
+    }
+
+    console.log(getPerformances(1,uid))
+
     const handleDelete = (objectId) => {
-        console.log('plus u1tra')
-        // axios.delete(`/api/objects/${objectId}`)
-        //     .then(() => {
-        //         setObjects(objects.filter(object => object.id !== objectId));
-        //     })
-        //     .catch(error => console.error(error));
-    };
+            // TODO: not finished
+            const title = performances.find(p => p.objectId === objectId).title
+            const collectionRef = firestore.collection(uid);
+            const query = collectionRef.where("title", "==", title);
+            query.get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                doc.ref.delete().then(() => {
+                console.log("Document successfully deleted!");
+                }).catch((error) => {
+                console.error("Error removing document: ", error);
+                });
+            });
+            }).catch((error) => {
+                console.error("Error querying documents: ", error);
+            });
+        };
+    
+        const handleDownload = (objectId) => {
+            const title = performances.find(p => p.objectId === objectId).title
+            const collectionRef = firestore.collection(uid);
+            const query = collectionRef.where("title", "==", title); // this should be doc title
+            const filename = query.id + '.mp4'
+            const storageRef = storage.ref();
+            const fileRef = storageRef.child(uid + '/' + filename);
+    
+            fileRef.getDownloadURL().then(function(url) {
+                // create a new page to view/download the file
+                window.open(url, '_blank');
+              }).catch(function(error) {
+                // handle errors
+                console.log(error);
+              });
+        }
 
     return (
         <div className="container-fluid">

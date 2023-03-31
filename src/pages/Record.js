@@ -118,7 +118,7 @@ function Record() {
           const storageRef = storage.ref();
           const fileName = new_count.toString() + `.mp4`;
           const UID = getuser()
-          const videoRef = storageRef.child(UID + `/videos/${fileName}`);
+          const videoRef = storageRef.child(UID + `/${fileName}`);
       
           videoRef.put(videoBlob).then((snapshot) => {
             console.log('Uploaded a blob or file!', snapshot);
@@ -131,7 +131,7 @@ function Record() {
             const UID = getuser();
             const storageRef = storage.ref();
             const fileName = new_count + `.txt`;
-            const scriptRefstorage = storageRef.child(UID + `/scripts/${fileName}`);
+            const scriptRefstorage = storageRef.child(UID + `/${fileName}`);
             await scriptRefstorage.putString(script);
             console.log('Uploaded a blob or file!');
             setUploaded(true);
@@ -140,15 +140,15 @@ function Record() {
         async function handleFirestoreUpdate() {
             const title = titleRef.current.value.trim();
             const script = scriptRef.current.value.trim();
-            const currentDate = new Date().toLocaleString('en-US', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: false
-              });
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = (now.getMonth() + 1).toString().padStart(2, '0');
+            const day = now.getDate().toString().padStart(2, '0');
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const seconds = now.getSeconds().toString().padStart(2, '0');
+            const currentDate = `${year}:${month}:${day}:${hours}:${minutes}:${seconds}`;
+            
 
             firestore.collection(UID).doc("access_info").set({
                 running_count: new_count.toString()
