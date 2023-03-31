@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react'
 import { useAuth } from '../contexts/AuthContext'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import {storage, firestore} from '../firebase'
 import Navbar from './components/Navbar';
 import '../styles/HomePage.css'
@@ -22,7 +22,7 @@ function ViewAllPerformances() {
     const listItems = performances.map(performance =>
         <div>
 
-            <a className='list-button'>{performance.title}</a>
+            <Link className='list-button' to="video-id">{performance.title}</Link>
             <a className='list-button' href='performance-id'>Edit</a>
             <a className='list-button' href='performance-id'>View</a>
             <a className='list-button' href='performance-id'>Delete</a>
@@ -104,7 +104,7 @@ function ViewAllPerformances() {
                     {performances.map(object => (
 
                         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                            <a href='/performance-id' style={{ width: '100%' }} className='list-item'>{object.title}</a>
+                            <Link to='/video-id' style={{ width: '100%' }} className='list-item'>{object.title}</Link>
                             <button style={{ display: 'inline-block' }} className='hero-button' onClick={() => handleDelete(object.id)}>Delete</button>
                             &nbsp;
                             <button style={{ display: 'inline-block' }} className='hero-button' onClick={() => console.log(`Updating ${object.title}`)}>Update</button>
