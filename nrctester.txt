@@ -1,0 +1,15 @@
+anger: 3
+disgust: 3
+fear: 3
+negative: 3
+sadness: 2
+anticipation: 1
+joy: 1
+positive: 1
+surprise: 1
+trust: 1
+
+Lowest Emotions:
+anticipation: 1
+joy: 1
+positive: 1
