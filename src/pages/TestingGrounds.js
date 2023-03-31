@@ -271,7 +271,7 @@ function VideoID() {
                     </div>
                     {/* Disable the submission button if already pressed and submission is in-progress */}
                     <section className="call-to-action">
-                        <a className='hero-button' onClick={handleSubmit} href='/performance-id'>Save Performance</a>
+                        <a className='hero-button' onClick={handleSubmit} href='/video-id'>Save Performance</a>
                     </section>
                 </Form>
 
