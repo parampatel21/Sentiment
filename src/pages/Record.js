@@ -1,5 +1,5 @@
  import React, { useRef, useState } from 'react'
-import { Form, Button, Card, Alert } from 'react-bootstrap'
+import { Form} from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import VideoRecorder from './components/VideoRecorder'
@@ -118,7 +118,7 @@ function Record() {
           const storageRef = storage.ref();
           const fileName = new_count.toString() + `.mp4`;
           const UID = getuser()
-          const videoRef = storageRef.child(UID + `/${fileName}`);
+          const videoRef = storageRef.child(UID + `_${fileName}`);
       
           videoRef.put(videoBlob).then((snapshot) => {
             console.log('Uploaded a blob or file!', snapshot);
@@ -131,7 +131,7 @@ function Record() {
             const UID = getuser();
             const storageRef = storage.ref();
             const fileName = new_count + `.txt`;
-            const scriptRefstorage = storageRef.child(UID + `/${fileName}`);
+            const scriptRefstorage = storageRef.child(UID + `_${fileName}`);
             await scriptRefstorage.putString(script);
             console.log('Uploaded a blob or file!');
             setUploaded(true);
