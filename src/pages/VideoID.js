@@ -274,7 +274,8 @@ function VideoID() {
 
                 <section className='hero'>
                     <div>
-                        <p>{textAnalysis}</p>
+                        <p>Text Analysis:<br/>
+                            {textAnalysis}</p>
                     </div>
                 </section>
 
