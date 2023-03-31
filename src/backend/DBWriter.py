@@ -635,6 +635,29 @@ def master_func(request):
             # Loop through each row of data and put it into a txt file
             for row in reader:
                     file2.write(str(row) + "\n")
+                    
+            file2.write("\n")
+            file2.write("Areas of possible improvment:\n")
+            file2.write("""\tFinal row is average value of final presentation; 
+            Adjust according to desired emotion to be displayed during presentation\n""")
+            file2.write("\n")
+            
+            with open('data.csv', 'r') as f:
+                df = pd.read_csv(f)
+            # Select all columns except 'box0'
+            cols_to_average = [col for col in df.columns if col != 'box0']
+
+            # Calculate column-wise averages, except for 'box0'
+            col_averages = df[cols_to_average].mean()
+
+            # Insert new row for column averages with NULL value for 'box0'
+            df = df.append(pd.Series([np.nan] * len(df.columns), index=df.columns), ignore_index=True)
+            df.iloc[-1, df.columns.get_loc('box0')] = 'NULL'
+            df.iloc[-1, df.columns != 'box0'] = col_averages.values
+
+            # Display the modified dataframe
+            file2.write(str(df) + "\n")
+            
         return result
 
     """
