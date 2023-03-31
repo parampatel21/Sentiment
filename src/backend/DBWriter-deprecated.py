@@ -591,11 +591,6 @@ def main():
 #main()
 
 def testVideoAnalysis(uid, index, filename):
-    #print(writeNewUser(uid="TEST_USER", name="TEST"))
-    #print(modifyUser(uid="TEST_USER", name="TEST_NEW_NAME"))
-    #print(writeNewScript(uid="TEST_USER",title="SCRIPT_1", script="SCRIPT_1: Script"))
-
-
     
     #Ensure no file exists on firestore
     deleteFile(uid=uid, index=index, filename= filename + ".avi")
