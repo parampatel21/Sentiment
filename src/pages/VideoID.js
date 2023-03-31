@@ -11,7 +11,8 @@ import Navbar from './components/Navbar'
 function VideoID() {
     const scriptRef = useRef();
     const titleRef = useRef();
-    const { getuser, isAuthenticated, logout } = useAuth();
+    const textAnalysis = useState('Not yet set')
+    const { getuser, isAuthenticated} = useAuth();
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
@@ -78,18 +79,6 @@ function VideoID() {
         setCurrentTime(0);
         setUploaded(false);
     };
-
-    async function handleLogout() {
-        setError('')
-
-        try {
-            await logout()
-            // navigate('/login')
-            window.location.reload();
-        } catch {
-            setError('Failed to log out')
-        }
-    }
 
     // Function to handle user interaction with the save button
     async function handleSubmit(e) {
@@ -236,6 +225,7 @@ function VideoID() {
                             {/* <script>
                                 titleRef = { video.title }
                                 scriptRef = { video.script }
+                                textAnalysis = { video.script.textAnalysis }
                             </script> */}
 
                             <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -245,7 +235,7 @@ function VideoID() {
                                     <div className='hero-button-row'>
                                         {/* {!uploaded && (
                                   <button className='hero-button' onClick={handleUpload}  style={{ marginRight: '10px' }}>Upload</button>
-                              )} */}
+                                    )} */}
                                         {/* <button className='hero-button' onClick={handlePlayback}  style={{ marginRight: '10px' }}>Play</button> */}
                                         <button className='hero-button' onClick={handleReset} >Reset</button>
                                     </div>
@@ -281,6 +271,13 @@ function VideoID() {
                         <a className='hero-button' onClick={handleSubmit} href='/video-id'>Save Performance</a>
                     </section>
                 </Form>
+
+                <section className='hero'>
+                    <div>
+                        <p>Text Analysis:<br/>
+                            {textAnalysis}</p>
+                    </div>
+                </section>
 
             </main>
             <footer>

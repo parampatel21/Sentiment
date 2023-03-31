@@ -48,6 +48,11 @@ const Navbar = () => {
                                     </Link>
                                 </li>
                                 <li className="nav-item">
+                                    <Link className="nav-link" to="/record">
+                                        Record Performance
+                                    </Link>
+                                </li>
+                                <li className="nav-item">
                                     <Link className="nav-link" to="/videos">
                                         Videos
                                     </Link>
@@ -80,7 +85,7 @@ const Navbar = () => {
                                         About
                                     </Link>
                                 </li>
-                                <li className="nav-item">
+                                {/* <li className="nav-item">
                                     <Link className="nav-link" to="/login">
                                         Videos
                                     </Link>
@@ -89,7 +94,7 @@ const Navbar = () => {
                                     <Link className="nav-link" to="/login">
                                         Scripts
                                     </Link>
-                                </li>
+                                </li> */}
                                 <li className="nav-item">
                                     <Link className="nav-link" to="/login">
                                         Login
