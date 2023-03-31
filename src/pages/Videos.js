@@ -12,14 +12,9 @@ function ViewAllPerformances() {
     const handleOptionChange = (event) => {
         setSelectedOption(event.target.value);
     };
-    const performances = [
-        { id: 1, title: 'Video Performance 1' },
-        { id: 2, title: 'Video Performance 2' },
-        { id: 3, title: 'This is my video title! Success!' },
-        { id: 4, title: 'Video Performance 4' },
-        { id: 5, title: 'Video Performance 5' },
-    
-    ];
+
+    console.log(loadTitlesFromCollection(uid))
+    const performances = loadTitlesFromCollection(uid);
 
 
     const listItems = performances.map(performance =>
@@ -53,28 +48,44 @@ function ViewAllPerformances() {
     //         });
     //     }
     // }
-
+    
     function loadTitlesFromCollection(uid) {
-        const performances = document.getElementById("performances");
-        const counter = 0
-        firestore.collection(uid)
-          .get()
-          .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-              counter = counter + 1
-              const title = doc.data().title;
-              const titleElement = document.createElement("p");
-              titleElement.textContent = title;
-              performances.appendChild({ id: counter, title: titleElement});
-            });
-          })
-          .catch((error) => {
-            console.log("Error getting documents: ", error);
+        let counter = 0
+        let temp = []
+        const collectionRef = firestore.collection(uid);
+        collectionRef.get().then((querySnapshot) => {            
+          querySnapshot.forEach((doc) => {
+            counter++
+            const title = doc.data().title;
+            if (title == null) return temp
+            temp.push({ id: counter, title: title});
           });
-    }
+        }).catch((error) => {
+          console.error('Error getting documents: ', error);
+        });
+        return temp
+      }
 
-    loadTitlesFromCollection(uid);
-
+    // function loadTitlesFromCollection(uid) {
+    //     let performances = document.getElementById("performances");
+    //     const counter = 0
+    //     console.log(firestore.collection(uid)
+    //     .get())
+        // firestore.collection(uid)
+        //   .get()
+        //   .then((querySnapshot) => {
+        //     querySnapshot.forEach((doc) => {
+        //       counter = counter + 1
+        //       const title = doc.data().title;
+        //       const titleElement = document.createElement("p");
+        //       titleElement.textContent = title;
+        //       performances.appendChild({ id: counter, title: titleElement});
+        //     });
+        //   })
+        //   .catch((error) => {
+        //     console.log("Error getting documents: ", error);
+        //   });
+    // }
 
     const handleDelete = (objectId) => {
             // TODO: not finished
