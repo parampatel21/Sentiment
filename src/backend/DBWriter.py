@@ -696,6 +696,38 @@ def master_func(request):
             
         return result
 
+    """
+    Analyze text emotion
+    """
+    def analyzeText(uid, index):
+        doc = NRCLex(getScript(uid, index))
+
+        # get the raw emotion scores
+        emotions = doc.raw_emotion_scores
+
+        # get the lowest three emotion values
+        lowest_emotions = sorted(emotions.items(), key=lambda x: x[1])[:3]
+
+        # write the raw emotion scores and the lowest three emotion values to a file
+        with open(uid + "_" + index + "_text_analysis.txt", 'w') as f:
+            # write the raw emotion scores
+            for emotion, score in emotions.items():
+                f.write(f'{emotion}: {score}\n')
+            # write the lowest three emotion values
+            f.write('\nAreas of Possible Improvement:\n')
+            for emotion, score in lowest_emotions:
+                f.write(f'{emotion}: {score}\n')
+        return emotions
+    
+    def deleteAnalysis(uid, index):
+        try:
+            bucket = storage.bucket()
+            blob = bucket.blob(uid + "_" + index + "_text_analysis.txt", 'w')
+            blob.delete()
+            return True
+        except:
+            return False
+
     # endregion
 
     return (str(firebase_function(selector, **kwargs_dict)), 200, headers)
