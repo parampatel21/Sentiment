@@ -31,6 +31,7 @@ def master_func(request):
     import os
     import firebase_admin
     import pytz
+    from nrclex import NRCLex
     import cv2
     from firebase_admin import credentials, storage, firestore
     from datetime import datetime
