@@ -5,11 +5,12 @@ import { useAuth } from '../contexts/AuthContext'
 import VideoRecorder from './components/VideoRecorder'
 import '../styles/styles.css'
 import '../styles/HomePage.css'
-import {storage} from '../firebase'
+import {storage, firestore} from '../firebase'
 import Navbar from './components/Navbar'
 
 function Record() {
     const scriptRef = useRef();
+    const titleRef = useRef();
     const { getuser, isAuthenticated, logout } = useAuth();
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -21,6 +22,7 @@ function Record() {
     const [currentTime, setCurrentTime] = useState(0);
     const [uploaded, setUploaded] = useState(false);
     const videoRef = useRef(null);
+    const [title, setTitle] = useState('');
   
     const handleStartRecording = () => {
       navigator.mediaDevices
@@ -103,9 +105,18 @@ function Record() {
             return;
         }
 
+        if (!title || title.length < 5) {
+            alert("The title should be at least 5 characters long.");
+            return;
+          }
+
+          const UID = getuser();
+          const new_count = firestore.collection(UID).doc('access_info').get('running_count') + 1
+          console.log(new_count)
+
         const handleUpload = () => {
           const storageRef = storage.ref();
-          const fileName = `${Date.now()}.mp4`;
+          const fileName = new_count.toString() + `.mp4`;
           const UID = getuser()
           const videoRef = storageRef.child(UID + `/videos/${fileName}`);
       
@@ -119,12 +130,37 @@ function Record() {
             const script = scriptRef.current.value.trim();
             const UID = getuser();
             const storageRef = storage.ref();
-            const fileName = `${Date.now()}.txt`;
+            const fileName = new_count + `.txt`;
             const scriptRefstorage = storageRef.child(UID + `/scripts/${fileName}`);
             await scriptRefstorage.putString(script);
             console.log('Uploaded a blob or file!');
             setUploaded(true);
-          }
+        }
+
+        async function handleFirestoreUpdate() {
+            const title = titleRef.current.value.trim();
+            const script = scriptRef.current.value.trim();
+            const currentDate = new Date().toLocaleString('en-US', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+              });
+
+            firestore.collection(UID).doc("access_info").set({
+                running_count: new_count.toString()
+            }, { merge: true })
+            firestore.collection(UID).doc(new_count).set({
+                title: title,
+                timestamp: currentDate,
+            })
+            console.log('Updated firestore!');
+            setUploaded(true);
+        }
+        
 
         try {
             setError('')
@@ -141,6 +177,15 @@ function Record() {
         } catch {
             setError('Failed to upload the script')
         }
+
+        try {
+            setError('')
+            setLoading(true)
+            handleFirestoreUpdate()
+        } catch {
+            setError('Failed to update the database')
+        }
+
         alert('Upload successful!')
         setLoading(false)
 
@@ -220,6 +265,11 @@ function Record() {
                     )}
                         {/* {button} */}
                     </section>
+
+                    <Form.Group id="title">
+                    <Form.Label>Title</Form.Label>
+                    <Form.Control type="text" ref={titleRef} required onChange={(e) => setTitle(e.target.value)} />
+                    </Form.Group>
         
                     {/* Handle form submission */}
                     <Form onSubmit={handleSubmit}>
