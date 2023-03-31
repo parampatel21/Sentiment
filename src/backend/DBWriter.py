@@ -82,6 +82,12 @@ def master_func(request):
             return sortScriptByTimeStamp(*args, **kwargs)
         elif selector == "sortScriptByTitle":
             return sortScriptByTitle(*args, **kwargs)
+        elif selector == "sortVideosByRunningCount":
+            return sortVideosByRunningCount(*args, **kwargs)
+        elif selector == "sortVideosByTitle":
+            return sortVideosByTitle(*args, **kwargs)
+        elif selector == "analyzeVideo":
+            return analyzeVideo(*args, **kwargs)
         else:
             return ("Invalid function selector")
         
