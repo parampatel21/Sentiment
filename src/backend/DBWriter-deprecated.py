@@ -652,7 +652,7 @@ def testVideoDownload(uid, filename):
     
     
     
-testVideoAnalysis(uid="uid4",  filename="temp")#
+#testVideoAnalysis(uid="uid4",  filename="temp")#
 #testVideoDownload(uid="uid4", index="2", filename="temp")
 
 """FOR UPLOAD/DOWNLOAD:
@@ -660,3 +660,16 @@ testVideoAnalysis(uid="uid4",  filename="temp")#
             Essentially, treat this string as a ending 'tag' attached to each video take
             
 """
+
+""""
+try:
+    bucket = storage.bucket()
+    blob = bucket.blob("OWipWjzwyAUokDJFAzPeupi5Rrm2" + "/" + "[object Promise]1.mp4")
+    blob.download_to_filename("[object Promise]1.mp4")
+    
+    print(True)
+except:
+    print(False)
+    """
+analyzeVideo("[object Promise]1.mp4", depth=30, 
+                 outputname= "[object Promise]")

@@ -96,6 +96,8 @@ def master_func(request):
             return analyzeVideo(*args, **kwargs)
         elif selector == "uploadFile":
             return uploadFile(*args, **kwargs)
+        elif selector == "analyzeText":
+            return analyzeText(*args, **kwargs)
         else:
             return ("Invalid function selector")
         
@@ -585,7 +587,7 @@ def master_func(request):
                 accessInfo_ref = accessInfo_ref.to_dict()
                 dict_List.append(accessInfo_ref)
                 
-            dict_list_sorted = sorted(dict_List, key=lambda x: x['timestamp'], reverse=rOrder)
+            dict_list_sorted = sorted(dict_List, key=lambda x: x['timestamp'], reverse=int(rOrder))
             return dict_list_sorted
         except:
             return False
@@ -619,7 +621,7 @@ def master_func(request):
                         "index" : temp[1],
                         "title" : temp[2]})
     
-        dict_list_sorted = sorted(dict_List, key=lambda x: x['title'], reverse=rOrder)
+        dict_list_sorted = sorted(dict_List, key=lambda x: x['title'], reverse=int(rOrder))
         return dict_list_sorted
             
     #print(uploadFile("uid",1, "Script.txt"))
