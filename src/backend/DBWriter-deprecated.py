@@ -287,10 +287,10 @@ Upload a file into firestore storage; Throws error if unsuccessful; Overwrites i
     Unsuccessful upload
     
 """
-def uploadFile(uid, index, localpath, filename):
+def uploadFile(uid, localpath, filename):
     try: 
         bucket = storage.bucket()
-        blob = bucket.blob(uid + "_" + str(index) + "_" + str(localpath))
+        blob = bucket.blob(uid + "_" + str(localpath))
         blob.upload_from_filename(filename)
         return True
     except FileNotFoundError:
@@ -317,11 +317,11 @@ Download a file from firestore storage; Throws error if unsuccessful
     
 """
 
-def downloadFile(uid, index, filename):
+def downloadFile(uid, filename):
     try:
         bucket = storage.bucket()
-        blob = bucket.blob(uid + "_" + str(index) + "_" + str(filename))
-        blob.download_to_filename(uid + "_" + str(index) + "_" + filename)
+        blob = bucket.blob(uid + "_" + str(filename))
+        blob.download_to_filename(uid + "_" + filename)
         
         return True
     except FileNotFoundError:
@@ -344,10 +344,10 @@ Delete a file from firestore storage; Throws error if unsuccessful
     Unsuccessful upload
     
 """
-def deleteFile(uid, index, filename):
+def deleteFile(uid, filename):
     try:
         bucket = storage.bucket()
-        blob = bucket.blob(uid + "_" + str(index) + "_" + str(filename))
+        blob = bucket.blob(uid + "_" + str(filename))
         blob.delete()
         return True
     except:
@@ -615,11 +615,11 @@ def main():
 
 #main()
 
-def testVideoAnalysis(uid, index, filename):
+def testVideoAnalysis(uid, filename):
     
     #Ensure no file exists on firestore
-    deleteFile(uid=uid, index=index, filename= filename + ".avi")
-    deleteFile(uid=uid, index=index, filename= filename + "_facial_data.txt")
+    deleteFile(uid=uid,  filename= filename + ".avi")
+    deleteFile(uid=uid,  filename= filename + "_facial_data.txt")
 
     #Pause while show firestore free
     tempContinue = input("Type 'N' to continue\n")
@@ -628,31 +628,31 @@ def testVideoAnalysis(uid, index, filename):
 
 
     #Record and upload video
-    uploadFile(uid="uid4",index=2, localpath=filename + ".avi", 
-               filename=uid + "_" + index + "_" + filename + ".avi") 
+    uploadFile(uid="uid4", localpath=filename + ".avi", 
+               filename=uid + "_" + filename + ".avi") 
     
     #Analyze video, and download as a .csv and a .txt; Upload
-    analyzeVideo(filename= uid + "_" + index + "_" + filename + ".avi", depth=30, 
-                 outputname= uid + "_" + index + "_" + filename)
+    analyzeVideo(filename= uid + "_" + filename + ".avi", depth=30, 
+                 outputname= uid + "_" + filename)
     
-    uploadFile(uid=uid, index= index, localpath= filename + "_facial_data.txt", 
-               filename=uid + "_" + index + "_" + filename + "_facial_data.txt")
+    uploadFile(uid=uid, localpath= filename + "_facial_data.txt", 
+               filename=uid + "_" + filename + "_facial_data.txt")
     
     
     
-def testVideoDownload(uid, index, filename):
+def testVideoDownload(uid, filename):
     #Pause while manually delete video locally
     tempContinue = input("Type 'N' to continue\n")
     while tempContinue != "N":
         tempContinue = input("Type 'N' to continue\n")
     
     #Download video
-    downloadFile(uid=uid, index=index, filename= filename + ".avi")
-    downloadFile(uid=uid, index=index, filename= filename + "_facial_data.txt")  
+    downloadFile(uid=uid,  filename= filename + ".avi")
+    downloadFile(uid=uid,  filename= filename + "_facial_data.txt")  
     
     
     
-testVideoAnalysis(uid="uid4", index="2", filename="temp")#
+testVideoAnalysis(uid="uid4",  filename="temp")#
 #testVideoDownload(uid="uid4", index="2", filename="temp")
 
 """FOR UPLOAD/DOWNLOAD:

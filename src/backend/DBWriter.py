@@ -93,7 +93,6 @@ def master_func(request):
             return ("Invalid function selector")
         
     # region (for VScode organization)
-
     """
     Write a new user
 
@@ -358,10 +357,10 @@ def master_func(request):
         Unsuccessful upload
         
     """
-    def uploadFile(uid, index, localpath, filename):
+    def uploadFile(uid, localpath, filename):
         try: 
             bucket = storage.bucket()
-            blob = bucket.blob(uid + "_" + str(index) + "_" + str(localpath))
+            blob = bucket.blob(uid + "_" + str(localpath))
             blob.upload_from_filename(filename)
             return True
         except FileNotFoundError:
@@ -388,11 +387,11 @@ def master_func(request):
         
     """
 
-    def downloadFile(uid, index, filename):
+    def downloadFile(uid, filename):
         try:
             bucket = storage.bucket()
-            blob = bucket.blob(uid + "_" + str(index) + "_" + str(filename))
-            blob.download_to_filename(uid + "_" + str(index) + "_" + filename)
+            blob = bucket.blob(uid + "_" + str(filename))
+            blob.download_to_filename(uid + "_" + filename)
             
             return True
         except FileNotFoundError:
@@ -415,10 +414,10 @@ def master_func(request):
         Unsuccessful upload
         
     """
-    def deleteFile(uid, index, filename):
+    def deleteFile(uid, filename):
         try:
             bucket = storage.bucket()
-            blob = bucket.blob(uid + "_" + str(index) + "_" + str(filename))
+            blob = bucket.blob(uid + "_" + str(filename))
             blob.delete()
             return True
         except:
@@ -585,6 +584,7 @@ def master_func(request):
             return False
         
         
+        
     def sortVideosByRunningCount(uid, rOrder):
         dict_List = []
         bucket = storage.bucket()
@@ -615,6 +615,11 @@ def master_func(request):
         dict_list_sorted = sorted(dict_List, key=lambda x: x['title'], reverse=rOrder)
         return dict_list_sorted
             
+    #print(uploadFile("uid",1, "Script.txt"))
+    #print(downloadFile(uid="uid", index=1))
+    #print(readFileToScript(uid="uid", title="A test title", file_path="Script.txt"))
+    #uploadFile(uid="uid3", index="3", localpath="Script.txt")
+    #print(sortVideosByRunningCount("uid3", True))
 
     def analyzeVideo(filename, depth, outputname):
 
