@@ -31,10 +31,14 @@ def master_func(request):
     import os
     import firebase_admin
     import pytz
-    from nrclex import NRCLex
-    # import cv2
+    import cv2
     from firebase_admin import credentials, storage, firestore
     from datetime import datetime
+    from fer import Video, FER
+    import csv
+    import time
+    import pandas as pd
+    import numpy as np
 
     # Get path to serviceAccKey
     cwd = os.path.dirname(os.path.realpath("serviceAccountKey.json"))
