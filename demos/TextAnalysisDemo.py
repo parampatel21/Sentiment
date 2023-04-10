@@ -1,6 +1,6 @@
 from nrclex import NRCLex
 
-def analyze_text(text):
+def analyze_text(text, output_file):
     doc = NRCLex(text)
     emotions = doc.raw_emotion_scores
     
@@ -16,15 +16,25 @@ def analyze_text(text):
     result = {item[0]: item[1] for item in lowest_values} 
     result.update({item[0]: item[1] for item in sorted(ties)})
     
-
     results['lowest_emotions'] = result
     
-    return results
+    # write the results to the output file
+    with open(output_file, 'w') as f:
+        # write the raw emotion scores
+        f.write('Raw Emotion Scores:\n')
+        for emotion, score in results['raw_emotion_scores'].items():
+            f.write(f'{emotion}: {score}\n')
+        
+        # write the lowest emotion scores
+        f.write('\nLowest Emotion Scores:\n')
+        for emotion, score in results['lowest_emotions'].items():
+            f.write(f'{emotion}: {score}\n')
+
+
 
 text = "love love love love hate hate hate"
-results = analyze_text(text)
+results = analyze_text(text, "Text_Analysis_Demo.txt")
 
-print("\n")
-print(results['raw_emotion_scores'])
-print(results['lowest_emotions'])
+
+
 

@@ -1,0 +1,15 @@
+Raw Emotion Scores:
+joy: 4
+positive: 4
+anger: 3
+disgust: 3
+fear: 3
+negative: 3
+sadness: 3
+
+Lowest Emotion Scores:
+anger: 3
+disgust: 3
+fear: 3
+negative: 3
+sadness: 3
