@@ -1,21 +1,41 @@
 from nrclex import NRCLex
 
-text = "I am having a terrible horrible no good very bad day"
+def analyze_text(text):
+    doc = NRCLex(text)
+    emotions = doc.raw_emotion_scores
+    lowest_emotions = sorted(emotions.items(), key=lambda x: x[1])[:3]
+    
+    
+    # create a dictionary to store the results
+    results = {}
+    results['raw_emotion_scores'] = emotions
+    results['lowest_emotions'] = dict(lowest_emotions)
+    
+    # get the lowest 3 values from my_dict1 and any ties that exceed the lowest 3
+    lowest_values = [item for item in sorted(results['raw_emotion_scores'].items(), key=lambda x: x[1])[:3]]
+    ties = set([item for item in sorted(results['raw_emotion_scores'].items(), key=lambda x: x[1])[3:] if item[1] == lowest_values[-1][1]])
 
-doc = NRCLex(text)
+    # add any ties to the lowest 3 values and convert the result to a dictionary for my_dict1
+    result = {item[0]: item[1] for item in lowest_values} 
+    result.update({item[0]: item[1] for item in sorted(ties)})
+    print(result)
 
-# get the raw emotion scores
-emotions = doc.raw_emotion_scores
+    # get the lowest 3 values from my_dict2 and any ties that exceed the lowest 3
+    lowest_values = [item for item in sorted(results['lowest_emotions'].items(), key=lambda x: x[1])[:3]]
+    ties = set([item for item in sorted(results['lowest_emotions'].items(), key=lambda x: x[1])[3:] if item[1] == lowest_values[-1][1]])
 
-# get the lowest three emotion values
-lowest_emotions = sorted(emotions.items(), key=lambda x: x[1])[:3]
+    # add any ties to the lowest 3 values and convert the result to a dictionary for my_dict2
+    result = {item[0]: item[1] for item in lowest_values} 
+    result.update({item[0]: item[1] for item in sorted(ties)})
+    print(result)
+    
+    
+    return results
 
-# write the raw emotion scores and the lowest three emotion values to a file
-with open('nrctester.txt', 'w') as f:
-    # write the raw emotion scores
-    for emotion, score in emotions.items():
-        f.write(f'{emotion}: {score}\n')
-    # write the lowest three emotion values
-    f.write('\nAreas of Possible Improvement:\n')
-    for emotion, score in lowest_emotions:
-        f.write(f'{emotion}: {score}\n')
+text = "love love love love hate hate hate hate"
+results = analyze_text(text)
+
+print("\n")
+print(results['raw_emotion_scores'])
+print(results['lowest_emotions'])
+

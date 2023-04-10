@@ -9,7 +9,7 @@ positive: 1
 surprise: 1
 trust: 1
 
-Lowest Emotions:
+Areas of Possible Improvement:
 anticipation: 1
 joy: 1
 positive: 1
