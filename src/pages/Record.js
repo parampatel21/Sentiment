@@ -38,7 +38,7 @@ function Record() {
           });
   
           mediaRecorder.addEventListener('stop', () => {
-            const videoBlob = new Blob(chunks, { type: 'video/mp4' });
+            const videoBlob = new Blob(chunks, { type: 'video/avi' });
             setVideoBlob(videoBlob);
             setVideoSrc(URL.createObjectURL(videoBlob));
             setRecording(false);
@@ -124,13 +124,13 @@ function Record() {
                 setError('Failed to upload the video')
             }
     
-            try {
-                setError('')
-                setLoading(true)
-                handleScriptUpload(new_count)
-            } catch {
-                setError('Failed to upload the script')
-            }
+            // try {
+            //     setError('')
+            //     setLoading(true)
+            //     handleScriptUpload(new_count)
+            // } catch {
+            //     setError('Failed to upload the script')
+            // }
     
             try {
                 setError('')
@@ -143,7 +143,7 @@ function Record() {
 
         const handleUpload = (new_count) => {
           const storageRef = storage.ref();
-          const fileName = new_count.toString() + `.mp4`;
+          const fileName = new_count.toString() + `.avi`;
           const UID = getuser()
           const videoRef = storageRef.child(UID + `_${fileName}`);
       
@@ -154,18 +154,18 @@ function Record() {
           });
         };  
 
-        async function handleScriptUpload(new_count) {
-            const script = scriptRef.current.value.trim();
-            const UID = getuser();
-            const storageRef = storage.ref();
-            const fileName = new_count + `.txt`;
-            console.log(fileName)
-            const scriptRefstorage = storageRef.child(UID + `_${fileName}`);
-            await scriptRefstorage.putString(script);
-            console.log('Uploaded a blob or file!');
-            console.log(fileName)
-            setUploaded(true);
-        }
+        // async function handleScriptUpload(new_count) {
+        //     const script = scriptRef.current.value.trim();
+        //     const UID = getuser();
+        //     const storageRef = storage.ref();
+        //     const fileName = new_count + `.txt`;
+        //     console.log(fileName)
+        //     const scriptRefstorage = storageRef.child(UID + `_${fileName}`);
+        //     await scriptRefstorage.putString(script);
+        //     console.log('Uploaded a blob or file!');
+        //     console.log(fileName)
+        //     setUploaded(true);
+        // }
 
         async function handleFirestoreUpdate(new_count) {
             const title = titleRef.current.value.trim();
@@ -185,8 +185,9 @@ function Record() {
             }, { merge: true })
             firestore.collection(UID).doc(new_count.toString()).set({
                 title: title,
-                timestamp: currentDate
-            }, { merge: true })
+                timestamp: currentDate,
+                script: scriptRef.current.value.trim()
+            })
             console.log('Updated firestore!');
             console.log(new_count, title, currentDate)
             setUploaded(true);

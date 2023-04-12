@@ -80,21 +80,45 @@ function ViewAllPerformances() {
         };
     
         const handleDownload = (objectId) => {
-            const title = performances.find(p => p.objectId === objectId).title
+            const title = performances[objectId - 1].title;
             const collectionRef = firestore.collection(uid);
-            const query = collectionRef.where("title", "==", title); // this should be doc title
-            const filename = query.id + '.mp4'
-            const storageRef = storage.ref();
-            const fileRef = storageRef.child(uid + '/' + filename);
-    
-            fileRef.getDownloadURL().then(function(url) {
-                // create a new page to view/download the file
-                window.open(url, '_blank');
-              }).catch(function(error) {
-                // handle errors
-                console.log(error);
+            collectionRef.where("title", "==", title)
+              .get()
+              .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                  console.log(doc.id);
+                  const storageRef = storage.ref();
+                  const fileRef = storageRef.child(uid + '_' + doc.id + '.avi');
+                  fileRef.getDownloadURL().then(function(url) {
+                    // create a new page to view/download the file
+                    const newTab = window.open();
+                    const video = document.createElement('video');
+                    video.src = url;
+                    video.controls = true;
+                    video.style.width = "100%";
+                    video.style.height = "100%";
+                    newTab.document.body.style.margin = "0px";
+                    newTab.document.body.appendChild(video);
+                    const text = document.createTextNode("To download, click the three dots in the video player.");
+                    const p = document.createElement('p');
+                    p.style.position = "absolute";
+                    p.style.top = "10px";
+                    p.style.left = "10px";
+                    p.style.color = "white";
+                    p.appendChild(text);
+                    newTab.document.body.appendChild(p);
+                  }).catch(function(error) {
+                    // handle errors
+                    console.log(error);
+                  });
+                });
+              })
+              .catch((error) => {
+                console.log("Error getting documents: ", error);
               });
-        }
+          };
+          
+          
 
         const handleUpdate = (objectId) => {
         const selectedPerformance = performances.find(p => p.id === objectId);
