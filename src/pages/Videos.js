@@ -15,7 +15,7 @@ function ViewAllPerformances() {
 
     console.log(loadTitlesFromCollection(uid))
     const performances = loadTitlesFromCollection(uid);
-
+    
 
     const listItems = performances.map(performance =>
         <div>
@@ -48,6 +48,8 @@ function ViewAllPerformances() {
     //         });
     //     }
     // }
+
+    // getPerformances(1, uid);
     
     function loadTitlesFromCollection(uid) {
         let counter = 0
@@ -65,27 +67,6 @@ function ViewAllPerformances() {
         });
         return temp
       }
-
-    // function loadTitlesFromCollection(uid) {
-    //     let performances = document.getElementById("performances");
-    //     const counter = 0
-    //     console.log(firestore.collection(uid)
-    //     .get())
-        // firestore.collection(uid)
-        //   .get()
-        //   .then((querySnapshot) => {
-        //     querySnapshot.forEach((doc) => {
-        //       counter = counter + 1
-        //       const title = doc.data().title;
-        //       const titleElement = document.createElement("p");
-        //       titleElement.textContent = title;
-        //       performances.appendChild({ id: counter, title: titleElement});
-        //     });
-        //   })
-        //   .catch((error) => {
-        //     console.log("Error getting documents: ", error);
-        //   });
-    // }
 
     const handleDelete = (objectId) => {
             // TODO: not finished
