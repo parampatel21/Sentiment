@@ -519,7 +519,6 @@ def sortStorageByTimeStamp(uid, rOrder, filetype):
         for file in sorted_files:
             print({'name': file.name, 'created': file.time_created})
         
-
         return sorted_files
     except:
         return False
@@ -573,48 +572,54 @@ def sortStorageByTitle(uid, rOrder, filetype):
 #print(sortVideosByRunningCount("uid3", True))
 
 def analyzeVideo(filename, depth, outputname):
+    try:
+        # Load the video file
+        video = Video(filename)
 
-    # Load the video file
-    video = Video(filename)
+        # Initialize the FER detector
+        detector = FER()
+        
+        # Analyze the video frames
+        result = video.analyze(detector=detector, display=False, frequency=depth)
 
-    # Initialize the FER detector
-    detector = FER()
-    
-    # Analyze the video frames
-    result = video.analyze(detector=detector, display=False, frequency=depth)
+        with open('data.csv', 'r') as file, open(outputname + '_facial_data.txt', "w") as file2:
 
-    with open('data.csv', 'r') as file, open(outputname + '_facial_data.txt', "w") as file2:
+            # Create a CSV reader object
+            reader = csv.reader(file)
 
-        # Create a CSV reader object
-        reader = csv.reader(file)
-
-        # Loop through each row of data and put it into a txt file
-        for row in reader:
-                file2.write(str(row) + "\n")
+            # Loop through each row of data and put it into a txt file
+            for row in reader:
+                    file2.write(str(row) + "\n")
+                    
+            file2.write("\n")
+            file2.write("Areas of possible improvment:\n")
+            file2.write("""\tFinal row is average value of final presentation; 
+            Adjust according to desired emotion to be displayed during presentation\n""")
+            file2.write("\n")
+            
+            with open('data.csv', 'r') as f:
+                df = pd.read_csv(f)
                 
-        file2.write("\n")
-        file2.write("Areas of possible improvment:\n")
-        file2.write("""\tFinal row is average value of final presentation; 
-        Adjust according to desired emotion to be displayed during presentation\n""")
-        file2.write("\n")
-        
-        with open('data.csv', 'r') as f:
-            df = pd.read_csv(f)
-        # Select all columns except 'box0'
-        cols_to_average = [col for col in df.columns if col != 'box0']
+            df.replace("",0)    
+                
+            # Select all columns except 'box0'
+            cols_to_average = [col for col in df.columns if col != 'box0']
 
-        # Calculate column-wise averages, except for 'box0'
-        col_averages = df[cols_to_average].mean()
 
-        # Insert new row for column averages with NULL value for 'box0'
-        df = df.append(pd.Series([np.nan] * len(df.columns), index=df.columns), ignore_index=True)
-        df.iloc[-1, df.columns.get_loc('box0')] = 'NULL'
-        df.iloc[-1, df.columns != 'box0'] = col_averages.values
+            # Calculate column-wise averages, except for 'box0'
+            col_averages = df[cols_to_average].mean(skipna=True)
 
-        # Display the modified dataframe
-        file2.write(str(df) + "\n")
-        
-    return result
+            # Insert new row for column averages with NULL value for 'box0'
+            df = df.append(pd.Series([np.nan] * len(df.columns), index=df.columns), ignore_index=True)
+            df.iloc[-1, df.columns.get_loc('box0')] = 'NULL'
+            df.iloc[-1, df.columns != 'box0'] = col_averages.values
+
+            # Display the modified dataframe
+            file2.write(str(df) + "\n")
+            
+        return result
+    except:
+        return False
     
 
 #Test Input & update; Print current running count 
@@ -674,7 +679,7 @@ def testVideoDownload(uid, filename):
     
     
 #testVideoAnalysis(uid="uid4",  filename="temp")#
-#testVideoDownload(uid="uid4", index="2", filename="temp")
+#testVideoDownload(uid="uid4",  filename="temp")
 
 """FOR UPLOAD/DOWNLOAD:
             Replace the strings '_file_data_txt' w/ whatever metric being measured + format file.
@@ -697,5 +702,14 @@ analyzeVideo("[object Promise]1.mp4", depth=30,
 """
 
 
-sortStorageByTitle(uid="uid4", rOrder=False,filetype=".avi")
-sortStorageByTimeStamp(uid="uid4", rOrder=False,filetype=".avi")
+#Ensure file DNE
+#print(deleteFile(uid="uid4", filename= "DNE.avi"))
+
+
+
+#sortStorageByTitle(uid="uid4", rOrder=False,filetype=".txt")
+print(sortStorageByTimeStamp(uid="uid4", rOrder=True,filetype=".mp4"))
+
+#uploadFile(uid="uid4", localpath="0.avi", filename="uid4_0.avi")
+
+

@@ -653,71 +653,89 @@ def master_func(request):
     #print(sortVideosByRunningCount("uid3", True))
 
     def analyzeVideo(filename, depth, outputname):
+        try:
+            # Load the video file
+            video = Video(filename)
 
-        # Load the video file
-        video = Video(filename)
+            # Initialize the FER detector
+            detector = FER()
+            
+            # Analyze the video frames
+            result = video.analyze(detector=detector, display=False, frequency=depth)
 
-        # Initialize the FER detector
-        detector = FER()
-        
-        # Analyze the video frames
-        result = video.analyze(detector=detector, display=False, frequency=depth)
+            with open('data.csv', 'r') as file, open(outputname + '_facial_data.txt', "w") as file2:
 
-        with open('data.csv', 'r') as file, open(outputname + '_facial_data.txt', "w") as file2:
+                # Create a CSV reader object
+                reader = csv.reader(file)
 
-            # Create a CSV reader object
-            reader = csv.reader(file)
-
-            # Loop through each row of data and put it into a txt file
-            for row in reader:
-                    file2.write(str(row) + "\n")
+                # Loop through each row of data and put it into a txt file
+                for row in reader:
+                        file2.write(str(row) + "\n")
+                        
+                file2.write("\n")
+                file2.write("Areas of possible improvment:\n")
+                file2.write("""\tFinal row is average value of final presentation; 
+                Adjust according to desired emotion to be displayed during presentation\n""")
+                file2.write("\n")
+                
+                with open('data.csv', 'r') as f:
+                    df = pd.read_csv(f)
                     
-            file2.write("\n")
-            file2.write("Areas of possible improvment:\n")
-            file2.write("""\tFinal row is average value of final presentation; 
-            Adjust according to desired emotion to be displayed during presentation\n""")
-            file2.write("\n")
-            
-            with open('data.csv', 'r') as f:
-                df = pd.read_csv(f)
-            # Select all columns except 'box0'
-            cols_to_average = [col for col in df.columns if col != 'box0']
+                df.replace("",0)    
+                    
+                # Select all columns except 'box0'
+                cols_to_average = [col for col in df.columns if col != 'box0']
 
-            # Calculate column-wise averages, except for 'box0'
-            col_averages = df[cols_to_average].mean()
 
-            # Insert new row for column averages with NULL value for 'box0'
-            df = df.append(pd.Series([np.nan] * len(df.columns), index=df.columns), ignore_index=True)
-            df.iloc[-1, df.columns.get_loc('box0')] = 'NULL'
-            df.iloc[-1, df.columns != 'box0'] = col_averages.values
+                # Calculate column-wise averages, except for 'box0'
+                col_averages = df[cols_to_average].mean(skipna=True)
 
-            # Display the modified dataframe
-            file2.write(str(df) + "\n")
-            
-        return result
+                # Insert new row for column averages with NULL value for 'box0'
+                df = df.append(pd.Series([np.nan] * len(df.columns), index=df.columns), ignore_index=True)
+                df.iloc[-1, df.columns.get_loc('box0')] = 'NULL'
+                df.iloc[-1, df.columns != 'box0'] = col_averages.values
+
+                # Display the modified dataframe
+                file2.write(str(df) + "\n")
+                
+            return result
+        except:
+            return False
 
     """
     Analyze text emotion
     """
-    def analyzeText(uid, index):
+    def analyze_text(uid, index):
         doc = NRCLex(getScript(uid, index))
-
-        # get the raw emotion scores
         emotions = doc.raw_emotion_scores
+        
+        # create a dictionary to store the results
+        results = {}
+        results['raw_emotion_scores'] = emotions
+        
+        # get the lowest 3 values from my_dict1 and any ties that exceed the lowest 3
+        lowest_values = [item for item in sorted(results['raw_emotion_scores'].items(), key=lambda x: x[1])[:3]]
+        ties = set([item for item in sorted(results['raw_emotion_scores'].items(), key=lambda x: x[1])[3:] if item[1] == lowest_values[-1][1]])
 
-        # get the lowest three emotion values
-        lowest_emotions = sorted(emotions.items(), key=lambda x: x[1])[:3]
-
-        # write the raw emotion scores and the lowest three emotion values to a file
+        # add any ties to the lowest 3 values and convert the result to a dictionary for my_dict1
+        result = {item[0]: item[1] for item in lowest_values} 
+        result.update({item[0]: item[1] for item in sorted(ties)})
+        
+        results['lowest_emotions'] = result
+        
+        # write the results to the output file
         with open(uid + "_" + index + "_text_analysis.txt", 'w') as f:
             # write the raw emotion scores
-            for emotion, score in emotions.items():
+            f.write('Raw Emotion Scores:\n')
+            for emotion, score in results['raw_emotion_scores'].items():
                 f.write(f'{emotion}: {score}\n')
-            # write the lowest three emotion values
-            f.write('\nAreas of Possible Improvement:\n')
-            for emotion, score in lowest_emotions:
+            
+            # write the lowest emotion scores
+            f.write('\nLowest Emotion Scores:\n')
+            for emotion, score in results['lowest_emotions'].items():
                 f.write(f'{emotion}: {score}\n')
-        return emotions
+        
+        return results
     
     def deleteAnalysis(uid, index):
         try:
@@ -731,3 +749,4 @@ def master_func(request):
     # endregion
 
     return (str(firebase_function(selector, **kwargs_dict)), 200, headers)
+
