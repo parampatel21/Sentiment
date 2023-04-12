@@ -37,7 +37,7 @@ function App() {
                 <Route path="/videos" element={<Videos />} />
                 <Route path="/scripts" element={<Scripts />} />
                 <Route path="/videos/:id" element={<VideoID />} />
-                <Route path="/script-id" element={<ScriptID />} />
+                <Route path="/scripts/:id" element={<ScriptID />} />
                 <Route path="/record" element={<Record />} />
                 <Route path="/testing-grounds" element={<TestingGrounds />} />
 

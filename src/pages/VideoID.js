@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react'
 import { Form, Button, Card, Alert } from 'react-bootstrap'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import VideoRecorder from './components/VideoRecorder'
 import '../styles/styles.css'
@@ -24,39 +24,8 @@ function VideoID() {
     const [uploaded, setUploaded] = useState(false);
     const videoRef = useRef(null);
     const [title, setTitle] = useState('');
-
-    const handleStartRecording = () => {
-        navigator.mediaDevices
-            .getUserMedia({ video: true, audio: true })
-            .then((mediaStream) => {
-                videoRef.current.srcObject = mediaStream;
-
-                const mediaRecorder = new MediaRecorder(mediaStream);
-                const chunks = [];
-
-                mediaRecorder.addEventListener('dataavailable', (event) => {
-                    chunks.push(event.data);
-                });
-
-                mediaRecorder.addEventListener('stop', () => {
-                    const videoBlob = new Blob(chunks, { type: 'video/mp4' });
-                    setVideoBlob(videoBlob);
-                    setVideoSrc(URL.createObjectURL(videoBlob));
-                    setRecording(false);
-                });
-
-                mediaRecorder.start();
-                setRecording(true);
-            })
-            .catch((error) => {
-                console.error('Error accessing media devices:', error);
-            });
-    };
-
-    const handleStopRecording = () => {
-        videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
-        videoRef.current.srcObject = null;
-    };
+    const id = useParams().id;
+    const uid = getuser()
 
     const handlePlayback = () => {
         setPlaying(true);
@@ -207,7 +176,7 @@ function VideoID() {
             <main>
                 <section className="hero">
                     <h1>Welcome to your Video Performance</h1>
-                    <p>Here you can record a video performance of your public speaking skills and have your technique analyzed via facial and tonal analysis.</p>
+                    <p>Here you can view and modify a video performance of your public speaking skills and have your technique analyzed via facial and tonal analysis.</p>
                     <p>Also, feel free to upload or supply a script via the text box below and we'll run our analysis on it to find the tone portrayed through the text.</p>
                     <p>When you're ready, click start recording below to begin your journey to a more confident speech.</p>
                     {videoSrc ? (
