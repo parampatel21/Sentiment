@@ -135,9 +135,8 @@ function ViewAllPerformances() {
                     <button className='sort-button'>Sort By</button>
                     &nbsp;
                     {performances.map(object => (
-
                         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                            <Link to='/video-id' style={{ width: '100%' }} className='list-item'>{object.title}</Link>
+                            <Link to={`/videos/${object.id}`} style={{ width: '100%' }} className='list-item'>{object.title}</Link>
                             <button style={{ display: 'inline-block' }} className='hero-button' onClick={() => handleDelete(object.id)}>Delete</button>
                             &nbsp;
                             <button style={{ display: 'inline-block' }} className='hero-button' onClick={() => handleUpdate(object.id)}>Update</button>
