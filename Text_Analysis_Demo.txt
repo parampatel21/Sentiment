@@ -7,7 +7,9 @@ fear: 3
 negative: 3
 sadness: 3
 
-Lowest Emotion Scores:
+Your lowest emotion scores are as follows. 
+Consider adjusting your performance to improve on these aspects:
+
 anger: 3
 disgust: 3
 fear: 3
