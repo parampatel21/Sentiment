@@ -60,7 +60,7 @@ function ViewAllScripts() {
                     {scripts.map(object => (
 
                         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                            <a href='/script-id' style={{ width: '100%' }} className='list-item'>{object.title}</a>
+                            <a href={`/scripts/${object.id}`} style={{ width: '100%' }} className='list-item'>{object.title}</a>
                             <button style={{ display: 'inline-block' }} className='hero-button' onClick={() => handleDelete(object.id)}>Delete</button>
                             &nbsp;
                             <button style={{ display: 'inline-block' }} className='hero-button' onClick={() => console.log(`Updating ${object.title}`)}>Update</button>
