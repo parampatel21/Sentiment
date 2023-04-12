@@ -121,17 +121,18 @@ function ViewAllPerformances() {
           
 
         const handleUpdate = (objectId) => {
-        const selectedPerformance = performances.find(p => p.id === objectId);
-        const newTitle = prompt('Enter a new name:', selectedPerformance.title);
+        const title = performances[objectId - 1].title;
+        const collectionRef = firestore.collection(uid);
+        const newTitle = prompt('Enter a new name:', title);
         if (newTitle) {
-            const docRef = firestore.collection(uid).doc(selectedPerformance);
-            const query = docRef.where('title', '==', selectedPerformance.title);
-            query.get()
-            .then((querySnapshot) => {
+            collectionRef.where("title", "==", title)
+              .get()
+              .then((querySnapshot) => {
                 querySnapshot.forEach((doc) => {
                 doc.ref.update({ title: newTitle })
                     .then(() => {
                     console.log('Document successfully updated!');
+                    window.location.reload();
                     })
                     .catch((error) => {
                     console.error('Error updating document: ', error);
