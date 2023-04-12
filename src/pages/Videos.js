@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { useNavigate, Link } from 'react-router-dom'
 import {storage, firestore} from '../firebase'
@@ -12,22 +12,8 @@ function ViewAllPerformances() {
     const handleOptionChange = (event) => {
         setSelectedOption(event.target.value);
     };
-
-    console.log(loadTitlesFromCollection(uid))
-    const performances = loadTitlesFromCollection(uid);
+    const [performances, setPerformances] = useState([]);
     
-
-    const listItems = performances.map(performance =>
-        <div>
-
-            <Link className='list-button' to="video-id">{performance.title}</Link>
-            <a className='list-button' href='performance-id'>Edit</a>
-            <a className='list-button' href='performance-id'>View</a>
-            <a className='list-button' href='performance-id'>Delete</a>
-            {/* <Button href='/script-id' className='button'>{script.text}</Button> */}
-            {/* <li key={script.id} onClick={() => handleOptionClick(script)}>{script.text}</li> */}
-        </div>
-    );
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
@@ -55,18 +41,25 @@ function ViewAllPerformances() {
         let counter = 0
         let temp = []
         const collectionRef = firestore.collection(uid);
-        collectionRef.get().then((querySnapshot) => {            
+        return collectionRef.get().then((querySnapshot) => {            
           querySnapshot.forEach((doc) => {
             counter++
             const title = doc.data().title;
             if (title == null) return temp
             temp.push({ id: counter, title: title});
           });
+          return temp;
         }).catch((error) => {
           console.error('Error getting documents: ', error);
+          return [];
         });
-        return temp
       }
+
+    useEffect(() => {
+      loadTitlesFromCollection(uid)
+        .then(titles => setPerformances(titles))
+        .catch(error => console.error('Error getting performances: ', error));
+    }, [uid]);
 
     const handleDelete = (objectId) => {
             // TODO: not finished
