@@ -29,11 +29,13 @@ def analyze_text(text, output_file):
         f.write('\nLowest Emotion Scores:\n')
         for emotion, score in results['lowest_emotions'].items():
             f.write(f'{emotion}: {score}\n')
+            
+    return results
 
 
 
 text = "love love love love hate hate hate"
-results = analyze_text(text, "Text_Analysis_Demo.txt")
+print(analyze_text(text, "Text_Analysis_Demo.txt"))
 
 
 

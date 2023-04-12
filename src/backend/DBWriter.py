@@ -734,6 +734,8 @@ def master_func(request):
             f.write('\nLowest Emotion Scores:\n')
             for emotion, score in results['lowest_emotions'].items():
                 f.write(f'{emotion}: {score}\n')
+        
+        return results
     
     def deleteAnalysis(uid, index):
         try:
