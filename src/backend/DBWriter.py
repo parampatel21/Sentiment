@@ -731,7 +731,7 @@ def master_func(request):
                 f.write(f'{emotion}: {score}\n')
             
             # write the lowest emotion scores
-            f.write('\nLowest Emotion Scores:\n')
+            f.write('\nYour lowest emotion scores are as follows. \nConsider adjusting your performance to improve on these aspects:\n\n')
             for emotion, score in results['lowest_emotions'].items():
                 f.write(f'{emotion}: {score}\n')
         
