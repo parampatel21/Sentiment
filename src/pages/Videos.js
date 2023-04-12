@@ -62,21 +62,45 @@ function ViewAllPerformances() {
     }, [uid]);
 
     const handleDelete = (objectId) => {
-            // TODO: not finished
-            const title = performances.find(p => p.objectId === objectId).title
+        // TODO: RUNNING COUTNT IS NOT DECREMENTED AND FIREBASE STORAGE DOES NOT CLEAR SAID VIDEO
+        const confirmDelete = window.confirm("Are you sure you want to delete?");
+        if (confirmDelete) {
+            const title = performances[objectId - 1].title;
             const collectionRef = firestore.collection(uid);
-            const query = collectionRef.where("title", "==", title);
-            query.get().then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                doc.ref.delete().then(() => {
-                console.log("Document successfully deleted!");
-                }).catch((error) => {
-                console.error("Error removing document: ", error);
+            collectionRef.where("title", "==", title)
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    doc.ref.delete().then(() => {
+                    console.log("Document successfully deleted!");
+
+                    const accessInfoRef = firestore.collection(uid).doc('access_info');
+                    accessInfoRef.get().then((doc) => {
+                        const data = doc.data();
+                        const old_count = data.running_count
+                        const new_count = data.running_count - 1
+
+                        firestore.collection(uid).doc("access_info").set({
+                            running_count: new_count
+                        }, { merge: true })
+
+                        const storageRef = storage.ref();
+                        const fileRef = storageRef.child(uid + '_' + old_count + '.avi');
+                        fileRef.delete().then(() => {
+                            console.log(`Successfully deleted`);
+                          })
+
+                    })
+
+                    window.location.reload();
+                    }).catch((error) => {
+                    console.error("Error removing document: ", error);
+                    });
                 });
-            });
-            }).catch((error) => {
-                console.error("Error querying documents: ", error);
-            });
+                }).catch((error) => {
+                    console.error("Error querying documents: ", error);
+                });
+            }
         };
     
         const handleDownload = (objectId) => {
