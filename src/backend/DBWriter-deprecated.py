@@ -593,8 +593,7 @@ def analyzeVideo(filename, depth, outputname):
                     
             file2.write("\n")
             file2.write("Areas of possible improvment:\n")
-            file2.write("""\tFinal row is average value of final presentation; 
-            Adjust according to desired emotion to be displayed during presentation\n""")
+            file2.write("""\tFinal row is average value of final presentation; \n\t Adjust according to desired emotion to be displayed during presentation\n""")
             file2.write("\n")
             
             with open('data.csv', 'r') as f:
@@ -617,7 +616,10 @@ def analyzeVideo(filename, depth, outputname):
             # Display the modified dataframe
             file2.write(str(df) + "\n")
             
-        return result
+        # Read the contents of the txt file and return it as a string
+        with open(outputname + '_facial_data.txt', "r") as file3:
+            return file3.read()
+        
     except:
         return False
     
@@ -708,8 +710,10 @@ analyzeVideo("[object Promise]1.mp4", depth=30,
 
 
 #sortStorageByTitle(uid="uid4", rOrder=False,filetype=".txt")
-print(sortStorageByTimeStamp(uid="uid4", rOrder=True,filetype=".mp4"))
+#print(sortStorageByTimeStamp(uid="uid4", rOrder=True,filetype=".mp4"))
 
 #uploadFile(uid="uid4", localpath="0.avi", filename="uid4_0.avi")
 
 
+print(analyzeVideo("[object Promise]1.mp4", depth=30, 
+                 outputname= "[object Promise]"))

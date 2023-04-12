@@ -10,7 +10,7 @@
 
 Areas of possible improvment:
 	Final row is average value of final presentation; 
-        Adjust according to desired emotion to be displayed during presentation
+	 Adjust according to desired emotion to be displayed during presentation
 
    angry0               box0  disgust0   fear0   happy0  neutral0     sad0  surprise0
 0   0.000  [245 152 239 239]       0.0  0.0100  0.67000   0.31000  0.01000    0.00000

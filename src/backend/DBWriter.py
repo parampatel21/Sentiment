@@ -698,7 +698,9 @@ def master_func(request):
                 # Display the modified dataframe
                 file2.write(str(df) + "\n")
                 
-            return result
+            # Read the contents of the txt file and return it as a string
+            with open(outputname + '_facial_data.txt', "r") as file3:
+                return file3.read()
         except:
             return False
 
@@ -735,7 +737,8 @@ def master_func(request):
             for emotion, score in results['lowest_emotions'].items():
                 f.write(f'{emotion}: {score}\n')
         
-        return results
+        with open(uid + "_" + index + "_text_analysis.txt", 'r') as f:    
+            return f.read()
     
     def deleteAnalysis(uid, index):
         try:

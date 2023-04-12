@@ -29,8 +29,9 @@ def analyze_text(text, output_file):
         f.write('\nYour lowest emotion scores are as follows. \nConsider adjusting your performance to improve on these aspects:\n\n')
         for emotion, score in results['lowest_emotions'].items():
             f.write(f'{emotion}: {score}\n')
-            
-    return results
+    
+    with open(output_file, 'r') as f:    
+        return f.read()
 
 
 
