@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { useNavigate, Link } from 'react-router-dom'
 import {storage, firestore} from '../firebase'
 import Navbar from './components/Navbar';
+import { GlobalContext } from './components/GlobalState';
 import '../styles/HomePage.css'
 
 function ViewAllPerformances() {
@@ -152,6 +153,9 @@ function ViewAllPerformances() {
         }
         };
 
+    const [globalPerformances, setGlobalPerformances] = useContext(GlobalContext);
+    setGlobalPerformances(performances)
+    console.log(globalPerformances)
 
     return (
         <div className="container-fluid">

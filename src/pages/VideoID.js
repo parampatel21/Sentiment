@@ -1,14 +1,18 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect, useContext } from 'react'
 import { Form, Button, Card, Alert } from 'react-bootstrap'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams, useLocation } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import VideoRecorder from './components/VideoRecorder'
+import { GlobalContext } from './components/GlobalState'
 import '../styles/styles.css'
 import '../styles/HomePage.css'
 import { storage, firestore } from '../firebase'
 import Navbar from './components/Navbar'
 
 function VideoID() {
+    const [globalPerformances, setGlobalPerformances] = useContext(GlobalContext);
+    const [performances, setPerformances] = useState(globalPerformances);
+    const objectId = useParams().id;
     const scriptRef = useRef();
     const titleRef = useRef();
     const textAnalysis = useState('Not yet set')
@@ -18,14 +22,41 @@ function VideoID() {
     const navigate = useNavigate();
     const [recording, setRecording] = useState(false);
     const [videoBlob, setVideoBlob] = useState(null);
+    const videoRef = useRef(null);
     const [videoSrc, setVideoSrc] = useState(null);
     const [playing, setPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
     const [uploaded, setUploaded] = useState(false);
-    const videoRef = useRef(null);
     const [title, setTitle] = useState('');
-    const id = useParams().id;
     const uid = getuser()
+
+    
+    console.log(globalPerformances)
+
+    const loadVideo = () => {
+        console.log(objectId)
+        console.log(performances)
+        const title = performances[objectId - 1].title;
+        const collectionRef = firestore.collection(uid);
+        collectionRef.where("title", "==", title)
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    console.log(doc.id);
+                    const storageRef = storage.ref();
+                    const fileRef = storageRef.child(uid + '_' + doc.id + '.avi');
+                    fileRef.getDownloadURL().then(function (url) {
+                        setVideoSrc(url);
+                    }).catch(function (error) {
+                        // handle errors
+                        console.log(error);
+                    });
+                });
+            })
+            .catch((error) => {
+                console.log("Error getting documents: ", error);
+            });
+    };
 
     const handlePlayback = () => {
         setPlaying(true);
@@ -169,6 +200,8 @@ function VideoID() {
         reader.readAsText(file);
     }
 
+    loadVideo();
+
     return (
         <div className="container-fluid">
             <Navbar />
@@ -206,7 +239,7 @@ function VideoID() {
                                   <button className='hero-button' onClick={handleUpload}  style={{ marginRight: '10px' }}>Upload</button>
                                     )} */}
                                         {/* <button className='hero-button' onClick={handlePlayback}  style={{ marginRight: '10px' }}>Play</button> */}
-                                        <button className='hero-button' onClick={handleReset} >Reset</button>
+                                        {/* <button className='hero-button' onClick={handleReset} >Reset</button> */}
                                     </div>
                                 )}
                             </div>
@@ -228,7 +261,7 @@ function VideoID() {
 
                 <Form.Group id="title">
                     <Form.Label>Title</Form.Label>
-                    <Form.Control type="text" ref={titleRef} required onChange={(e) => setTitle(e.target.value)} defaultValue={titleRef} />
+                    <Form.Control type="text" ref={titleRef} required onChange={(e) => setTitle(e.target.value)} defaultValue={globalPerformances[objectId - 1].title} />
                 </Form.Group>
 
                 {/* Handle form submission */}
