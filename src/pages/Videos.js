@@ -11,32 +11,14 @@ function ViewAllPerformances() {
     const [selectedOption, setSelectedOption] = useState('option1');
     const handleOptionChange = (event) => {
         setSelectedOption(event.target.value);
-    };
-    const [performances, setPerformances] = useState([]);
-    
+    };    
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
 
-    // function getPerformances(type, uid) {
-    //     if (type == 1) {
-    //         fetch('https://us-central1-sentiment-379415.cloudfunctions.net/firebase_operational' + '?selector=sortVideosByRunningCount' + '&uid=' + uid + '&rOrder=False') // Hello World function with parameters (look at end of link)
-    //         .then(response => response.text())
-    //         .then(data => {
-    //             console.log(data); // prints "Hello, John!"
-    //         });
-    //     }
-    //     if (type == 2) {
-    //         fetch('https://us-central1-sentiment-379415.cloudfunctions.net/firebase_operational' + '?selector=sortVideosByTitle' + '&uid=' + uid + '&rOrder=False') // Hello World function with parameters (look at end of link)
-    //         .then(response => response.text())
-    //         .then(data => {
-    //             console.log(data); // prints "Hello, John!"
-    //         });
-    //     }
-    // }
+    // TO GET COLLECTION REFERENCE
+    const [performances, setPerformances] = useState([]);
 
-    // getPerformances(1, uid);
-    
     function loadTitlesFromCollection(uid) {
         let counter = 0
         let temp = []
@@ -53,13 +35,14 @@ function ViewAllPerformances() {
           console.error('Error getting documents: ', error);
           return [];
         });
-      }
+    }
 
     useEffect(() => {
       loadTitlesFromCollection(uid)
         .then(titles => setPerformances(titles))
         .catch(error => console.error('Error getting performances: ', error));
     }, [uid]);
+    // END OF COLLECTION REFERENCE
 
     const handleDelete = (objectId) => {
         // TODO: RUNNING COUTNT IS NOT DECREMENTED AND FIREBASE STORAGE DOES NOT CLEAR SAID VIDEO
