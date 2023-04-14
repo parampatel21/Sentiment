@@ -153,7 +153,7 @@ function ViewAllPerformances() {
         }
         };
 
-    const [globalPerformances, setGlobalPerformances] = useContext(GlobalContext);
+    const [globalPerformances, setGlobalPerformances] = useContext(GlobalContext)[0];
     setGlobalPerformances(performances)
     console.log(globalPerformances)
 

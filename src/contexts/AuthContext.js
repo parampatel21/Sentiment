@@ -1,3 +1,4 @@
+import { GlobalContext } from '../pages/components/GlobalState'
 import React, { useContext, useState, useEffect } from 'react'
 import { auth, facebookProvider, firestore, googleProvider} from '../firebase'
 
@@ -9,9 +10,17 @@ export function useAuth() {
 
 export function AuthProvider({ children }) {
     // initialize vars and reference their set functions (even if the functions are not yet created)
-    const [currentUser, setCurrentUser] = useState()
+    const [globalUser, setGlobalUser] = useContext(GlobalContext)[1];
+    const [currentUser, setCurrentUser] = useState(globalUser)
+    console.log(globalUser)
+    console.log(currentUser)
     const [loading, setLoading] = useState(true)
-    const [loggedIn, setLoggedIn] = useState(false)
+    const [loggedIn, setLoggedIn] = useState(globalUser != null)
+
+    // Listen for changes in global user
+    useEffect(() => {
+        setLoggedIn(globalUser != null);
+    }, [globalUser]);
 
     // Implement the functions to use in the UI components here, typically use auth.<functionFromFirebaseAPI> when able
     function signup(email, password) {
@@ -75,6 +84,7 @@ export function AuthProvider({ children }) {
 
     function logout() {
         setLoggedIn(false)
+        setGlobalUser(null)
         console.log(loggedIn)
         return auth.signOut()
     }
@@ -112,7 +122,7 @@ export function AuthProvider({ children }) {
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(user => {
-            setCurrentUser(user)
+            setGlobalUser(user)
             setLoading(false)
         })
 

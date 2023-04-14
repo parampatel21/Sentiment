@@ -10,7 +10,7 @@ import { storage, firestore } from '../firebase'
 import Navbar from './components/Navbar'
 
 function VideoID() {
-    const [globalPerformances, setGlobalPerformances] = useContext(GlobalContext);
+    const [globalPerformances, setGlobalPerformances] = useContext(GlobalContext)[0];
     const [performances, setPerformances] = useState(globalPerformances);
     const objectId = useParams().id;
     const scriptRef = useRef();
