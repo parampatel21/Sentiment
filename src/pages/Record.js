@@ -115,6 +115,8 @@ function Record() {
         accessInfoRef.get().then((doc) => {
             const data = doc.data();
             const new_count = data.running_count + 1
+          console.log(data)
+          console.log(data.running_count)
 
             try {
                 setError('')
