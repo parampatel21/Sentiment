@@ -32,7 +32,7 @@ function ViewAllScripts() {
 
     function sortScriptByTitle() {
         // HOW TO PUT VAR IN STRING IN JS, ADD UID, AND REVERSEORDER
-        fetch('https://us-central1-sentiment-379415.cloudfunctions.net/firebase_operational' + '?selector=sortScriptByTitle' + '&uid=${UID}' + '&rOrder=0') // Hello World function with parameters (look at end of link)
+        fetch('https://us-central1-sentiment-379415.cloudfunctions.net/firebase_operational' + '?selector=sortScriptByTitle' + `&uid=${UID}` + '&rOrder=0') // Hello World function with parameters (look at end of link)
             .then(response => response.text())
             .then(data => {
                 console.log(data); // prints "Hello, John!"
