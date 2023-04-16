@@ -1,38 +1,37 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { Form } from 'react-bootstrap'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import '../styles/styles.css'
 import '../styles/HomePage.css'
 import { storage, firestore } from '../firebase'
 import Navbar from './components/Navbar'
+import { GlobalContext } from './components/GlobalState'
 
 function ScriptID() {
     const scriptRef = useRef();
     const titleRef = useRef();
-    const { getuser, isAuthenticated, logout } = useAuth();
+    const { getuser } = useAuth();
+    const uid = getuser();
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const [videoBlob, setVideoBlob] = useState(null);
-    const [videoSrc, setVideoSrc] = useState(null);
-    const [playing, setPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
     const [uploaded, setUploaded] = useState(false);
-    const videoRef = useRef(null);
     const [title, setTitle] = useState('');
+    const scriptID = useParams().id;
+    const [data, setData] = useState([]);
+    
+    useEffect(() => {
+        const docRef = firestore.collection(uid).doc(scriptID.toString());
+        docRef.get().then((doc) => {
+            const data = doc.data();
+            console.log(data);
+            setData(data);
+        });
+    }, [uid, scriptID]);
 
-    async function handleLogout() {
-        setError('')
-
-        try {
-            await logout()
-            // navigate('/login')
-            window.location.reload();
-        } catch {
-            setError('Failed to log out')
-        }
-    }
 
     // Function to handle user interaction with the save button
     async function handleSubmit(e) {
@@ -155,20 +154,15 @@ function ScriptID() {
 
             <main>
                 <section className="hero">
-                    <h1>Welcome to Script Creation</h1>
-                    <p>Here you can record a video performance of your public speaking skills and have your technique analyzed via facial and tonal analysis.</p>
-                    <p>Also, feel free to upload or supply a script via the text box below and we'll run our analysis on it to find the tone portrayed through the text.</p>
-                    <p>When you're ready, click start recording below to begin your journey to a more confident speech.</p>
-
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    </div>
-
-                    {/* {button} */}
+                    <h1>Here's your Script</h1>
+                    <p>Welcome to your script editor! Here, you can view, edit, and manage all of your scripts in one place. Whether you're a seasoned writer or just starting out, this editor is designed to make your writing process as smooth and streamlined as possible.</p>
+                    <p>We've designed this editor to be as intuitive as possible, but if you have any questions or run into any issues, our support team is always here to help. Just click the "About" button in the navbar above to get in touch.</p>
+                    <p>Happy writing!</p>
                 </section>
 
                 <Form.Group id="title">
                     <Form.Label>Title</Form.Label>
-                    <Form.Control type="text" ref={titleRef} required onChange={(e) => setTitle(e.target.value)} />
+                    <Form.Control type="text" ref={titleRef} defaultValue={data.title} required onChange={(e) => setTitle(e.target.value)} />
                 </Form.Group>
 
                 {/* Handle form submission */}
@@ -176,7 +170,7 @@ function ScriptID() {
                     {/* Form components (Label & Text Box) for Video Title */}
                     <Form.Group id="title">
                         <Form.Label>Type up your script here</Form.Label>
-                        <Form.Control style={{ width: '100%', height: '100%' }} type="text" as='textarea' ref={scriptRef} />
+                        <Form.Control style={{ width: '100%', height: '100%' }} defaultValue={data.script} type="text" as='textarea' ref={scriptRef} />
                     </Form.Group>
                     <div style={{ marginTop: '5px' }}>
                         <Form.Label>Upload script here:&nbsp;</Form.Label>
@@ -184,7 +178,7 @@ function ScriptID() {
                     </div>
                     {/* Disable the submission button if already pressed and submission is in-progress */}
                     <section className="call-to-action">
-                        <a className='hero-button' onClick={handleSubmit} href='/performance-id'>Save Performance</a>
+                        <a className='hero-button' onClick={handleSubmit} href='/performance-id'>Save Script</a>
                     </section>
                 </Form>
 

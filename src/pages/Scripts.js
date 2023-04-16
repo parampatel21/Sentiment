@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
-import { GlobalContext } from './components/GlobalState';
+import React, { useState, useEffect } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
 import { firestore } from '../firebase';
@@ -17,9 +16,8 @@ function ViewAllScripts() {
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const [scripts, setScripts] = useState([])
-    const [globalScripts, setGlobalScripts] = useContext(GlobalContext)[2];
 
-    function loadScriptsFromCollection(uid) {
+    async function loadScriptsFromCollection(uid) {
         const accessInfoRef = firestore.collection(uid).doc('access_info');
         let runningCount = 0
         return accessInfoRef.get()
@@ -53,7 +51,6 @@ function ViewAllScripts() {
         loadScriptsFromCollection(uid)
             .then((scripts) => {
                 setScripts(scripts)
-                setGlobalScripts(scripts)
             })
             .catch((error) => console.error('Error getting scripts: ', error))
     }, [uid])
@@ -62,7 +59,7 @@ function ViewAllScripts() {
         console.log('plus u1tra')
     };
 
-    console.log(globalScripts)
+    console.log(scripts)
 
     return (
         <div className="container-fluid">

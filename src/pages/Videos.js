@@ -20,7 +20,7 @@ function ViewAllPerformances() {
     // TO GET COLLECTION REFERENCE
     const [performances, setPerformances] = useState([]);
 
-    function loadTitlesFromCollection(uid) {
+    async function loadTitlesFromCollection(uid) {
         let counter = 0
         let temp = []
         const collectionRef = firestore.collection(uid);
@@ -154,8 +154,10 @@ function ViewAllPerformances() {
         };
 
     const [globalPerformances, setGlobalPerformances] = useContext(GlobalContext)[0];
-    setGlobalPerformances(performances)
-    console.log(globalPerformances)
+    useEffect(() => {
+        setGlobalPerformances(performances)
+        console.log(globalPerformances)
+    })
 
     return (
         <div className="container-fluid">
