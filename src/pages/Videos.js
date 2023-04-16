@@ -61,15 +61,17 @@ function ViewAllPerformances() {
                     const accessInfoRef = firestore.collection(uid).doc('access_info');
                     accessInfoRef.get().then((doc) => {
                         const data = doc.data();
+                        console.log(data)
                         const old_count = data.running_count
-                        const new_count = data.running_count - 1
+                        const new_count = old_count - 1
 
                         firestore.collection(uid).doc("access_info").set({
                             running_count: new_count
                         }, { merge: true })
 
                         const storageRef = storage.ref();
-                        const fileRef = storageRef.child(uid + '_' + old_count + '.avi');
+                        const fileRef = storageRef.child(uid + '_' + objectId + '.avi');
+                        console.log(uid + '_' + old_count + '.avi')
                         fileRef.delete().then(() => {
                             console.log(`Successfully deleted`);
                           })
@@ -125,8 +127,6 @@ function ViewAllPerformances() {
                 console.log("Error getting documents: ", error);
               });
           };
-          
-          
 
         const handleUpdate = (objectId) => {
         const title = performances[objectId - 1].title;

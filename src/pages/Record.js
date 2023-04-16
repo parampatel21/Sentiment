@@ -8,6 +8,10 @@ import '../styles/HomePage.css'
 import {storage, firestore} from '../firebase'
 import Navbar from './components/Navbar'
 
+function sleep(seconds) {
+  return new Promise(resolve => setTimeout(resolve, seconds * 1000));
+}
+
 function Record() {
     const scriptRef = useRef();
     const titleRef = useRef();
@@ -118,6 +122,8 @@ function Record() {
           console.log(data)
           console.log(data.running_count)
 
+          sleep(20)
+
             try {
                 setError('')
                 setLoading(true)
@@ -153,7 +159,7 @@ function Record() {
       
           videoRef.put(videoBlob).then((snapshot) => {
             console.log('Uploaded a blob or file!', snapshot);
-            console.log(fileName)
+            console.log(UID + '_' + fileName)
             setUploaded(true);
           });
         };  

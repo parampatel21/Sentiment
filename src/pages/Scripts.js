@@ -47,14 +47,6 @@ function ViewAllScripts() {
             .catch((error) => console.error('Error getting access info: ', error));
     }
 
-    useEffect(() => {
-        loadScriptsFromCollection(uid)
-            .then((scripts) => {
-                setScripts(scripts)
-            })
-            .catch((error) => console.error('Error getting scripts: ', error))
-    }, [uid])
-
     const handleDelete = (objectId) => {
         console.log('plus u1tra')
     };
@@ -83,6 +75,13 @@ function ViewAllScripts() {
         }
     };
 
+    useEffect(() => {
+        loadScriptsFromCollection(uid)
+            .then((scripts) => {
+                setScripts(scripts)
+            })
+            .catch((error) => console.error('Error getting scripts: ', error))
+    }, [uid])
     console.log(scripts)
 
     return (
