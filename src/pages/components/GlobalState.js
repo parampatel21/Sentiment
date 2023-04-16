@@ -4,6 +4,7 @@ export const GlobalContext = createContext();
 
 export const GlobalProvider = ({ children }) => {
     const [globalPerformances, setGlobalPerformances] = useState([]);
+    const [globalScripts, setGlobalScripts] = useState([]);
     const [globalUser, setGlobalUser] = useState(null);
 
     useEffect(() => {
@@ -21,8 +22,10 @@ export const GlobalProvider = ({ children }) => {
     
 
     return (
-        // When calling GlobalContext, [0]=performances, [1]=user
-        <GlobalContext.Provider value={[ [ globalPerformances, setGlobalPerformances], [globalUser, setGlobalUser]]}>
+        // When calling GlobalContext, [0]=performances, [1]=user, [2]=scripts
+        <GlobalContext.Provider value={[ [ globalPerformances, setGlobalPerformances], 
+                                            [globalUser, setGlobalUser],
+                                            [globalScripts, setGlobalScripts]]}>
             {children}
         </GlobalContext.Provider>
     );

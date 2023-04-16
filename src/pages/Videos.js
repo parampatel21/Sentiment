@@ -37,7 +37,7 @@ function ViewAllPerformances() {
           return [];
         });
     }
-
+    
     useEffect(() => {
       loadTitlesFromCollection(uid)
         .then(titles => setPerformances(titles))

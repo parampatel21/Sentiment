@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
+import { GlobalContext } from './components/GlobalState';
 import { useAuth } from '../contexts/AuthContext'
 // import { useGCP } from '../contexts/GCPContext';
 import { useNavigate } from 'react-router-dom'
@@ -15,54 +16,79 @@ function ViewAllScripts() {
     };
     const { getuser } = useAuth()
     const uid = getuser()
+    console.log(uid)
 
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
 
+    const [runningCount, setRunningCount] = useState(0)
+
+
 
     // TO GET COLLECTION REFERENCE
     const [scripts, setScripts] = useState([]);
 
-    async function loadScriptsFromCollection(uid) {
-        let current_count = 1;
+    useEffect(() => {
+        async function fetchData() {
+            const newScripts = loadScriptsFromCollection(uid);
+            setScripts(newScripts);
+        }
+
+        fetchData();
+    }, [uid]);
+
+    function loadScriptsFromCollection(uid) {
         
         /* Author-JASON: Idk why running count is undefined. My plan is to get running count and create
            an array by adding the elements that arent undefined since if we delete file[1] the running count
            for each file remains the same and total running_count stays the same. Hope that makes sense :) 
         */
+        
         const accessInfoRef = firestore.collection(uid).doc('access_info');
-        const accessInfoDoc = await accessInfoRef.get()
-        const running_count = accessInfoDoc.data.running_count
-        console.log(running_count)
+        accessInfoRef.get().then((doc) => {
+            const data = doc.data();
+            setRunningCount(data.running_count);
+        })
 
-        while (current_count <= running_count) {
-            const docRef = firestore.collection(uid).doc(current_count++).data.running_count;
-            docRef.get().then((doc) => {
-                const data = doc.data();
-                console.log(data)
+        console.log(runningCount)
+        let temp = [];
+        let temp2 = [];
+        let promises = [];
 
-                try {
-                    setError('')
-                    setLoading(true)
-                    // handleUpload(new_count)
-                } catch {
-                    setError('Failed to upload the video')
+        for (let i = 1; i <= runningCount; i++) {
+            const currentCountRef = firestore.collection(uid).doc(i.toString());
+            currentCountRef.get().then((doc) => {
+                console.log(doc.exists)
+                if (doc.exists) {
+                    const data = doc.data();
+                    const title = data.title;
+                    const script = data.script;
+                    const timestamp = data.timestamp;
+                    console.log(data)
+                    temp.push({ id: i, title: title, content: script, timestamp: timestamp })
+                    temp2.push(title)
+
+
+                    try {
+                        setError('')
+                        setLoading(true)
+                        console.log("try reached")
+                        // handleUpload(new_count)
+                    } catch {
+                        console.log("catch reached")
+                    }
                 }
-
-                try {
-                    setError('')
-                    setLoading(true)
-                    // handleFirestoreUpdate(new_count)
-                } catch {
-                    // setError('Failed to update the database')
-                }
-
-            })
+            });
+            // promises.push(promise);
         }
+        // await Promise.all(promises);
+        return temp;
+
     }
 
-    loadScriptsFromCollection(uid)
+    // setScripts(loadScriptsFromCollection(uid))
+
 
     // END OF COLLECTION REFERENCE
 
@@ -76,19 +102,11 @@ function ViewAllScripts() {
         //     .catch(error => console.error(error));
     };
 
-    // function sortScriptByTitle() {
-    //     // HOW TO PUT VAR IN STRING IN JS, ADD UID, AND REVERSEORDER
-    //     fetch('https://us-central1-sentiment-379415.cloudfunctions.net/firebase_operational' + '?selector=sortScriptByTitle' + `&uid=${uid}` + '&rOrder=0') // Hello World function with parameters (look at end of link)
-    //         .then(response => response.text())
-    //         .then(data => {
-    //             console.log(data); // prints "Hello, John!"
-    //         });
-    // } // function with multiple parameters
+    const [globalScripts, setGlobalScripts] = useContext(GlobalContext)[2];
+    useEffect(() => {
+        setGlobalScripts(scripts);
+    }, [scripts]);
 
-    // sortScriptByTitle()
-
-    // const ret = invocationGCPparameterstest("sortScriptByTitle", getuser(), 0)
-    // console.log(ret)
 
     return (
         <div className="container-fluid">
