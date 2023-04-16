@@ -21,12 +21,12 @@ function ViewAllPerformances() {
     const [performances, setPerformances] = useState([]);
 
     async function loadTitlesFromCollection(uid) {
-        let counter = 0
         let temp = []
         const collectionRef = firestore.collection(uid);
+        let counter;
         return collectionRef.get().then((querySnapshot) => {            
           querySnapshot.forEach((doc) => {
-            counter++
+            counter = parseInt(doc.id);
             const title = doc.data().title;
             if (title == null) return temp
             temp.push({ id: counter, title: title});
@@ -48,7 +48,7 @@ function ViewAllPerformances() {
     const handleDelete = (objectId) => {
         const confirmDelete = window.confirm("Are you sure you want to delete?");
         if (confirmDelete) {
-            const title = performances[objectId - 1].title;
+            const title = performances.find((element) => element.id === objectId).title;
             const collectionRef = firestore.collection(uid);
             collectionRef.where("title", "==", title)
             .get()
@@ -64,16 +64,16 @@ function ViewAllPerformances() {
                         const old_count = data.running_count
                         const new_count = old_count - 1
 
-                        firestore.collection(uid).doc("access_info").set({
-                            running_count: new_count
-                        }, { merge: true })
+                        // firestore.collection(uid).doc("access_info").set({
+                        //     running_count: new_count
+                        // }, { merge: true })
 
                         const storageRef = storage.ref();
                         const fileRef = storageRef.child(uid + '_' + objectId + '.avi');
-                        console.log(uid + '_' + old_count + '.avi')
+                        console.log(uid + '_' + objectId + '.avi')
                         fileRef.delete().then(() => {
                             console.log(`Successfully deleted`);
-                          })
+                        })
 
                     })
 
@@ -89,7 +89,7 @@ function ViewAllPerformances() {
         };
     
         const handleDownload = (objectId) => {
-            const title = performances[objectId - 1].title;
+            const title = performances.find((element) => element.id === objectId).title;
             const collectionRef = firestore.collection(uid);
             collectionRef.where("title", "==", title)
               .get()
