@@ -25,9 +25,7 @@ function ViewAllScripts() {
         return accessInfoRef.get()
             .then((doc) => {
             const data = doc.data();
-            console.log(data)
             runningCount = data.running_count;
-            console.log(runningCount)
 
             let temp = [];
             const promises = []
@@ -45,7 +43,6 @@ function ViewAllScripts() {
                 }));
             }
                 return Promise.all(promises).then(() => {
-                    console.log(temp)
                     return temp
                 });
             })
@@ -81,8 +78,7 @@ function ViewAllScripts() {
                     <button className='sort-button'>Sort By</button>
                     &nbsp;
                     {scripts.map(object => (
-
-                        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                        <div key={object.id} style={{ display: 'flex', justifyContent: 'flex-end' }}>
                             <a href={`/scripts/${object.id}`} style={{ width: '100%' }} className='list-item'>{object.title}</a>
                             <button style={{ display: 'inline-block' }} className='hero-button' onClick={() => handleDelete(object.id)}>Delete</button>
                             &nbsp;

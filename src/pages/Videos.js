@@ -37,7 +37,7 @@ function ViewAllPerformances() {
           return [];
         });
     }
-    
+
     useEffect(() => {
       loadTitlesFromCollection(uid)
         .then(titles => setPerformances(titles))
@@ -171,7 +171,7 @@ function ViewAllPerformances() {
                     <button className='sort-button'>Sort By</button>
                     &nbsp;
                     {performances.map(object => (
-                        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                        <div key={object.id} style={{ display: 'flex', justifyContent: 'flex-end' }}>
                             <Link to={`/videos/${object.id}`} style={{ width: '100%' }} className='list-item'>{object.title}</Link>
                             <button style={{ display: 'inline-block' }} className='hero-button' onClick={() => handleDelete(object.id)}>Delete</button>
                             &nbsp;
