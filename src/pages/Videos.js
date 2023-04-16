@@ -46,7 +46,6 @@ function ViewAllPerformances() {
     // END OF COLLECTION REFERENCE
 
     const handleDelete = (objectId) => {
-        // TODO: RUNNING COUTNT IS NOT DECREMENTED AND FIREBASE STORAGE DOES NOT CLEAR SAID VIDEO
         const confirmDelete = window.confirm("Are you sure you want to delete?");
         if (confirmDelete) {
             const title = performances[objectId - 1].title;
