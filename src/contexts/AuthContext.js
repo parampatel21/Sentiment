@@ -12,8 +12,8 @@ export function AuthProvider({ children }) {
     // initialize vars and reference their set functions (even if the functions are not yet created)
     const [globalUser, setGlobalUser] = useContext(GlobalContext)[1];
     const [currentUser, setCurrentUser] = useState(globalUser)
-    console.log(globalUser)
-    console.log(currentUser)
+    // console.log(globalUser)
+    // console.log(currentUser)
     const [loading, setLoading] = useState(true)
     const [loggedIn, setLoggedIn] = useState(globalUser != null)
 
