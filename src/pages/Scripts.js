@@ -59,6 +59,30 @@ function ViewAllScripts() {
         console.log('plus u1tra')
     };
 
+    const handleUpdate = (objectId) => {
+        console.log(objectId)
+        const title = scripts.find((element) => element.id === objectId).title;
+        const collectionRef = firestore.collection(uid);
+        const newTitle = prompt('Enter a new name:', title);
+        if (newTitle) {
+            collectionRef.where("title", "==", title).get().then((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                        doc.ref.update({ title: newTitle })
+                            .then(() => {
+                                console.log('Document successfully updated!');
+                                window.location.reload();
+                            })
+                            .catch((error) => {
+                                console.error('Error updating document: ', error);
+                            });
+                    });
+                })
+                .catch((error) => {
+                    console.error('Error querying documents: ', error);
+                });
+        }
+    };
+
     console.log(scripts)
 
     return (
@@ -79,7 +103,7 @@ function ViewAllScripts() {
                             <a href={`/scripts/${object.id}`} style={{ width: '100%' }} className='list-item'>{object.title}</a>
                             <button style={{ display: 'inline-block' }} className='hero-button' onClick={() => handleDelete(object.id)}>Delete</button>
                             &nbsp;
-                            <button style={{ display: 'inline-block' }} className='hero-button' onClick={() => console.log(`Updating ${object.title}`)}>Update</button>
+                            <button style={{ display: 'inline-block' }} className='hero-button' onClick={() => handleUpdate(object.id)}>Update</button>
                             &nbsp;
                             <button style={{ display: 'inline-block' }} className='hero-button' onClick={() => console.log(`Downloading ${object.title}`)}>Download</button>
                             &nbsp;
