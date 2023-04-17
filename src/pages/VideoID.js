@@ -10,8 +10,8 @@ import { storage, firestore } from '../firebase'
 import Navbar from './components/Navbar'
 
 function VideoID() {
-    const [globalPerformances, setGlobalPerformances] = useContext(GlobalContext)[0];
-    const [performances, setPerformances] = useState(globalPerformances);
+    const [globalPerformance, setGlobalPerformance] = useContext(GlobalContext)[0];
+    const [performance, setPerformance] = useState(globalPerformance);
     const objectId = useParams().id;
     const scriptRef = useRef();
     const titleRef = useRef();
@@ -31,12 +31,12 @@ function VideoID() {
     const uid = getuser()
 
     
-    console.log(globalPerformances)
+    console.log(globalPerformance)
 
     const loadVideo = () => {
         console.log(objectId)
-        console.log(performances)
-        const title = performances[objectId - 1].title;
+        console.log(performance)
+        const title = performance.title;
         const collectionRef = firestore.collection(uid);
         collectionRef.where("title", "==", title)
             .get()
@@ -223,13 +223,6 @@ function VideoID() {
                                 style={{ width: '400px', height: 'auto' }}
                             />
 
-                            {/* Set the refs to the actual current values */}
-                            {/* <script>
-                                titleRef = { video.title }
-                                scriptRef = { video.script }
-                                textAnalysis = { video.script.textAnalysis }
-                            </script> */}
-
                             <div style={{ display: 'flex', alignItems: 'center' }}>
                                 {playing ? (
                                     <button className='hero-button' onClick={handlePause}>Pause</button>
@@ -261,7 +254,7 @@ function VideoID() {
 
                 <Form.Group id="title">
                     <Form.Label>Title</Form.Label>
-                    <Form.Control type="text" ref={titleRef} required onChange={(e) => setTitle(e.target.value)} defaultValue={globalPerformances[objectId - 1].title} />
+                    <Form.Control type="text" ref={titleRef} required onChange={(e) => setTitle(e.target.value)} defaultValue={performance.title} />
                 </Form.Group>
 
                 {/* Handle form submission */}
