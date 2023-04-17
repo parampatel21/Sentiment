@@ -27,6 +27,8 @@ datetime_NY = datetime.now(tz_NY)
 
 
 """
+///////WORKING/////////
+
 Write a new user
 
 @param uid
@@ -38,33 +40,15 @@ Write a new user
     Iff successfult write
 
 """
-def writeNewUser(uid, name):
-        db.collection(uid).document("access_info").set({"running_count" : 0, "name" : name})
+def writeNewUser(uid):
+        db.collection(uid).document("access_info").set({"running_count" : 0})
         return True
 
 
-"""
-Modify an existing user, cited by uid; Throws error if uid !exist
-
-@param uid
-    ID for locating user
-@param name
-    Name to replace existing name
-    
-@ret True 
-    Iff successful modify
-@ret False iff
-    Iff unsuccessful modify
-"""
-def modifyUser(uid, name):
-    try:
-        db.collection(uid).document("access_info").update({"name" : name})
-        return True
-    except:
-        return False
-
 
 """
+///////WORKING/////////
+
 Get the running count of a user
 
 @param uid
@@ -87,6 +71,8 @@ def getRunningCount(uid):
         return False
 
 """
+///////WORKING/////////
+
 Get title of a given video
 
 @param uid
@@ -110,19 +96,38 @@ def getTitle(uid, index):
     except:
         return False
 
+"""
+///////WORKING/////////
 
+Take a file and write content to a new script
+
+@param uid
+    ID for locating user
+@param title
+    Title of script
+@param file_path
+    Path to .txt file
+
+
+@ret True iff
+    Iff file pulled & written properly
+@ret False iff
+    Iff unsuccessful modify
+"""
 def readFileToScript(uid, title, file_path):
     try:
         with open(file_path, 'r') as file:
             content = file.read()
             file.close()
-            writeNewScript(uid, title, content)
+            writeNewScript(uid=uid, title=title, script= content)
             return True
     except:
         return False
 
 
 """
+///////WORKING/////////
+
 Update a user's running count by 1; Throws error if user DNE
 
 @param uid
@@ -145,6 +150,8 @@ def updateRunningCount(uid):
 
     
 """
+///////WORKING/////////
+
 Write a new Script
 
 @param uid
@@ -160,23 +167,26 @@ Write a new Script
     Iff successful creation of script
 """
 def writeNewScript(uid, title, script):
-    #Temp storage of running count
-    i = getRunningCount(uid) + 1
-    index = str(i)
-    
-    db.collection(uid).document(index).set(
-        {"timestamp" : datetime_NY.strftime("%Y:%m:%d:%H:%M:%S"),
-        "title" : title,
-        "index" : getRunningCount(uid) + 1})
-    db.collection(uid).document(index).collection("Script").document("script").set({"script" : script,
-                                                                                    "index" : getRunningCount(uid) + 1})
-    
-    #Update user's access info running count
-    updateRunningCount(uid=uid)
-    return True
+    try:
+        #Temp storage of running count
+        i = getRunningCount(uid) + 1
+        index = str(i)
+        
+        db.collection(uid).document(index).set(
+            {"timestamp" : datetime_NY.strftime("%Y:%m:%d:%H:%M:%S"),
+            "title" : title,
+            "script" : script})
+        
+        #Update user's access info running count
+        updateRunningCount(uid=uid)
+        return True
+    except:
+        return False
 
 
 """
+///////WORKING/////////
+
 Modify an existing script; Throws error if user DNE
 
 @param uid
@@ -195,17 +205,19 @@ Modify an existing script; Throws error if user DNE
     
     """
 def modifyScript(uid, index, title, script):
-    #try:
-        db.collection(uid).document(index).update(
-            {"timestamp" : datetime_NY.strftime("%Y:%m:%d:%H:%M:%S"),
-            "title" : title})
-        db.collection(uid).document(str(index)).collection("Script").document("script").update({"script" : script})
-        return True
-    #except:
-        return False
 
+        try:
+            db.collection(uid).document(str(index)).update(
+                {"timestamp" : datetime_NY.strftime("%Y:%m:%d:%H:%M:%S"),
+                "title" : title,
+                "script" : script})
+            return True
+        except:
+            return False
 
 """
+///////WORKING/////////
+
 Get an existing script; Throws error if user DNE
 
 @param uid
@@ -232,6 +244,34 @@ def getScript(uid, index):
         print(f"Error getting script from Firestore: {e}")
         return False
 
+"""
+///////WORKING/////////
+
+Get an title from a script
+
+@param uid
+    ID for locating user
+@param index
+    Index of script to be accessed
+    
+@ret Title
+    Iff successful access of script
+@ret False
+    If unsuccessful access of script
+    
+    """
+def getTitle(uid, index):
+    try:
+        index_ref = db.collection(uid).document(str(index)).get()
+        index_data = index_ref.to_dict()
+        title = index_data["title"]
+        return title
+    except KeyError:
+        print(f"Key 'title' not found in document {index} of collection {uid}.")
+        return False
+    except Exception as e:
+        print(f"Error getting script from Firestore: {e}")
+        return False
 
 """
 Clear data from an existing script; Throws error if user DNE
@@ -249,7 +289,7 @@ Clear data from an existing script; Throws error if user DNE
     """
 def clearScript(uid, index):
     try:
-        modifyScript(uid=uid, index=index, title="", script="")
+        modifyScript(uid=uid, index=index, title=getTitle(uid= uid, index= index), script="")
     except:
         return False
 
@@ -575,7 +615,7 @@ def sortStorageByTitle(uid, rOrder, filetype):
 #print(sortVideosByRunningCount("uid3", True))
 
 def analyzeVideo(depth, uid, index, tag):
-
+    try:
         # Load the video file
         downloadFile(uid= uid, index=index, tag= tag)
         video = Video(uid + "_" + str(index) + str(tag))
@@ -588,7 +628,7 @@ def analyzeVideo(depth, uid, index, tag):
 
         with open('data.csv', 'r') as file, open(uid + "_" + str(index) + '_facial_data.txt', "w") as file2:
             
-            file2.write('\nVideo Analysis - Facial Expression\nRaw Emotion Scores:\n')
+            file2.write('\nVideo Analysis - Facial Expression\n----------------------------\nRaw Emotion Scores:\n')
 
             # Create a CSV reader object
             reader = csv.reader(file)
@@ -626,154 +666,91 @@ def analyzeVideo(depth, uid, index, tag):
         # Read the contents of the txt file and return it as a string
         with open(uid + "_" + str(index) + '_facial_data.txt', "r") as file3:
             return file3.read()
+    except ValueError as e:
+        return f"ValueError: {e}"
+    except FileNotFoundError as e:
+        return f"FileNotFoundError: {e}"
+    except IOError as e:
+        return f"IOError: {e}"
+    except:
+        return f"Unkown Error: {e}"   
 
 
 """
 Analyze text emotion
 """
 def analyze_text(uid, index):
-    doc = NRCLex(getScript(uid, index))
-    emotions = doc.raw_emotion_scores
-    
-    # create a dictionary to store the results
-    results = {}
-    results['raw_emotion_scores'] = emotions
-    
-    # get the lowest 3 values from my_dict1 and any ties that exceed the lowest 3
-    lowest_values = [item for item in sorted(results['raw_emotion_scores'].items(), key=lambda x: x[1])[:3]]
-    ties = set([item for item in sorted(results['raw_emotion_scores'].items(), key=lambda x: x[1])[3:] if item[1] == lowest_values[-1][1]])
-
-    # add any ties to the lowest 3 values and convert the result to a dictionary for my_dict1
-    result = {item[0]: item[1] for item in lowest_values} 
-    result.update({item[0]: item[1] for item in sorted(ties)})
-    
-    results['lowest_emotions'] = result
-    
-    # write the results to the output file
-    with open(uid + "_" + str(index) + "_text_analysis.txt", 'w') as f:
-        # write the raw emotion scores
-        f.write('\nText Analysis - Emotion\nRaw Emotion Scores:\n')
-        for emotion, score in results['raw_emotion_scores'].items():
-            f.write(f'{emotion}: {score}\n')
-        
-        # write the lowest emotion scores
-        f.write('\nAreas of possible improvment:\n\tYour lowest emotion scores are as follows. \n\tConsider adjusting your performance to improve on these aspects:\n\n')
-        for emotion, score in results['lowest_emotions'].items():
-            f.write(f'{emotion}: {score}\n')
-    
-    with open(uid + "_" + str(index) + "_text_analysis.txt", 'r') as f:    
-        return f.read()
-
-def deleteAnalysis(uid, index):
     try:
-        bucket = storage.bucket()
-        blob = bucket.blob(uid + "_" + index + "_text_analysis.txt", 'w')
-        blob.delete()
-        return True
+        doc = NRCLex(getScript(uid, index))
+        emotions = doc.raw_emotion_scores
+        
+        # create a dictionary to store the results
+        results = {}
+        results['raw_emotion_scores'] = emotions
+        
+        # get the lowest 3 values from my_dict1 and any ties that exceed the lowest 3
+        lowest_values = [item for item in sorted(results['raw_emotion_scores'].items(), key=lambda x: x[1])[:3]]
+        ties = set([item for item in sorted(results['raw_emotion_scores'].items(), key=lambda x: x[1])[3:] if item[1] == lowest_values[-1][1]])
+
+        # add any ties to the lowest 3 values and convert the result to a dictionary for my_dict1
+        result = {item[0]: item[1] for item in lowest_values} 
+        result.update({item[0]: item[1] for item in sorted(ties)})
+        
+        results['lowest_emotions'] = result
+        
+        # write the results to the output file
+        with open(uid + "_" + str(index) + "_text_analysis.txt", 'w') as f:
+            # write the raw emotion scores
+            f.write('\nText Analysis - Emotion\n----------------------------\nRaw Emotion Scores:\n')
+            for emotion, score in results['raw_emotion_scores'].items():
+                f.write(f'{emotion}: {score}\n')
+            
+            # write the lowest emotion scores
+            f.write('\nAreas of possible improvment:\n\tYour lowest emotion scores are as follows. \n\tConsider adjusting your performance to improve on these aspects:\n\n')
+            for emotion, score in results['lowest_emotions'].items():
+                f.write(f'{emotion}: {score}\n')
+        
+        with open(uid + "_" + str(index) + "_text_analysis.txt", 'r') as f:    
+            return f.read()
+    except ValueError as e:
+        return f"ValueError: {e}"
+    except FileNotFoundError as e:
+        return f"FileNotFoundError: {e}"
+    except IOError as e:
+        return f"IOError: {e}"
     except:
-        return False
+        return f"Unkown Error: {e}"    
+
+
+
 
 def analyze_overall(uid, index, tag, depth):
-    txtOut = analyze_text(uid= uid, index= index)
-    vidOut = analyzeVideo(depth=depth, uid= uid, tag= tag, index= index)
-   
-    with open(uid + "_" + str(index) + "_overall_analysis.txt", 'w') as f:
-        # write the raw emotion scores
-        f.write(txtOut + vidOut)
-    
-    
-    return txtOut + vidOut
-    
-def returnFile(uid, index ,tag):
     try:
-        bucket = storage.bucket()
-        blob = bucket.blob(uid + "_" + str(index) + str(tag))
-        file_contents = blob.get().content
-        return file_contents
-    except Exception as e:
-        print(f"Error returning file: {e}")
-        return False
+        txtOut = analyze_text(uid= uid, index= index)
+        vidOut = analyzeVideo(depth=depth, uid= uid, tag= tag, index= index)
+    
+        with open(uid + "_" + str(index) + "_overall_analysis.txt", 'w') as f:
+            # write the raw emotion scores
+            f.write(txtOut + vidOut)
+        
+        
+        return txtOut + vidOut
+    except ValueError as e:
+        return f"ValueError: {e}"
+    except FileNotFoundError as e:
+        return f"FileNotFoundError: {e}"
+    except IOError as e:
+        return f"IOError: {e}"
+    except:
+        return f"Unkown Error: {e}"   
     
 
 
-#Test Input & update; Print current running count 
-def main():
-    choice = 0
-    while (choice != 3):
-        choice = int(input("Enter 1 for new user, 2 for update, 3 for quit: "))
-        if choice == 1:
-            print("New User:")
-            uid = input("Uid: ")
-            name = input("Name: ")
-            writeNewUser(uid, name)
-        elif choice == 2:
-            print("Update User:\n")
-            uid = input("Uid: ")
-            name = input("Name: ")
-            writeNewUser(uid, name)
             
 
-#main()
+    
+    
 
-def testVideoAnalysis(uid, filename):
-    
-    #Ensure no file exists on firestore
-    deleteFile(uid=uid,  filename= filename + ".avi")
-    deleteFile(uid=uid,  filename= filename + "_facial_data.txt")
-
-    #Pause while show firestore free
-    tempContinue = input("Type 'N' to continue\n")
-    while tempContinue != "N":
-        tempContinue = input("Type 'N' to continue\n")
-
-
-    #Record and upload video
-    uploadFile(uid="uid4", localpath=filename + ".avi", 
-               filename=uid + "_" + filename + ".avi") 
-    
-    #Analyze video, and download as a .csv and a .txt; Upload
-    analyzeVideo(filename= uid + "_" + filename + ".avi", depth=30, 
-                 outputname= uid + "_" + filename)
-    
-    uploadFile(uid=uid, localpath= filename + "_facial_data.txt", 
-               filename=uid + "_" + filename + "_facial_data.txt")
-    
-    
-    
-def testVideoDownload(uid, filename):
-    #Pause while manually delete video locally
-    tempContinue = input("Type 'N' to continue\n")
-    while tempContinue != "N":
-        tempContinue = input("Type 'N' to continue\n")
-    
-    #Download video
-    downloadFile(uid=uid,  filename= filename + ".avi")
-    downloadFile(uid=uid,  filename= filename + "_facial_data.txt")  
-    
-    
-    
-#testVideoAnalysis(uid="uid4",  filename="temp")#
-#testVideoDownload(uid="uid4",  filename="temp")
-
-"""FOR UPLOAD/DOWNLOAD:
-            Replace the strings '_file_data_txt' w/ whatever metric being measured + format file.
-            Essentially, treat this string as a ending 'tag' attached to each video take
-            
-"""
-
-""""
-try:
-    bucket = storage.bucket()
-    blob = bucket.blob("OWipWjzwyAUokDJFAzPeupi5Rrm2" + "/" + "[object Promise]1.mp4")
-    blob.download_to_filename("[object Promise]1.mp4")
-    
-    print(True)
-except:
-    print(False)
-
-analyzeVideo("[object Promise]1.mp4", depth=30, 
-                 outputname= "[object Promise]")
-"""
 
 
 #Ensure file DNE
@@ -788,9 +765,15 @@ analyzeVideo("[object Promise]1.mp4", depth=30,
 
 #writeNewScript(uid="TbyEL0LaRFRQEkgmsIgKhCpGdhq1", title="First Script", script="love love hate")
 
-print(downloadFile(uid="TbyEL0LaRFRQEkgmsIgKhCpGdhq1", index= 3, tag= ".avi"))
+#print(downloadFile(uid="TbyEL0LaRFRQEkgmsIgKhCpGdhq1", index= 3, tag= ".avi"))
 
 #print(analyzeVideo(uid= "TbyEL0LaRFRQEkgmsIgKhCpGdhq1_3", index=1, filename="TbyEL0LaRFRQEkgmsIgKhCpGdhq1_3.avi", depth=30))
 
 
-print(analyze_overall(uid= "TbyEL0LaRFRQEkgmsIgKhCpGdhq1", index=3, tag=".avi", depth=30))
+print(analyze_overall(uid= "TbyEL0LaRFRQEkgmsIgKhCpGdhq1", index=1, tag=".avi", depth=30))
+
+
+#(uid= "TEMP"))
+#print(getScript(uid="TbyEL0LaRFRQEkgmsIgKhCpGdhq1", index=7))
+
+#print(writeNewScript(uid="OU38vh6cSqTeku8yqgeWAhV81t62", title= "First Script", script= "TEMP"))
