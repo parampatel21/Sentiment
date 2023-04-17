@@ -84,21 +84,23 @@ def master_func(request):
         elif selector == "getScript":
             return getScript(*args, **kwargs)
         elif selector == "sortScriptByRunningCount":
-            return sortScriptByRunningCount(*args, **kwargs)
-        elif selector == "sortScriptByTimeStamp":
-            return sortScriptByTimeStamp(*args, **kwargs)
+            return selector == sortScriptByRunningCount(*args, **kwargs)
         elif selector == "sortScriptByTitle":
-            return sortScriptByTitle(*args, **kwargs)
-        elif selector == "sortVideosByRunningCount":
-            return sortVideosByRunningCount(*args, **kwargs)
-        elif selector == "sortVideosByTitle":
-            return sortVideosByTitle(*args, **kwargs)
+            return selector == sortScriptByTitle(*args, **kwargs)
+        elif selector == "sortStorageByTimeStamp":
+            return selector == sortStorageByTimeStamp(*args, **kwargs)
+        elif selector == "sortStorageByTitle":
+            return selector == sortStorageByTitle(*args, **kwargs)
+        elif selector == "sortStorageVideosByRunningCount":
+            return selector == sortStorageVideosByRunningCount(*args, **kwargs)
         elif selector == "analyzeVideo":
             return analyzeVideo(*args, **kwargs)
         elif selector == "uploadFile":
             return uploadFile(*args, **kwargs)
         elif selector == "analyzeText":
-            return analyzeText(*args, **kwargs)
+            return analyze_text(*args, **kwargs)
+        elif selector == "analyzeOverall":
+            return selector == analyze_overall(*args, **kwargs)
         else:
             return ("Invalid function selector")
         
