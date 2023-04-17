@@ -20,17 +20,17 @@ function ScriptID() {
     const [currentTime, setCurrentTime] = useState(0);
     const [uploaded, setUploaded] = useState(false);
     const [title, setTitle] = useState('');
-    const scriptID = useParams().id;
+    const objectId = useParams().id;
     const [data, setData] = useState([]);
     
     useEffect(() => {
-        const docRef = firestore.collection(uid).doc(scriptID.toString());
+        const docRef = firestore.collection(uid).doc(objectId.toString());
         docRef.get().then((doc) => {
             const data = doc.data();
             console.log(data);
             setData(data);
         });
-    }, [uid, scriptID]);
+    }, [uid, objectId]);
 
 
     // Function to handle user interaction with the save button

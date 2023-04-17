@@ -28,8 +28,18 @@ function VideoID() {
     const [currentTime, setCurrentTime] = useState(0);
     const [uploaded, setUploaded] = useState(false);
     const [title, setTitle] = useState('');
-    const uid = getuser()
+    const uid = getuser();
 
+    const [data, setData] = useState([]);
+
+    useEffect(() => {
+        const docRef = firestore.collection(uid).doc(objectId.toString());
+        docRef.get().then((doc) => {
+            const data = doc.data();
+            console.log(data);
+            setData(data);
+        });
+    }, [uid, objectId]);
     
     console.log(globalPerformance)
 
@@ -262,7 +272,7 @@ function VideoID() {
                     {/* Form components (Label & Text Box) for Video Title */}
                     <Form.Group id="title">
                         <Form.Label>Type up your script here</Form.Label>
-                        <Form.Control style={{ width: '100%', height: '100%' }} type="text" as='textarea' ref={scriptRef} />
+                        <Form.Control style={{ width: '100%', height: '100%' }} type="text" as='textarea' defaultValue={data.script} ref={scriptRef} />
                     </Form.Group>
                     <div style={{ marginTop: '5px' }}>
                         <Form.Label>Upload script here:&nbsp;</Form.Label>
