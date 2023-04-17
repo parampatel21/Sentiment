@@ -1,47 +1,25 @@
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+import os
+import firebase_admin
+import pytz
+from nrclex import NRCLex
+import cv2
+from firebase_admin import credentials, storage, firestore
+from datetime import datetime
+from fer import Video, FER
+import csv
+import time
+import pandas as pd
+import numpy as np
+import re
 
-"""
+app = Flask(__name__)
+CORS(app)
 
-REMINDER: UPDATE THE CODE ON GOOGLE CLOUD FUNCTIONS EVERY SINGLE TIME YOU PUSH A NEW FEATURE ONTO GITHUB
-YOU ALSO NEED TO ADD THE SAID FUNCTION TO firebase_function SUCH THAT IT CAN BE SELECTED VIA ARGUMENTS
-THE GOOGLE CLOUD FUNCTION YOU ARE UPDATING IS CALLED: firebase_operational
-THE TRIGGER FOR THIS FUNCTION IS: https://us-central1-sentiment-379415.cloudfunctions.net/firebase_operational
-MORE INSTRUCTIONS ARE ON GCP GUIDE JS FILE
-
-"""
-
-
-def master_func(request):
-    # Set CORS headers for the preflight request
-    if request.method == 'OPTIONS':
-        # Allows GET requests from any origin with the Content-Type
-        # header and caches preflight response for 3600s
-        headers = {
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'GET',
-            'Access-Control-Allow-Headers': 'Content-Type',
-            'Access-Control-Max-Age': '3600'
-        }
-        return ('', 204, headers)
-
-    # Set CORS headers for the main request
-    headers = {
-        'Access-Control-Allow-Origin': '*'
-    }
-
-    import os
-    import firebase_admin
-    import pytz
-    from nrclex import NRCLex
-    import cv2
-    from firebase_admin import credentials, storage, firestore
-    from datetime import datetime
-    from fer import Video, FER
-    import csv
-    import time
-    import pandas as pd
-    import numpy as np
-    import re
-
+@app.route('/', methods=['POST'])
+def index():
+    data = request.get_data()
     # Get path to serviceAccKey
     cwd = os.path.dirname(os.path.realpath("serviceAccountKey.json"))
 
@@ -59,7 +37,7 @@ def master_func(request):
 
 
     # DEFINE FUNCTION PARAMETERS HERE 
-    kwargs_list = list(request.args.items())
+    kwargs_list = list(data)
     kwargs_dict = dict(kwargs_list)
     if 'selector' in kwargs_dict:
         selector = kwargs_dict.pop('selector')
@@ -751,5 +729,10 @@ def master_func(request):
 
     # endregion
 
-    return (str(firebase_function(selector, **kwargs_dict)), 200, headers)
+    return jsonify(firebase_function(data))
+
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=443, ssl_context=('cert.pem', 'key.pem'))
+
 

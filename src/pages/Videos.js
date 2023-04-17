@@ -157,6 +157,17 @@ function ViewAllPerformances() {
         setGlobalPerformances(performances)
         console.log(globalPerformances)
     })
+    
+    const testServer = () => {
+        fetch('https://134.209.213.235:443', {
+            method: 'POST',
+            body: 'Hello, world!'
+        })
+        .then(response => response.text())
+        .then(data => console.log(data))
+        .catch(error => console.error(error))
+            
+    }
 
     return (
         <div className="container-fluid">
@@ -164,6 +175,7 @@ function ViewAllPerformances() {
             <main>
                 <div>
                     <h2>Your Performances</h2>
+                    <button onClick={() => testServer()}>test</button>
                     <select id="select-options" value={selectedOption} onChange={handleOptionChange} style={{ width: '100%' }}>
                         <option value={'byTitle'}>Title</option>
                         <option value={'byDateCreated'}>Date Created</option>
