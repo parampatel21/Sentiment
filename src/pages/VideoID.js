@@ -10,8 +10,8 @@ import { storage, firestore } from '../firebase'
 import Navbar from './components/Navbar'
 
 function VideoID() {
-    const [globalPerformances, setGlobalPerformances] = useContext(GlobalContext)[0];
-    const [performances, setPerformances] = useState(globalPerformances);
+    const [globalPerformance, setGlobalPerformance] = useContext(GlobalContext)[0];
+    const [performance, setPerformance] = useState(globalPerformance);
     const objectId = useParams().id;
     const scriptRef = useRef();
     const titleRef = useRef();
@@ -28,15 +28,25 @@ function VideoID() {
     const [currentTime, setCurrentTime] = useState(0);
     const [uploaded, setUploaded] = useState(false);
     const [title, setTitle] = useState('');
-    const uid = getuser()
+    const uid = getuser();
 
+    const [data, setData] = useState([]);
+
+    useEffect(() => {
+        const docRef = firestore.collection(uid).doc(objectId.toString());
+        docRef.get().then((doc) => {
+            const data = doc.data();
+            console.log(data);
+            setData(data);
+        });
+    }, [uid, objectId]);
     
-    console.log(globalPerformances)
+    console.log(globalPerformance)
 
     const loadVideo = () => {
         console.log(objectId)
-        console.log(performances)
-        const title = performances[objectId - 1].title;
+        console.log(performance)
+        const title = performance.title;
         const collectionRef = firestore.collection(uid);
         collectionRef.where("title", "==", title)
             .get()
@@ -223,13 +233,6 @@ function VideoID() {
                                 style={{ width: '400px', height: 'auto' }}
                             />
 
-                            {/* Set the refs to the actual current values */}
-                            {/* <script>
-                                titleRef = { video.title }
-                                scriptRef = { video.script }
-                                textAnalysis = { video.script.textAnalysis }
-                            </script> */}
-
                             <div style={{ display: 'flex', alignItems: 'center' }}>
                                 {playing ? (
                                     <button className='hero-button' onClick={handlePause}>Pause</button>
@@ -261,7 +264,7 @@ function VideoID() {
 
                 <Form.Group id="title">
                     <Form.Label>Title</Form.Label>
-                    <Form.Control type="text" ref={titleRef} required onChange={(e) => setTitle(e.target.value)} defaultValue={globalPerformances[objectId - 1].title} />
+                    <Form.Control type="text" ref={titleRef} required onChange={(e) => setTitle(e.target.value)} defaultValue={performance.title} />
                 </Form.Group>
 
                 {/* Handle form submission */}
@@ -269,7 +272,7 @@ function VideoID() {
                     {/* Form components (Label & Text Box) for Video Title */}
                     <Form.Group id="title">
                         <Form.Label>Type up your script here</Form.Label>
-                        <Form.Control style={{ width: '100%', height: '100%' }} type="text" as='textarea' ref={scriptRef} />
+                        <Form.Control style={{ width: '100%', height: '100%' }} type="text" as='textarea' defaultValue={data.script} ref={scriptRef} />
                     </Form.Group>
                     <div style={{ marginTop: '5px' }}>
                         <Form.Label>Upload script here:&nbsp;</Form.Label>

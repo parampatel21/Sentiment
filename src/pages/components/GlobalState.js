@@ -3,7 +3,7 @@ import { createContext, useState, useEffect } from 'react';
 export const GlobalContext = createContext();
 
 export const GlobalProvider = ({ children }) => {
-    const [globalPerformances, setGlobalPerformances] = useState([]);
+    const [globalPerformance, setGlobalPerformance] = useState({});
     const [globalUser, setGlobalUser] = useState(null);
 
     useEffect(() => {
@@ -21,20 +21,20 @@ export const GlobalProvider = ({ children }) => {
 
     useEffect(() => {
         // Retrieve globalPerformances data from local storage, if it exists
-        const storedPerfomances = localStorage.getItem('globalPerformances');
-        if (storedPerfomances) {
-            setGlobalPerformances(JSON.parse(storedPerfomances));
+        const storedPerfomance = localStorage.getItem('globalPerformance');
+        if (storedPerfomance) {
+            setGlobalPerformance(JSON.parse(storedPerfomance));
         }
     }, []);
 
     useEffect(() => {
         // Store setGlobalPerformances data in local storage whenever it changes
-        localStorage.setItem('setGlobalPerformances', JSON.stringify(setGlobalPerformances));
-    }, [setGlobalPerformances]);
+        localStorage.setItem('setGlobalPerformance', JSON.stringify(setGlobalPerformance));
+    }, [setGlobalPerformance]);
 
     return (
         // When calling GlobalContext, [0]=performances, [1]=user, [2]=scripts
-        <GlobalContext.Provider value={[ [ globalPerformances, setGlobalPerformances], 
+        <GlobalContext.Provider value={[ [ globalPerformance, setGlobalPerformance], 
                                             [globalUser, setGlobalUser]]}>
             {children}
         </GlobalContext.Provider>

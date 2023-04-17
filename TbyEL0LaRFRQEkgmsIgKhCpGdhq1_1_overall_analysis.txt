@@ -1,0 +1,27 @@
+
+Text Analysis - Emotion
+----------------------------
+Raw Emotion Scores:
+positive: 2
+
+Areas of possible improvment:
+	Your lowest emotion scores are as follows. 
+	Consider adjusting your performance to improve on these aspects:
+
+positive: 2
+
+Video Analysis - Facial Expression
+----------------------------
+Raw Emotion Scores:
+['angry0', 'box0', 'disgust0', 'fear0', 'happy0', 'neutral0', 'sad0', 'surprise0']
+['0.06', '[258 175 180 180]', '0.0', '0.03', '0.01', '0.83', '0.07', '0.0']
+['0.02', '[266 170 187 187]', '0.0', '0.06', '0.01', '0.84', '0.07', '0.0']
+
+Areas of possible improvment:
+	Final row is average value of final presentation; 
+        Adjust according to desired emotion to be displayed during presentation
+
+   angry0               box0  disgust0  fear0  happy0  neutral0  sad0  surprise0
+0    0.06  [258 175 180 180]       0.0  0.030    0.01     0.830  0.07        0.0
+1    0.02  [266 170 187 187]       0.0  0.060    0.01     0.840  0.07        0.0
+2    0.04               NULL       0.0  0.045    0.01     0.835  0.07        0.0

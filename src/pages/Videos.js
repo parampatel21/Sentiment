@@ -13,6 +13,7 @@ function ViewAllPerformances() {
     const handleOptionChange = (event) => {
         setSelectedOption(event.target.value);
     };    
+    const [globalPerformance, setGlobalPerformance] = useContext(GlobalContext)[0];
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
@@ -128,28 +129,28 @@ function ViewAllPerformances() {
           };
 
         const handleUpdate = (objectId) => {
-        const title = performances[objectId - 1].title;
-        const collectionRef = firestore.collection(uid);
-        const newTitle = prompt('Enter a new name:', title);
-        if (newTitle) {
-            collectionRef.where("title", "==", title)
-              .get()
-              .then((querySnapshot) => {
-                querySnapshot.forEach((doc) => {
-                doc.ref.update({ title: newTitle })
-                    .then(() => {
-                    console.log('Document successfully updated!');
-                    window.location.reload();
-                    })
-                    .catch((error) => {
-                    console.error('Error updating document: ', error);
+            const title = performances.find((element) => element.id === objectId).title;
+            const collectionRef = firestore.collection(uid);
+            const newTitle = prompt('Enter a new name:', title);
+            if (newTitle) {
+                collectionRef.where("title", "==", title)
+                .get()
+                .then((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                    doc.ref.update({ title: newTitle })
+                        .then(() => {
+                        console.log('Document successfully updated!');
+                        window.location.reload();
+                        })
+                        .catch((error) => {
+                        console.error('Error updating document: ', error);
+                        });
                     });
+                })
+                .catch((error) => {
+                    console.error('Error querying documents: ', error);
                 });
-            })
-            .catch((error) => {
-                console.error('Error querying documents: ', error);
-            });
-        }
+            }
         };
 
     const [globalPerformances, setGlobalPerformances] = useContext(GlobalContext)[0];
@@ -157,17 +158,6 @@ function ViewAllPerformances() {
         setGlobalPerformances(performances)
         console.log(globalPerformances)
     })
-    
-    const testServer = () => {
-        fetch('https://134.209.213.235:443', {
-            method: 'POST',
-            body: 'Hello, world!'
-        })
-        .then(response => response.text())
-        .then(data => console.log(data))
-        .catch(error => console.error(error))
-            
-    }
 
     return (
         <div className="container-fluid">
@@ -185,7 +175,7 @@ function ViewAllPerformances() {
                     &nbsp;
                     {performances.map(object => (
                         <div key={object.id} style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                            <Link to={`/videos/${object.id}`} style={{ width: '100%' }} className='list-item'>{object.title}</Link>
+                            <Link to={`/videos/${object.id}`} style={{ width: '100%' }} onClick={() => handleSelect(object.id)} className='list-item'>{object.title}</Link>
                             <button style={{ display: 'inline-block' }} className='hero-button' onClick={() => handleDelete(object.id)}>Delete</button>
                             &nbsp;
                             <button style={{ display: 'inline-block' }} className='hero-button' onClick={() => handleUpdate(object.id)}>Update</button>
