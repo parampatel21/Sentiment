@@ -1,6 +1,7 @@
 import os
 import firebase_admin
 import pytz
+from nrclex import NRCLex
 import cv2
 from firebase_admin import credentials, storage, firestore
 from datetime import datetime
@@ -23,6 +24,7 @@ db = firestore.client()
 tz_NY = pytz.timezone('America/New_York') 
 # Get the current time in New York
 datetime_NY = datetime.now(tz_NY)
+
 
 """
 Write a new user
@@ -219,12 +221,17 @@ Get an existing script; Throws error if user DNE
     """
 def getScript(uid, index):
     try:
-        index_ref = db.collection(uid).document(str(index)).collection("Script").document("script")
-        index_ref = index_ref.get()
-        index_ref_dict = index_ref.to_dict()
-        return index_ref_dict["script"]
-    except:
+        index_ref = db.collection(uid).document(str(index)).get()
+        index_data = index_ref.to_dict()
+        script = index_data["script"]
+        return script
+    except KeyError:
+        print(f"Key 'script' not found in document {index} of collection {uid}.")
         return False
+    except Exception as e:
+        print(f"Error getting script from Firestore: {e}")
+        return False
+
 
 """
 Clear data from an existing script; Throws error if user DNE
@@ -318,18 +325,13 @@ Download a file from firestore storage; Throws error if unsuccessful
     
 """
 
-def downloadFile(uid, filename):
-    try:
+def downloadFile(uid, index, tag):
         bucket = storage.bucket()
-        blob = bucket.blob(uid + "_" + str(filename))
-        blob.download_to_filename(uid + "_" + filename)
+        blob = bucket.blob(uid + "_" + str(index) + str(tag))
+        blob.download_to_filename(filename=uid + "_" + str(index) + str(tag) )
         
         return True
-    except FileNotFoundError:
-        #Should not be thrown iff UI implemented correctly
-        return Exception("FileNotFoundError") 
-    except:
-        return False
+
 
 """
 Delete a file from firestore storage; Throws error if unsuccessful
@@ -456,8 +458,8 @@ def sortScriptByRunningCount(uid, rOrder):
             return dict_list_sorted 
     except:
         return False
-  
-  
+
+
 """
 Sort all scripts of a user by title
 
@@ -470,7 +472,7 @@ Sort all scripts of a user by title
     Successful sorting
 @ret False
     Unsuccessful sorting
- """  
+"""  
 def sortScriptByTitle(uid, rOrder):
     try:
         index = getRunningCount(uid=uid)
@@ -498,7 +500,7 @@ Sort all scripts of a user by time stamp
     Successful sorting
 @ret False
     Unsuccessful sorting
- """  
+"""  
 def sortStorageByTimeStamp(uid, rOrder, filetype):
     try:
         dict_List = []
@@ -519,6 +521,7 @@ def sortStorageByTimeStamp(uid, rOrder, filetype):
         for file in sorted_files:
             print({'name': file.name, 'created': file.time_created})
         
+
         return sorted_files
     except:
         return False
@@ -534,9 +537,9 @@ def sortStorageVideosByRunningCount(uid, rOrder):
         temp = str(blob.name).split("_")
         if str(temp[0]) == str(uid):
             dict_List.append({"uid" : temp[0],
-                       "index" : temp[1],
-                       "title" : temp[2]})
- 
+                    "index" : temp[1],
+                    "title" : temp[2]})
+
     dict_list_sorted = sorted(dict_List, key=lambda x: x['index'], reverse=rOrder)
     return dict_list_sorted
 
@@ -571,10 +574,11 @@ def sortStorageByTitle(uid, rOrder, filetype):
 #uploadFile(uid="uid3", index="3", localpath="Script.txt")
 #print(sortVideosByRunningCount("uid3", True))
 
-def analyzeVideo(filename, depth, outputname):
-    try:
+def analyzeVideo(depth, uid, index, tag):
+
         # Load the video file
-        video = Video(filename)
+        downloadFile(uid= uid, index=index, tag= tag)
+        video = Video(uid + "_" + str(index) + str(tag))
 
         # Initialize the FER detector
         detector = FER()
@@ -582,7 +586,9 @@ def analyzeVideo(filename, depth, outputname):
         # Analyze the video frames
         result = video.analyze(detector=detector, display=False, frequency=depth)
 
-        with open('data.csv', 'r') as file, open(outputname + '_facial_data.txt', "w") as file2:
+        with open('data.csv', 'r') as file, open(uid + "_" + str(index) + '_facial_data.txt', "w") as file2:
+            
+            file2.write('\nVideo Analysis - Facial Expression\nRaw Emotion Scores:\n')
 
             # Create a CSV reader object
             reader = csv.reader(file)
@@ -593,7 +599,8 @@ def analyzeVideo(filename, depth, outputname):
                     
             file2.write("\n")
             file2.write("Areas of possible improvment:\n")
-            file2.write("""\tFinal row is average value of final presentation; \n\t Adjust according to desired emotion to be displayed during presentation\n""")
+            file2.write("""\tFinal row is average value of final presentation; 
+        Adjust according to desired emotion to be displayed during presentation\n""")
             file2.write("\n")
             
             with open('data.csv', 'r') as f:
@@ -617,12 +624,77 @@ def analyzeVideo(filename, depth, outputname):
             file2.write(str(df) + "\n")
             
         # Read the contents of the txt file and return it as a string
-        with open(outputname + '_facial_data.txt', "r") as file3:
+        with open(uid + "_" + str(index) + '_facial_data.txt', "r") as file3:
             return file3.read()
+
+
+"""
+Analyze text emotion
+"""
+def analyze_text(uid, index):
+    doc = NRCLex(getScript(uid, index))
+    emotions = doc.raw_emotion_scores
+    
+    # create a dictionary to store the results
+    results = {}
+    results['raw_emotion_scores'] = emotions
+    
+    # get the lowest 3 values from my_dict1 and any ties that exceed the lowest 3
+    lowest_values = [item for item in sorted(results['raw_emotion_scores'].items(), key=lambda x: x[1])[:3]]
+    ties = set([item for item in sorted(results['raw_emotion_scores'].items(), key=lambda x: x[1])[3:] if item[1] == lowest_values[-1][1]])
+
+    # add any ties to the lowest 3 values and convert the result to a dictionary for my_dict1
+    result = {item[0]: item[1] for item in lowest_values} 
+    result.update({item[0]: item[1] for item in sorted(ties)})
+    
+    results['lowest_emotions'] = result
+    
+    # write the results to the output file
+    with open(uid + "_" + str(index) + "_text_analysis.txt", 'w') as f:
+        # write the raw emotion scores
+        f.write('\nText Analysis - Emotion\nRaw Emotion Scores:\n')
+        for emotion, score in results['raw_emotion_scores'].items():
+            f.write(f'{emotion}: {score}\n')
         
+        # write the lowest emotion scores
+        f.write('\nAreas of possible improvment:\n\tYour lowest emotion scores are as follows. \n\tConsider adjusting your performance to improve on these aspects:\n\n')
+        for emotion, score in results['lowest_emotions'].items():
+            f.write(f'{emotion}: {score}\n')
+    
+    with open(uid + "_" + str(index) + "_text_analysis.txt", 'r') as f:    
+        return f.read()
+
+def deleteAnalysis(uid, index):
+    try:
+        bucket = storage.bucket()
+        blob = bucket.blob(uid + "_" + index + "_text_analysis.txt", 'w')
+        blob.delete()
+        return True
     except:
         return False
+
+def analyze_overall(uid, index, tag, depth):
+    txtOut = analyze_text(uid= uid, index= index)
+    vidOut = analyzeVideo(depth=depth, uid= uid, tag= tag, index= index)
+   
+    with open(uid + "_" + str(index) + "_overall_analysis.txt", 'w') as f:
+        # write the raw emotion scores
+        f.write(txtOut + vidOut)
     
+    
+    return txtOut + vidOut
+    
+def returnFile(uid, index ,tag):
+    try:
+        bucket = storage.bucket()
+        blob = bucket.blob(uid + "_" + str(index) + str(tag))
+        file_contents = blob.get().content
+        return file_contents
+    except Exception as e:
+        print(f"Error returning file: {e}")
+        return False
+    
+
 
 #Test Input & update; Print current running count 
 def main():
@@ -714,6 +786,11 @@ analyzeVideo("[object Promise]1.mp4", depth=30,
 
 #uploadFile(uid="uid4", localpath="0.avi", filename="uid4_0.avi")
 
+#writeNewScript(uid="TbyEL0LaRFRQEkgmsIgKhCpGdhq1", title="First Script", script="love love hate")
 
-print(analyzeVideo("[object Promise]1.mp4", depth=30, 
-                 outputname= "[object Promise]"))
+print(downloadFile(uid="TbyEL0LaRFRQEkgmsIgKhCpGdhq1", index= 3, tag= ".avi"))
+
+#print(analyzeVideo(uid= "TbyEL0LaRFRQEkgmsIgKhCpGdhq1_3", index=1, filename="TbyEL0LaRFRQEkgmsIgKhCpGdhq1_3.avi", depth=30))
+
+
+print(analyze_overall(uid= "TbyEL0LaRFRQEkgmsIgKhCpGdhq1", index=3, tag=".avi", depth=30))

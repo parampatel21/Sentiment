@@ -1,0 +1,20 @@
+
+Text Analysis - Emotion
+Raw Emotion Scores:
+joy: 2
+positive: 2
+anger: 1
+disgust: 1
+fear: 1
+negative: 1
+sadness: 1
+
+Areas of possible improvment:
+	Your lowest emotion scores are as follows. 
+	Consider adjusting your performance to improve on these aspects:
+
+anger: 1
+disgust: 1
+fear: 1
+negative: 1
+sadness: 1
