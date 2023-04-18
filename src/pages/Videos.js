@@ -159,6 +159,17 @@ function ViewAllPerformances() {
         console.log(globalPerformances)
     })
 
+    const testServer = () => {
+        fetch('https://134.209.213.235:443', {
+            method: 'POST',
+            body:  '{"selector": "getRunningCount", "uid": "OU38vh6cSqTeku8yqgeWAhV81t62"}'
+        })
+        .then(response => response.text())
+        .then(data => console.log(data))
+        .catch(error => console.error(error))
+
+    }
+
     return (
         <div className="container-fluid">
             <Navbar />
@@ -175,7 +186,7 @@ function ViewAllPerformances() {
                     &nbsp;
                     {performances.map(object => (
                         <div key={object.id} style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                            <Link to={`/videos/${object.id}`} style={{ width: '100%' }} onClick={() => handleSelect(object.id)} className='list-item'>{object.title}</Link>
+                            {/* <Link to={`/videos/${object.id}`} style={{ width: '100%' }} onClick={() => handleSelect(object.id)} className='list-item'>{object.title}</Link> */}
                             <button style={{ display: 'inline-block' }} className='hero-button' onClick={() => handleDelete(object.id)}>Delete</button>
                             &nbsp;
                             <button style={{ display: 'inline-block' }} className='hero-button' onClick={() => handleUpdate(object.id)}>Update</button>

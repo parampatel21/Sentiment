@@ -13,6 +13,7 @@ import time
 import pandas as pd
 import numpy as np
 import re
+import json
 
 app = Flask(__name__)
 CORS(app)
@@ -20,6 +21,9 @@ CORS(app)
 @app.route('/', methods=['POST'])
 def index():
     data = request.get_data()
+    data_dict = json.loads(data)
+    print("\nINPUT STRING:")
+    print(data)
     # Get path to serviceAccKey
     cwd = os.path.dirname(os.path.realpath("serviceAccountKey.json"))
 
@@ -35,50 +39,49 @@ def index():
     # Get the current time in New York
     datetime_NY = datetime.now(tz_NY)
 
-
     # DEFINE FUNCTION PARAMETERS HERE 
-    kwargs_list = list(data)
-    kwargs_dict = dict(kwargs_list)
-    if 'selector' in kwargs_dict:
-        selector = kwargs_dict.pop('selector')
-
-    def firebase_function(selector, *args, **kwargs):
+    selector = data_dict['selector']
+    kwargs = data_dict.copy()
+    kwargs.pop('selector')
+    print(f"SELECTOR: {selector}\n")
+    print(f"KWARGS: {kwargs}\n")
+    def firebase_function(selector,  **kwargs):
         if selector == "writeNewUser":
-            return writeNewUser(*args, **kwargs)
+            return writeNewUser( **kwargs)
         elif selector == "modifyUser":
-            return modifyUser(*args, **kwargs)
+            return modifyUser( **kwargs)
         elif selector == "getRunningCount":
-            return getRunningCount(*args, **kwargs)
+            return getRunningCount( **kwargs)
         elif selector == "getTitle":
-            return getTitle(*args, **kwargs)
+            return getTitle( **kwargs)
         elif selector == "readFileToScript":
-            return readFileToScript(*args, **kwargs)
+            return readFileToScript( **kwargs)
         elif selector == "updateRunningCount":
-            return updateRunningCount(*args, **kwargs)
+            return updateRunningCount( **kwargs)
         elif selector == "writeNewScript":
-            return writeNewScript(*args, **kwargs)
+            return writeNewScript( **kwargs)
         elif selector == "modifyScript":
-            return modifyScript(*args, **kwargs)
+            return modifyScript( **kwargs)
         elif selector == "getScript":
-            return getScript(*args, **kwargs)
+            return getScript( **kwargs)
         elif selector == "sortScriptByRunningCount":
-            return selector == sortScriptByRunningCount(*args, **kwargs)
+            return selector == sortScriptByRunningCount( **kwargs)
         elif selector == "sortScriptByTitle":
-            return selector == sortScriptByTitle(*args, **kwargs)
+            return selector == sortScriptByTitle( **kwargs)
         elif selector == "sortStorageByTimeStamp":
-            return selector == sortStorageByTimeStamp(*args, **kwargs)
+            return selector == sortStorageByTimeStamp( **kwargs)
         elif selector == "sortStorageByTitle":
-            return selector == sortStorageByTitle(*args, **kwargs)
+            return selector == sortStorageByTitle( **kwargs)
         elif selector == "sortStorageVideosByRunningCount":
-            return selector == sortStorageVideosByRunningCount(*args, **kwargs)
+            return selector == sortStorageVideosByRunningCount( **kwargs)
         elif selector == "analyzeVideo":
-            return analyzeVideo(*args, **kwargs)
+            return analyzeVideo( **kwargs)
         elif selector == "uploadFile":
-            return uploadFile(*args, **kwargs)
+            return uploadFile( **kwargs)
         elif selector == "analyzeText":
-            return analyze_text(*args, **kwargs)
+            return analyze_text( **kwargs)
         elif selector == "analyzeOverall":
-            return selector == analyze_overall(*args, **kwargs)
+            return selector == analyze_overall( **kwargs)
         else:
             return ("Invalid function selector")
         
@@ -135,14 +138,15 @@ def index():
 
     """
     def getRunningCount(uid):
-        try:
-            accessInfo_ref = db.collection(uid).document("access_info")
-            accessInfo = accessInfo_ref.get()
-            accessInfo_dict = accessInfo.to_dict()
-            
-            return accessInfo_dict["running_count"]
-        except:
-            return False
+        # try:
+        print(uid)
+        accessInfo_ref = db.collection(uid).document("access_info")
+        accessInfo = accessInfo_ref.get()
+        accessInfo_dict = accessInfo.to_dict()
+        
+        return accessInfo_dict["running_count"]
+        # except:
+        #     return False
 
     """
     Get title of a given video
@@ -764,7 +768,7 @@ def index():
 
     # endregion
 
-    return jsonify(firebase_function(data))
+    return str(firebase_function(selector, **kwargs))
 
 
 if __name__ == '__main__':
