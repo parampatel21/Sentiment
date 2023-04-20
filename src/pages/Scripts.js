@@ -8,14 +8,57 @@ import '../styles/HomePage.css'
 function ViewAllScripts() {
     const navigate = useNavigate()
     const [selectedOption, setSelectedOption] = useState('option1');
-    const handleOptionChange = (event) => {
-        setSelectedOption(event.target.value);
-    };
     const { getuser } = useAuth()
     const uid = getuser()
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const [scripts, setScripts] = useState([])
+    
+    const handleOptionChange = (event) => {
+        setSelectedOption(event.target.value);
+        let temp = scripts;
+        if (event.target.value == 'id') {
+            temp.sort((a, b) => {
+                return a.id - b.id;
+            });
+            console.log('id')
+        } else if (event.target.value == 'title') {
+            temp.sort((a, b) => {
+                if (a.title < b.title) {
+                    return -1;
+                }
+                if (a.title > b.title) {
+                    return 1;
+                }
+                return 0;
+            });
+            console.log('title')
+        } else if (event.target.value == 'created') {
+            temp.sort((a, b) => {
+                if (a.timestamp > b.timestamp) {
+                    return -1;
+                }
+                if (a.timestamp < b.timestamp) {
+                    return 1;
+                }
+                return 0;
+            });
+            console.log('created')
+        } else if (event.target.value == 'updated') {
+            temp.sort((a, b) => {
+                if (a.dateUpdated > b.dateUpdated) {
+                    return -1;
+                }
+                if (a.dateUpdated < b.dateUpdated) {
+                    return 1;
+                }
+                return 0;
+            });
+            console.log('updated')
+        }
+        console.log(temp)
+        setScripts(temp)
+    };
 
     async function loadScriptsFromCollection(uid) {
         const accessInfoRef = firestore.collection(uid).doc('access_info');
@@ -88,6 +131,15 @@ function ViewAllScripts() {
     };
 
     const handleUpdate = (objectId) => {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = (now.getMonth() + 1).toString().padStart(2, '0');
+        const day = now.getDate().toString().padStart(2, '0');
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const seconds = now.getSeconds().toString().padStart(2, '0');
+        const currentDate = `${year}:${month}:${day}:${hours}:${minutes}:${seconds}`;
+
         console.log(objectId)
         const title = scripts.find((element) => element.id === objectId).title;
         const collectionRef = firestore.collection(uid);
@@ -98,6 +150,10 @@ function ViewAllScripts() {
                         doc.ref.update({ title: newTitle })
                             .then(() => {
                                 console.log('Document successfully updated!');
+                                const doc = collectionRef.doc(objectId.toString()).set({
+                                    dateUpdated: currentDate
+                                }, { merge: true });
+
                                 window.location.reload();
                             })
                             .catch((error) => {
@@ -152,9 +208,10 @@ function ViewAllScripts() {
                 <div>
                     <h1>Your Scripts</h1>
                     <select id="select-options" value={selectedOption} onChange={handleOptionChange} style={{ width: '100%' }}>
-                        <option value={'byTitle'}>Title</option>
-                        <option value={'byDateCreated'}>Date Created</option>
-                        <option value={'byDateUpdated'}>Date Updated</option>
+                        <option value={'id'}>Script ID</option>
+                        <option value={'title'}>Title</option>
+                        <option value={'created'}>Date Created</option>
+                        <option value={'updated'}>Date Updated</option>
                     </select>
                     <button className='sort-button'>Sort By</button>
                     &nbsp;
