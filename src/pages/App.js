@@ -14,6 +14,7 @@ import Scripts from "./Scripts";
 import Reports from "./Reports";
 import VideoID from "./VideoID";
 import ScriptID from "./ScriptID";
+import ReportID from "./ReportID";
 import Record from "./Record";
 import TestingGrounds from "./TestingGrounds"
 import AboutUs from "./About";
@@ -42,6 +43,7 @@ function App() {
                   <Route path="/reports" element={<Reports />} />
                   <Route path="/videos/:id" element={<VideoID />} />
                   <Route path="/scripts/:id" element={<ScriptID />} />
+                  <Route path="/reports/:id" element={<ReportID />} />
                   <Route path="/record" element={<Record />} />
                   <Route path="/testing-grounds" element={<TestingGrounds />} />
                 </Routes>

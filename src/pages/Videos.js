@@ -6,7 +6,7 @@ import Navbar from './components/Navbar';
 import { GlobalContext } from './components/GlobalState';
 import '../styles/HomePage.css'
 
-function ViewAllPerformances() {
+function Videos() {
     const { getuser} = useAuth()
     const uid = getuser()
     console.log(uid)
@@ -268,4 +268,4 @@ function ViewAllPerformances() {
     );
 }
 
-export default ViewAllPerformances;
+export default Videos;

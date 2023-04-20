@@ -5,7 +5,7 @@ import { firestore, storage } from '../firebase';
 import Navbar from './components/Navbar';
 import '../styles/HomePage.css'
 
-function ViewAllScripts() {
+function Scripts() {
     const navigate = useNavigate()
     const [selectedOption, setSelectedOption] = useState('option1');
     const { getuser } = useAuth()
@@ -236,4 +236,4 @@ function ViewAllScripts() {
     );
 }
 
-export default ViewAllScripts;
+export default Scripts;
