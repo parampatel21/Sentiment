@@ -48,31 +48,6 @@ function ScriptID() {
         }
 
         const UID = getuser();
-        const new_count = firestore.collection(UID).doc('access_info').get('running_count') + 1
-        console.log(new_count)
-
-        const handleUpload = () => {
-            const storageRef = storage.ref();
-            const fileName = new_count.toString() + `.mp4`;
-            const UID = getuser()
-            const videoRef = storageRef.child(UID + `/${fileName}`);
-
-            videoRef.put(videoBlob).then((snapshot) => {
-                console.log('Uploaded a blob or file!', snapshot);
-                setUploaded(true);
-            });
-        };
-
-        async function handleScriptUpload() {
-            const script = scriptRef.current.value.trim();
-            const UID = getuser();
-            const storageRef = storage.ref();
-            const fileName = new_count + `.txt`;
-            const scriptRefstorage = storageRef.child(UID + `/${fileName}`);
-            await scriptRefstorage.putString(script);
-            console.log('Uploaded a blob or file!');
-            setUploaded(true);
-        }
 
         async function handleFirestoreUpdate() {
             const title = titleRef.current.value.trim();
@@ -88,31 +63,15 @@ function ScriptID() {
 
 
             firestore.collection(UID).doc("access_info").set({
-                running_count: new_count.toString()
+                running_count: objectId.toString()
             }, { merge: true })
-            firestore.collection(UID).doc(new_count).set({
-                title: title,
-                timestamp: currentDate,
-            })
+            firestore.collection(UID).doc(objectId).set({
+                title: titleRef.current.value,
+                updatedDate: currentDate,
+                script: scriptRef.current.value
+            }, { merge: true })
             console.log('Updated firestore!');
             setUploaded(true);
-        }
-
-
-        try {
-            setError('')
-            setLoading(true)
-            handleUpload()
-        } catch {
-            setError('Failed to upload the video')
-        }
-
-        try {
-            setError('')
-            setLoading(true)
-            handleScriptUpload()
-        } catch {
-            setError('Failed to upload the script')
         }
 
         try {
@@ -125,6 +84,7 @@ function ScriptID() {
 
         alert('Upload successful!')
         setLoading(false)
+        navigate('/scripts')
 
     }
 
@@ -162,7 +122,7 @@ function ScriptID() {
 
                 <Form.Group id="title">
                     <Form.Label>Title</Form.Label>
-                    <Form.Control type="text" ref={titleRef} defaultValue={data.title} required onChange={(e) => setTitle(e.target.value)} />
+                    <Form.Control type="text" ref={titleRef} defaultValue={data.title} required />
                 </Form.Group>
 
                 {/* Handle form submission */}

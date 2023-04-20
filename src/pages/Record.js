@@ -195,7 +195,7 @@ function Record() {
             }, { merge: true })
             firestore.collection(UID).doc(new_count.toString()).set({
                 title: title,
-                timestamp: currentDate,
+                timestamp: new_count,
                 dateUpdated: currentDate,
                 script: scriptRef.current.value.trim()
             })
