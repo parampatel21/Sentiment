@@ -153,11 +153,10 @@ function ViewAllPerformances() {
             }
         };
 
-    const [globalPerformances, setGlobalPerformances] = useContext(GlobalContext)[0];
-    useEffect(() => {
-        setGlobalPerformances(performances)
-        console.log(globalPerformances)
-    })
+        const handleSelect = (objectId) => {
+            const temp = performances.find((element) => element.id === objectId);
+            setGlobalPerformance(temp);
+        }
 
     const testServer = () => {
         fetch('https://134.209.213.235:443', {
@@ -171,11 +170,11 @@ function ViewAllPerformances() {
     }
 
     return (
-        <div className="container-fluid">
+        <div className="container">
             <Navbar />
             <main>
                 <div>
-                    <h2>Your Performances</h2>
+                    <h1>Your Videos</h1>
                     <button onClick={() => testServer()}>test</button>
                     <select id="select-options" value={selectedOption} onChange={handleOptionChange} style={{ width: '100%' }}>
                         <option value={'byTitle'}>Title</option>
@@ -186,7 +185,7 @@ function ViewAllPerformances() {
                     &nbsp;
                     {performances.map(object => (
                         <div key={object.id} style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                            {/* <Link to={`/videos/${object.id}`} style={{ width: '100%' }} onClick={() => handleSelect(object.id)} className='list-item'>{object.title}</Link> */}
+                            <Link to={`/videos/${object.id}`} style={{ width: '100%' }} onClick={() => handleSelect(object.id)} className='list-item'>{object.title}</Link>
                             <button style={{ display: 'inline-block' }} className='hero-button' onClick={() => handleDelete(object.id)}>Delete</button>
                             &nbsp;
                             <button style={{ display: 'inline-block' }} className='hero-button' onClick={() => handleUpdate(object.id)}>Update</button>
@@ -196,7 +195,6 @@ function ViewAllPerformances() {
                         </div>
                     ))}
                 </div>
-
             </main >
             <footer>
                 <p>&copy; 2023 Sentiment. All rights reserved.</p>

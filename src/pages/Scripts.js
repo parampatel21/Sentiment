@@ -89,7 +89,7 @@ function ViewAllScripts() {
             <Navbar />
             <main>
                 <div>
-                    <h2>Your Scripts</h2>
+                    <h1>Your Scripts</h1>
                     <select id="select-options" value={selectedOption} onChange={handleOptionChange} style={{ width: '100%' }}>
                         <option value={'byTitle'}>Title</option>
                         <option value={'byDateCreated'}>Date Created</option>
