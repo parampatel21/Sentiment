@@ -9,6 +9,7 @@ import '../styles/HomePage.css'
 function ViewAllPerformances() {
     const { getuser} = useAuth()
     const uid = getuser()
+    console.log(uid)
     const [selectedOption, setSelectedOption] = useState('option1');
     const [globalPerformance, setGlobalPerformance] = useContext(GlobalContext)[0];
     const [error, setError] = useState('')

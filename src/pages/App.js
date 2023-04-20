@@ -11,6 +11,7 @@ import Login from "./Login";
 import ForgotPassword from "./ForgotPassword";
 import Videos from "./Videos";
 import Scripts from "./Scripts";
+import Reports from "./Reports";
 import VideoID from "./VideoID";
 import ScriptID from "./ScriptID";
 import Record from "./Record";
@@ -38,6 +39,7 @@ function App() {
                   <Route path="/forgot-password" element={<ForgotPassword />} />
                   <Route path="/videos" element={<Videos />} />
                   <Route path="/scripts" element={<Scripts />} />
+                  <Route path="/reports" element={<Reports />} />
                   <Route path="/videos/:id" element={<VideoID />} />
                   <Route path="/scripts/:id" element={<ScriptID />} />
                   <Route path="/record" element={<Record />} />
