@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
-import { firestore } from '../firebase';
+import { firestore, storage } from '../firebase';
 import Navbar from './components/Navbar';
 import '../styles/HomePage.css'
 
@@ -49,7 +49,42 @@ function ViewAllScripts() {
     }
 
     const handleDelete = (objectId) => {
-        console.log('plus u1tra')
+        const confirmDelete = window.confirm("Are you sure you want to delete?");
+        if (confirmDelete) {
+            const title = scripts.find((element) => element.id === objectId).title;
+            const collectionRef = firestore.collection(uid);
+            collectionRef.where("title", "==", title)
+                .get()
+                .then((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                        doc.ref.delete().then(() => {
+                            console.log("Document successfully deleted!");
+
+                            const accessInfoRef = firestore.collection(uid).doc('access_info');
+                            accessInfoRef.get().then((doc) => {
+                                const data = doc.data();
+                                console.log(data)
+                                const old_count = data.running_count
+                                const new_count = old_count - 1
+
+                                const storageRef = storage.ref();
+                                const fileRef = storageRef.child(uid + '_' + objectId + '.avi');
+                                console.log(uid + '_' + objectId + '.avi')
+                                fileRef.delete().then(() => {
+                                    console.log(`Successfully deleted`);
+                                })
+
+                            })
+
+                            window.location.reload();
+                        }).catch((error) => {
+                            console.error("Error removing document: ", error);
+                        });
+                    });
+                }).catch((error) => {
+                    console.error("Error querying documents: ", error);
+                });
+        }
     };
 
     const handleUpdate = (objectId) => {
@@ -75,6 +110,31 @@ function ViewAllScripts() {
                 });
         }
     };
+
+    const handleDownload = (objectId) => {
+        const docRef = firestore.collection(uid).doc(objectId.toString());
+        docRef.get().then((doc) => {
+            if (doc.exists) {
+                const data = doc.data();
+                const text = 'Title: ' + data.title + '\nScript: ' + data.script;
+                console.log(text);
+                // Download text file
+                const file = new Blob([text], { type: 'text/plain' });
+                const fileURL = URL.createObjectURL(file);
+                const downloadLink = document.createElement('a');
+                downloadLink.href = fileURL;
+                downloadLink.download = data.title;
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+
+            } else {
+                console.log("No such document!");
+            }
+        }).catch((error) => {
+            console.log("Error getting document:", error);
+        });
+    }
 
     useEffect(() => {
         loadScriptsFromCollection(uid)
@@ -105,7 +165,7 @@ function ViewAllScripts() {
                             &nbsp;
                             <button style={{ display: 'inline-block' }} className='hero-button' onClick={() => handleUpdate(object.id)}>Update</button>
                             &nbsp;
-                            <button style={{ display: 'inline-block' }} className='hero-button' onClick={() => console.log(`Downloading ${object.title}`)}>Download</button>
+                            <button style={{ display: 'inline-block' }} className='hero-button' onClick={() => handleDownload(object.id)}>Download</button>
                             &nbsp;
                         </div>
 

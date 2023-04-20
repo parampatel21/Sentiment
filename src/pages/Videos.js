@@ -10,13 +10,14 @@ function ViewAllPerformances() {
     const { getuser} = useAuth()
     const uid = getuser()
     const [selectedOption, setSelectedOption] = useState('option1');
-    const handleOptionChange = (event) => {
-        setSelectedOption(event.target.value);
-    };    
     const [globalPerformance, setGlobalPerformance] = useContext(GlobalContext)[0];
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
+
+    const handleOptionChange = (event) => {
+        setSelectedOption(event.target.value);
+    };
 
     // TO GET COLLECTION REFERENCE
     const [performances, setPerformances] = useState([]);
@@ -62,12 +63,6 @@ function ViewAllPerformances() {
                     accessInfoRef.get().then((doc) => {
                         const data = doc.data();
                         console.log(data)
-                        const old_count = data.running_count
-                        const new_count = old_count - 1
-
-                        // firestore.collection(uid).doc("access_info").set({
-                        //     running_count: new_count
-                        // }, { merge: true })
 
                         const storageRef = storage.ref();
                         const fileRef = storageRef.child(uid + '_' + objectId + '.avi');
