@@ -8,9 +8,9 @@ import '../styles/HomePage.css'
 import {storage, firestore} from '../firebase'
 import Navbar from './components/Navbar'
 
-function sleep(seconds) {
-  return new Promise(resolve => setTimeout(resolve, seconds * 1000));
-}
+// function sleep(seconds) {
+//   return new Promise(resolve => setTimeout(resolve, seconds * 1000));
+// }
 
 function Record() {
     const scriptRef = useRef();
@@ -122,7 +122,7 @@ function Record() {
           console.log(data)
           console.log(data.running_count)
 
-          sleep(20)
+          // sleep(20)
 
             try {
                 setError('')
@@ -131,14 +131,6 @@ function Record() {
             } catch {
                 setError('Failed to upload the video')
             }
-    
-            // try {
-            //     setError('')
-            //     setLoading(true)
-            //     handleScriptUpload(new_count)
-            // } catch {
-            //     setError('Failed to upload the script')
-            // }
     
             try {
                 setError('')
@@ -163,19 +155,6 @@ function Record() {
             setUploaded(true);
           });
         };  
-
-        // async function handleScriptUpload(new_count) {
-        //     const script = scriptRef.current.value.trim();
-        //     const UID = getuser();
-        //     const storageRef = storage.ref();
-        //     const fileName = new_count + `.txt`;
-        //     console.log(fileName)
-        //     const scriptRefstorage = storageRef.child(UID + `_${fileName}`);
-        //     await scriptRefstorage.putString(script);
-        //     console.log('Uploaded a blob or file!');
-        //     console.log(fileName)
-        //     setUploaded(true);
-        // }
 
         async function handleFirestoreUpdate(new_count) {
             const title = titleRef.current.value.trim();

@@ -100,7 +100,7 @@ function Videos() {
       loadTitlesFromCollection(uid)
         .then(titles => setPerformances(titles))
         .catch(error => console.error('Error getting performances: ', error));
-    }, [uid]);
+    }, [uid], [performances]);
     // END OF COLLECTION REFERENCE
 
     const handleDelete = (objectId) => {

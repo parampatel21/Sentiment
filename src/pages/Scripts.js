@@ -198,7 +198,7 @@ function Scripts() {
                 setScripts(scripts)
             })
             .catch((error) => console.error('Error getting scripts: ', error))
-    }, [uid])
+    }, [uid], [scripts])
     console.log(scripts)
 
     return (

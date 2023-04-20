@@ -60,7 +60,7 @@ function Reports() {
         setReports(temp)
     };
 
-    async function loadScriptsFromCollection(uid) {
+    async function loadReportsFromCollection(uid) {
         const accessInfoRef = firestore.collection(uid).doc('access_info');
         let runningCount = 0
         return accessInfoRef.get()
@@ -193,12 +193,12 @@ function Reports() {
     }
 
     useEffect(() => {
-        loadScriptsFromCollection(uid)
+        loadReportsFromCollection(uid)
             .then((reports) => {
                 setReports(reports)
             })
             .catch((error) => console.error('Error getting reports: ', error))
-    }, [uid])
+    }, [uid], [reports])
     console.log(reports)
 
     return (
