@@ -196,6 +196,7 @@ function Record() {
             firestore.collection(UID).doc(new_count.toString()).set({
                 title: title,
                 timestamp: currentDate,
+                dateUpdated: currentDate,
                 script: scriptRef.current.value.trim()
             })
             console.log('Updated firestore!');

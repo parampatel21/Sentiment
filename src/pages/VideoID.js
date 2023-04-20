@@ -57,6 +57,7 @@ function VideoID() {
                     const fileRef = storageRef.child(uid + '_' + doc.id + '.avi');
                     fileRef.getDownloadURL().then(function (url) {
                         setVideoSrc(url);
+            
                     }).catch(function (error) {
                         // handle errors
                         console.log(error);
@@ -99,46 +100,21 @@ function VideoID() {
             return;
         }
 
-        if (!videoBlob) {
+        if (!videoSrc) {
             alert("No video has been fetched.");
             return;
         }
 
-        if (!title || title.length < 5) {
+        if (!titleRef.current.value || titleRef.current.length < 5) {
             alert("The title should be at least 5 characters long.");
             return;
         }
 
         const UID = getuser();
-        const curr_count = firestore.collection(UID).doc('access_info').get('running_count')
-        console.log(curr_count)
-
-        const handleUpload = () => {
-            const storageRef = storage.ref();
-            const fileName = curr_count.toString() + `.mp4`;
-            const UID = getuser()
-            const videoRef = storageRef.child(UID + `/${fileName}`);
-
-            videoRef.put(videoBlob).then((snapshot) => {
-                console.log('Uploaded a blob or file!', snapshot);
-                setUploaded(true);
-            });
-        };
-
-        async function handleScriptUpload() {
-            const script = scriptRef.current.value.trim();
-            const UID = getuser();
-            const storageRef = storage.ref();
-            const fileName = curr_count + `.txt`;
-            const scriptRefstorage = storageRef.child(UID + `/${fileName}`);
-            await scriptRefstorage.putString(script);
-            console.log('Uploaded a blob or file!');
-            setUploaded(true);
-        }
 
         async function handleFirestoreUpdate() {
-            const title = titleRef.current.value.trim();
-            const script = scriptRef.current.value.trim();
+            const title = titleRef.current.value;
+            const script = scriptRef.current.value;
             const now = new Date();
             const year = now.getFullYear();
             const month = (now.getMonth() + 1).toString().padStart(2, '0');
@@ -150,31 +126,15 @@ function VideoID() {
 
 
             firestore.collection(UID).doc("access_info").set({
-                running_count: curr_count.toString()
+                running_count: objectId.toString()
             }, { merge: true })
-            firestore.collection(UID).doc(curr_count).set({
+            firestore.collection(UID).doc(objectId).set({
                 title: title,
-                timestamp: currentDate,
-            })
+                script: script,
+                dateUpdated: currentDate,
+            }, {merge: true})
             console.log('Updated firestore!');
             setUploaded(true);
-        }
-
-
-        try {
-            setError('')
-            setLoading(true)
-            handleUpload()
-        } catch {
-            setError('Failed to upload the video')
-        }
-
-        try {
-            setError('')
-            setLoading(true)
-            handleScriptUpload()
-        } catch {
-            setError('Failed to upload the script')
         }
 
         try {
@@ -185,8 +145,13 @@ function VideoID() {
             setError('Failed to update the database')
         }
 
+        console.log(titleRef.current.value)
+        console.log(scriptRef.current.value)
+
         alert('Upload successful!')
         setLoading(false)
+
+        navigate('/videos')
 
     }
 
@@ -264,7 +229,7 @@ function VideoID() {
 
                 <Form.Group id="title">
                     <Form.Label>Title</Form.Label>
-                    <Form.Control type="text" ref={titleRef} required onChange={(e) => setTitle(e.target.value)} defaultValue={performance.title} />
+                    <Form.Control type="text" ref={titleRef} required defaultValue={performance.title} />
                 </Form.Group>
 
                 {/* Handle form submission */}
@@ -280,7 +245,7 @@ function VideoID() {
                     </div>
                     {/* Disable the submission button if already pressed and submission is in-progress */}
                     <section className="call-to-action">
-                        <a className='hero-button' onClick={handleSubmit} href='/video-id'>Save Performance</a>
+                        <a className='hero-button' onClick={handleSubmit}>Save Performance</a>
                     </section>
                 </Form>
 
