@@ -124,10 +124,6 @@ function VideoID() {
             const seconds = now.getSeconds().toString().padStart(2, '0');
             const currentDate = `${year}:${month}:${day}:${hours}:${minutes}:${seconds}`;
 
-
-            firestore.collection(UID).doc("access_info").set({
-                running_count: objectId.toString()
-            }, { merge: true })
             firestore.collection(UID).doc(objectId).set({
                 title: title,
                 script: script,
