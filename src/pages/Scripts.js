@@ -36,8 +36,8 @@ function ViewAllScripts() {
                         const title = data.title;
                         const script = data.script;
                         const timestamp = data.timestamp;
-                        const updatedDate = data.updatedDate;
-                        temp.push({ id: i, title: title, content: script, timestamp: timestamp, updatedDate: updatedDate })
+                        const dateUpdated = data.dateUpdated;
+                        temp.push({ id: i, title: title, content: script, timestamp: timestamp, dateUpdated: dateUpdated })
                     }
                 }));
             }

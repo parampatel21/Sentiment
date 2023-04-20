@@ -17,27 +17,82 @@ function ViewAllPerformances() {
 
     const handleOptionChange = (event) => {
         setSelectedOption(event.target.value);
+        let temp = performances;
+        if (event.target.value == 'id') {
+            temp.sort((a, b) => {
+                return a.id - b.id;
+            });
+            console.log('id')
+        } else if (event.target.value == 'title') {
+            temp.sort((a, b) => {
+                if (a.title < b.title) {
+                    return -1;
+                }
+                if (a.title > b.title) {
+                    return 1;
+                }
+                return 0;
+            });
+            console.log('title')
+        } else if (event.target.value == 'created') {
+            temp.sort((a, b) => {
+                if (a.timestamp > b.timestamp) {
+                    return -1;
+                }
+                if (a.timestamp < b.timestamp) {
+                    return 1;
+                }
+                return 0;
+            });
+            console.log('created')
+        } else if (event.target.value == 'updated') {
+            temp.sort((a, b) => {
+                if (a.dateUpdated > b.dateUpdated) {
+                    return -1;
+                }
+                if (a.dateUpdated < b.dateUpdated) {
+                    return 1;
+                }
+                return 0;
+            });
+            console.log('updated')
+        }
+        console.log(temp)
+        setPerformances(temp)
     };
 
     // TO GET COLLECTION REFERENCE
     const [performances, setPerformances] = useState([]);
 
     async function loadTitlesFromCollection(uid) {
-        let temp = []
-        const collectionRef = firestore.collection(uid);
-        let counter;
-        return collectionRef.get().then((querySnapshot) => {            
-          querySnapshot.forEach((doc) => {
-            counter = parseInt(doc.id);
-            const title = doc.data().title;
-            if (title == null) return temp
-            temp.push({ id: counter, title: title});
-          });
-          return temp;
-        }).catch((error) => {
-          console.error('Error getting documents: ', error);
-          return [];
-        });
+        const accessInfoRef = firestore.collection(uid).doc('access_info');
+        let runningCount = 0
+        return accessInfoRef.get()
+            .then((doc) => {
+            const data = doc.data();
+            runningCount = data.running_count;
+
+            let temp = [];
+            const promises = []
+
+            for (let i = 1; i <= runningCount; i++) {
+                const currentCountRef = firestore.collection(uid).doc(i.toString());
+                promises.push(currentCountRef.get().then((doc) => {
+                    if (doc.exists) {
+                        const data = doc.data();
+                        const title = data.title;
+                        const script = data.script;
+                        const timestamp = data.timestamp;
+                        const dateUpdated = data.dateUpdated;
+                        temp.push({ id: i, title: title, content: script, timestamp: timestamp, dateUpdated: dateUpdated })
+                    }
+                }));
+            }
+                return Promise.all(promises).then(() => {
+                    return temp
+                });
+            })
+            .catch((error) => console.error('Error getting access info: ', error));
     }
 
     useEffect(() => {
@@ -124,6 +179,15 @@ function ViewAllPerformances() {
           };
 
         const handleUpdate = (objectId) => {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = (now.getMonth() + 1).toString().padStart(2, '0');
+            const day = now.getDate().toString().padStart(2, '0');
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const seconds = now.getSeconds().toString().padStart(2, '0');
+            const currentDate = `${year}:${month}:${day}:${hours}:${minutes}:${seconds}`;
+
             const title = performances.find((element) => element.id === objectId).title;
             const collectionRef = firestore.collection(uid);
             const newTitle = prompt('Enter a new name:', title);
@@ -135,6 +199,10 @@ function ViewAllPerformances() {
                     doc.ref.update({ title: newTitle })
                         .then(() => {
                         console.log('Document successfully updated!');
+                        const doc = collectionRef.doc(objectId.toString()).set({
+                            dateUpdated: currentDate
+                        }, {merge: true});
+                        
                         window.location.reload();
                         })
                         .catch((error) => {
@@ -172,9 +240,10 @@ function ViewAllPerformances() {
                     <h1>Your Videos</h1>
                     <button onClick={() => testServer()}>test</button>
                     <select id="select-options" value={selectedOption} onChange={handleOptionChange} style={{ width: '100%' }}>
-                        <option value={'byTitle'}>Title</option>
-                        <option value={'byDateCreated'}>Date Created</option>
-                        <option value={'byDateUpdated'}>Date Updated</option>
+                        <option value={'id'}>Video ID</option>
+                        <option value={'title'}>Title</option>
+                        <option value={'created'}>Date Created</option>
+                        <option value={'updated'}>Date Updated</option>
                     </select>
                     <button className='sort-button'>Sort By</button>
                     &nbsp;
