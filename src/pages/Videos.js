@@ -232,6 +232,7 @@ function Videos() {
                 setGlobalTextAnalysis(data)
             })
             .catch(error => console.error(error))
+        
     }
 
     const testServerText = () => {
@@ -258,7 +259,6 @@ function Videos() {
             .then(response => response.text())
             .then(data => console.log(data))
             .catch(error => console.error(error))
-
     }
 
     console.log(globalTextAnalysis)
