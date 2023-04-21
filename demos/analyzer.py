@@ -45,7 +45,11 @@ def index():
     if selector == 1:
             index = int(index)
             try:
-                doc = NRCLex(getScript(uid, index))
+                index = int(index)
+                index_ref = db.collection(uid).document(str(index)).get()
+                index_data = index_ref.to_dict()
+                script = index_data["script"]
+                doc = NRCLex(script)
                 emotions = doc.raw_emotion_scores
                 
                 # create a dictionary to store the results
@@ -91,7 +95,11 @@ def index():
         index = int(index)
         try:
             # Load the video file
-            downloadFile(uid= uid, index=index, tag= tag)
+            # downloadFile(uid= uid, index=index, tag= tag)
+            index = int(index)
+            bucket = storage.bucket()
+            blob = bucket.blob(uid + "_" + str(index) + str(tag))
+            blob.download_to_filename(filename=uid + "_" + str(index) + str(tag) )
             video = Video(uid + "_" + str(index) + str(tag))
 
             # Initialize the FER detector
@@ -148,28 +156,6 @@ def index():
             return f"IOError: {e}"
         except:
             return f"Unkown Error: {e}"
-
-def getScript(uid, index):
-    try:
-        index = int(index)
-        index_ref = db.collection(uid).document(str(index)).get()
-        index_data = index_ref.to_dict()
-        script = index_data["script"]
-        return script
-    except KeyError:
-        print(f"Key 'script' not found in document {index} of collection {uid}.")
-        return False
-    except Exception as e:
-        print(f"Error getting script from Firestore: {e}")
-        return False
-
-def downloadFile(uid, index, tag):
-        index = int(index)
-        bucket = storage.bucket()
-        blob = bucket.blob(uid + "_" + str(index) + str(tag))
-        blob.download_to_filename(filename=uid + "_" + str(index) + str(tag) )
-        
-        return True
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=443, ssl_context=('cert.pem', 'key.pem'), debug=True)
