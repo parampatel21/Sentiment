@@ -11,12 +11,13 @@ import Navbar from './components/Navbar'
 
 function VideoID() {
     const [globalPerformance, setGlobalPerformance] = useContext(GlobalContext)[0];
+    const [globalTextAnalysis, setGlobalTextAnalysis] = useContext(GlobalContext)[2];
     const [performance, setPerformance] = useState(globalPerformance);
     const objectId = useParams().id;
     const scriptRef = useRef();
     const titleRef = useRef();
-    const textAnalysis = useState('Not yet set')
-    const { getuser, isAuthenticated} = useAuth();
+    const [textAnalysis, setTextAnalysis] = useState('Not yet set')
+    const { getuser, isAuthenticated } = useAuth();
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
@@ -32,7 +33,13 @@ function VideoID() {
 
     const [data, setData] = useState([]);
 
+    let str = '';
+    str = globalTextAnalysis;
+    const new_string = str.replace(/: /g, ":\n")
+    console.log(new_string)
+
     useEffect(() => {
+        setTextAnalysis(new_string);
         const docRef = firestore.collection(uid).doc(objectId.toString());
         docRef.get().then((doc) => {
             const data = doc.data();
@@ -40,24 +47,24 @@ function VideoID() {
             setData(data);
         });
     }, [uid, objectId]);
-    
+
     console.log(globalPerformance)
 
     const loadVideo = () => {
-        console.log(objectId)
-        console.log(performance)
+        // console.log(objectId)
+        // console.log(performance)
         const title = performance.title;
         const collectionRef = firestore.collection(uid);
         collectionRef.where("title", "==", title)
             .get()
             .then((querySnapshot) => {
                 querySnapshot.forEach((doc) => {
-                    console.log(doc.id);
+                    // console.log(doc.id);
                     const storageRef = storage.ref();
                     const fileRef = storageRef.child(uid + '_' + doc.id + '.avi');
                     fileRef.getDownloadURL().then(function (url) {
                         setVideoSrc(url);
-            
+
                     }).catch(function (error) {
                         // handle errors
                         console.log(error);
@@ -128,7 +135,7 @@ function VideoID() {
                 title: title,
                 script: script,
                 dateUpdated: currentDate,
-            }, {merge: true})
+            }, { merge: true })
             console.log('Updated firestore!');
             setUploaded(true);
         }
@@ -141,8 +148,8 @@ function VideoID() {
             setError('Failed to update the database')
         }
 
-        console.log(titleRef.current.value)
-        console.log(scriptRef.current.value)
+        // console.log(titleRef.current.value)
+        // console.log(scriptRef.current.value)
 
         alert('Upload successful!')
         setLoading(false)
@@ -171,7 +178,24 @@ function VideoID() {
         reader.readAsText(file);
     }
 
+    // function testServerText() {
+    //     fetch('https://134.209.213.235:443', {
+    //         method: 'POST',
+    //         body: `{"uid": ${uid}, "index": ${objectId}}`
+    //     })
+    //         .then(response => response.text())
+    //         .then(data => {
+    //             console.log(data)
+    //             setTextAnalysis(data)
+    //         })
+    //         .catch(error => console.error(error))
+
+    // } // PORT IS DIFFERENT IT SAYS 443
+
+    // testServerText()
+
     loadVideo();
+    console.log(globalTextAnalysis)
 
     return (
         <div className="container-fluid">
@@ -211,11 +235,11 @@ function VideoID() {
                     ) : (
                         <div>
                             <div>Video fetch failed</div>
-                            <br/>
+                            <br />
 
                             <div>
                                 Text Analysis:<br />
-                                    {textAnalysis}
+                                {new_string}
                             </div>
 
                         </div>
@@ -247,8 +271,7 @@ function VideoID() {
 
                 <section className='hero'>
                     <div>
-                        <p>Text Analysis:<br/>
-                            {textAnalysis}</p>
+                        <p style={{ whiteSpace: 'pre-wrap' }}>{new_string}</p>
                     </div>
                 </section>
 

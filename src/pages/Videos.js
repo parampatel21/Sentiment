@@ -1,17 +1,18 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { useNavigate, Link } from 'react-router-dom'
-import {storage, firestore} from '../firebase'
+import { storage, firestore } from '../firebase'
 import Navbar from './components/Navbar';
 import { GlobalContext } from './components/GlobalState';
 import '../styles/HomePage.css'
 
 function Videos() {
-    const { getuser} = useAuth()
+    const { getuser } = useAuth()
     const uid = getuser()
     console.log(uid)
     const [selectedOption, setSelectedOption] = useState('option1');
     const [globalPerformance, setGlobalPerformance] = useContext(GlobalContext)[0];
+    const [globalTextAnalysis, setGlobalTextAnalysis] = useContext(GlobalContext)[2];
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
@@ -70,25 +71,25 @@ function Videos() {
         let runningCount = 0
         return accessInfoRef.get()
             .then((doc) => {
-            const data = doc.data();
-            runningCount = data.running_count;
+                const data = doc.data();
+                runningCount = data.running_count;
 
-            let temp = [];
-            const promises = []
+                let temp = [];
+                const promises = []
 
-            for (let i = 1; i <= runningCount; i++) {
-                const currentCountRef = firestore.collection(uid).doc(i.toString());
-                promises.push(currentCountRef.get().then((doc) => {
-                    if (doc.exists) {
-                        const data = doc.data();
-                        const title = data.title;
-                        const script = data.script;
-                        const timestamp = data.timestamp;
-                        const dateUpdated = data.dateUpdated;
-                        temp.push({ id: i, title: title, content: script, timestamp: timestamp, dateUpdated: dateUpdated })
-                    }
-                }));
-            }
+                for (let i = 1; i <= runningCount; i++) {
+                    const currentCountRef = firestore.collection(uid).doc(i.toString());
+                    promises.push(currentCountRef.get().then((doc) => {
+                        if (doc.exists) {
+                            const data = doc.data();
+                            const title = data.title;
+                            const script = data.script;
+                            const timestamp = data.timestamp;
+                            const dateUpdated = data.dateUpdated;
+                            temp.push({ id: i, title: title, content: script, timestamp: timestamp, dateUpdated: dateUpdated })
+                        }
+                    }));
+                }
                 return Promise.all(promises).then(() => {
                     return temp
                 });
@@ -97,9 +98,9 @@ function Videos() {
     }
 
     useEffect(() => {
-      loadTitlesFromCollection(uid)
-        .then(titles => setPerformances(titles))
-        .catch(error => console.error('Error getting performances: ', error));
+        loadTitlesFromCollection(uid)
+            .then(titles => setPerformances(titles))
+            .catch(error => console.error('Error getting performances: ', error));
     }, [uid], [performances]);
     // END OF COLLECTION REFERENCE
 
@@ -109,127 +110,142 @@ function Videos() {
             const title = performances.find((element) => element.id === objectId).title;
             const collectionRef = firestore.collection(uid);
             collectionRef.where("title", "==", title)
-            .get()
-            .then((querySnapshot) => {
-                querySnapshot.forEach((doc) => {
-                    doc.ref.delete().then(() => {
-                    console.log("Document successfully deleted!");
-
-                    const accessInfoRef = firestore.collection(uid).doc('access_info');
-                    accessInfoRef.get().then((doc) => {
-                        const data = doc.data();
-                        console.log(data)
-
-                        const storageRef = storage.ref();
-                        const fileRef = storageRef.child(uid + '_' + objectId + '.avi');
-                        console.log(uid + '_' + objectId + '.avi')
-                        fileRef.delete().then(() => {
-                            console.log(`Successfully deleted`);
-                        })
-
-                    })
-
-                    window.location.reload();
-                    }).catch((error) => {
-                    console.error("Error removing document: ", error);
-                    });
-                });
-                }).catch((error) => {
-                    console.error("Error querying documents: ", error);
-                });
-            }
-        };
-    
-        const handleDownload = (objectId) => {
-            const title = performances.find((element) => element.id === objectId).title;
-            const collectionRef = firestore.collection(uid);
-            collectionRef.where("title", "==", title)
-              .get()
-              .then((querySnapshot) => {
-                querySnapshot.forEach((doc) => {
-                  console.log(doc.id);
-                  const storageRef = storage.ref();
-                  const fileRef = storageRef.child(uid + '_' + doc.id + '.avi');
-                  fileRef.getDownloadURL().then(function(url) {
-                    // create a new page to view/download the file
-                    const newTab = window.open();
-                    const video = document.createElement('video');
-                    video.src = url;
-                    video.controls = true;
-                    video.style.width = "100%";
-                    video.style.height = "100%";
-                    newTab.document.body.style.margin = "0px";
-                    newTab.document.body.appendChild(video);
-                    const text = document.createTextNode("To download, click the three dots in the video player.");
-                    const p = document.createElement('p');
-                    p.style.position = "absolute";
-                    p.style.top = "10px";
-                    p.style.left = "10px";
-                    p.style.color = "white";
-                    p.appendChild(text);
-                    newTab.document.body.appendChild(p);
-                  }).catch(function(error) {
-                    // handle errors
-                    console.log(error);
-                  });
-                });
-              })
-              .catch((error) => {
-                console.log("Error getting documents: ", error);
-              });
-          };
-
-        const handleUpdate = (objectId) => {
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = (now.getMonth() + 1).toString().padStart(2, '0');
-            const day = now.getDate().toString().padStart(2, '0');
-            const hours = now.getHours().toString().padStart(2, '0');
-            const minutes = now.getMinutes().toString().padStart(2, '0');
-            const seconds = now.getSeconds().toString().padStart(2, '0');
-            const currentDate = `${year}:${month}:${day}:${hours}:${minutes}:${seconds}`;
-
-            const title = performances.find((element) => element.id === objectId).title;
-            const collectionRef = firestore.collection(uid);
-            const newTitle = prompt('Enter a new name:', title);
-            if (newTitle) {
-                collectionRef.where("title", "==", title)
                 .get()
                 .then((querySnapshot) => {
                     querySnapshot.forEach((doc) => {
-                    doc.ref.update({ title: newTitle })
-                        .then(() => {
-                        console.log('Document successfully updated!');
-                        const doc = collectionRef.doc(objectId.toString()).set({
-                            dateUpdated: currentDate
-                        }, {merge: true});
-                        
-                        window.location.reload();
-                        })
-                        .catch((error) => {
-                        console.error('Error updating document: ', error);
+                        doc.ref.delete().then(() => {
+                            console.log("Document successfully deleted!");
+
+                            const accessInfoRef = firestore.collection(uid).doc('access_info');
+                            accessInfoRef.get().then((doc) => {
+                                const data = doc.data();
+                                console.log(data)
+
+                                const storageRef = storage.ref();
+                                const fileRef = storageRef.child(uid + '_' + objectId + '.avi');
+                                console.log(uid + '_' + objectId + '.avi')
+                                fileRef.delete().then(() => {
+                                    console.log(`Successfully deleted`);
+                                })
+
+                            })
+
+                            window.location.reload();
+                        }).catch((error) => {
+                            console.error("Error removing document: ", error);
                         });
+                    });
+                }).catch((error) => {
+                    console.error("Error querying documents: ", error);
+                });
+        }
+    };
+
+    const handleDownload = (objectId) => {
+        const title = performances.find((element) => element.id === objectId).title;
+        const collectionRef = firestore.collection(uid);
+        collectionRef.where("title", "==", title)
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    console.log(doc.id);
+                    const storageRef = storage.ref();
+                    const fileRef = storageRef.child(uid + '_' + doc.id + '.avi');
+                    fileRef.getDownloadURL().then(function (url) {
+                        // create a new page to view/download the file
+                        const newTab = window.open();
+                        const video = document.createElement('video');
+                        video.src = url;
+                        video.controls = true;
+                        video.style.width = "100%";
+                        video.style.height = "100%";
+                        newTab.document.body.style.margin = "0px";
+                        newTab.document.body.appendChild(video);
+                        const text = document.createTextNode("To download, click the three dots in the video player.");
+                        const p = document.createElement('p');
+                        p.style.position = "absolute";
+                        p.style.top = "10px";
+                        p.style.left = "10px";
+                        p.style.color = "white";
+                        p.appendChild(text);
+                        newTab.document.body.appendChild(p);
+                    }).catch(function (error) {
+                        // handle errors
+                        console.log(error);
+                    });
+                });
+            })
+            .catch((error) => {
+                console.log("Error getting documents: ", error);
+            });
+    };
+
+    const handleUpdate = (objectId) => {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = (now.getMonth() + 1).toString().padStart(2, '0');
+        const day = now.getDate().toString().padStart(2, '0');
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const seconds = now.getSeconds().toString().padStart(2, '0');
+        const currentDate = `${year}:${month}:${day}:${hours}:${minutes}:${seconds}`;
+
+        const title = performances.find((element) => element.id === objectId).title;
+        const collectionRef = firestore.collection(uid);
+        const newTitle = prompt('Enter a new name:', title);
+        if (newTitle) {
+            collectionRef.where("title", "==", title)
+                .get()
+                .then((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                        doc.ref.update({ title: newTitle })
+                            .then(() => {
+                                console.log('Document successfully updated!');
+                                const doc = collectionRef.doc(objectId.toString()).set({
+                                    dateUpdated: currentDate
+                                }, { merge: true });
+
+                                window.location.reload();
+                            })
+                            .catch((error) => {
+                                console.error('Error updating document: ', error);
+                            });
                     });
                 })
                 .catch((error) => {
                     console.error('Error querying documents: ', error);
                 });
-            }
-        };
-
-        const handleSelect = (objectId) => {
-            const temp = performances.find((element) => element.id === objectId);
-            setGlobalPerformance(temp);
         }
+    };
 
-    const testServerText = () => {
+    const handleSelect = (objectId) => {
+        const temp = performances.find((element) => element.id === objectId);
+        setGlobalPerformance(temp);
+
         fetch('https://134.209.213.235:443', {
             method: 'POST',
-            body:  '{"uid": "XrD8vDF13QQgv6HLEZz9brdo54N2", "index":"1"}'
+            body: `{"uid": "${uid}", "index":"${objectId}"}`
         })
-        .then(response => response.text())
-        .then(data => console.log(data))
-        .catch(error => console.error(error))
+            .then(response => response.text())
+            .then(data => {
+                console.log(data)
+                setGlobalTextAnalysis(data)
+            })
+            .catch(error => console.error(error))
+    }
+
+    const testServerText = () => {
+        let objectId = 5
+        fetch('https://134.209.213.235:443', {
+            method: 'POST',
+            body: `{"uid": "${uid}", "index":"${objectId}"}`
+        })
+            .then(response => response.text())
+            .then(data => {
+                console.log(data)
+                setGlobalTextAnalysis(data)
+            })
+            .catch(error => console.error(error))
 
     } // PORT IS DIFFERENT IT SAYS 443
 
@@ -237,13 +253,16 @@ function Videos() {
     const testServerVideo = () => {
         fetch('https://134.209.213.235:8443', {
             method: 'POST',
-            body:  '{"uid": "XrD8vDF13QQgv6HLEZz9brdo54N2", "index":"1"}'
+            body: '{"uid": "XrD8vDF13QQgv6HLEZz9brdo54N2", "index":"1"}'
         })
-        .then(response => response.text())
-        .then(data => console.log(data))
-        .catch(error => console.error(error))
+            .then(response => response.text())
+            .then(data => console.log(data))
+            .catch(error => console.error(error))
 
     }
+
+    console.log(globalTextAnalysis)
+
 
     return (
         <div className="container">
@@ -267,7 +286,7 @@ function Videos() {
                             &nbsp;
                             <button style={{ display: 'inline-block' }} className='hero-button' onClick={() => handleUpdate(object.id)}>Update</button>
                             &nbsp;
-                            <button style={{ display: 'inline-block' }} className='hero-button' onClick={() =>  handleDownload(object.id)}>Download</button>
+                            <button style={{ display: 'inline-block' }} className='hero-button' onClick={() => handleDownload(object.id)}>Download</button>
                             &nbsp;
                         </div>
                     ))}
