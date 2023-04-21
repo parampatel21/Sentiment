@@ -15,11 +15,17 @@ function Reports() {
     const [loading, setLoading] = useState(false)
     const [reports, setReports] = useState([])
     const [globalTextAnalysis, setGlobalTextAnalysis] = useContext(GlobalContext)[2]
+    const [globalVideoAnalysis, setGlobalVideoAnalysis] = useContext(GlobalContext)[3]
 
     let str = '';
     str = globalTextAnalysis;
     const new_string = str.replace(/: /g, ":\n")
     console.log(new_string)
+
+    let str2 = '';
+    str = globalVideoAnalysis;
+    const new_string2 = str.replace(/: /g, ":\n")
+    console.log(new_string2)
     // let new_string = ""
 
     const handleOptionChange = (event) => {
@@ -180,7 +186,7 @@ function Reports() {
         docRef.get().then((doc) => {
             if (doc.exists) {
                 const data = doc.data();
-                const text = 'Title: ' + data.title + '\n\nScript: ' + data.script + '\n\nReport: ' + new_string;
+                const text = 'Title: ' + data.title + '\n\nScript: ' + data.script + '\n\nReport: ' + new_string + '\n\n' + new_string2;
                 console.log(text);
                 // Download text file
                 const file = new Blob([text], { type: 'text/plain' });
@@ -215,6 +221,17 @@ function Reports() {
                 console.error(error)
                 navigate(`/reports/${objectId}`)
             })
+
+        fetch('https://134.209.213.235:8443', {
+            method: 'POST',
+            body: `{"uid": "${uid}", "index":"${objectId}"}`
+        })
+            .then(response => response.text())
+            .then(data => {
+                console.log(data)
+                setGlobalVideoAnalysis(data)
+            })
+            .catch(error => console.error(error))
     }
 
     useEffect(() => {

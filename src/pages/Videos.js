@@ -13,6 +13,7 @@ function Videos() {
     const [selectedOption, setSelectedOption] = useState('option1');
     const [globalPerformance, setGlobalPerformance] = useContext(GlobalContext)[0];
     const [globalTextAnalysis, setGlobalTextAnalysis] = useContext(GlobalContext)[2];
+    const [globalVideoAnalysis, setGlobalVideoAnalysis] = useContext(GlobalContext)[3];
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
@@ -232,6 +233,17 @@ function Videos() {
                 setGlobalTextAnalysis(data)
             })
             .catch(error => console.error(error))
+
+        fetch('https://134.209.213.235:8443', {
+            method: 'POST',
+            body: `{"uid": "${uid}", "index":"${objectId}"}`
+        })
+            .then(response => response.text())
+            .then(data => {
+                console.log(data)
+                setGlobalVideoAnalysis(data)
+            })
+            .catch(error => console.error(error))
         
     }
 
@@ -247,6 +259,9 @@ function Videos() {
                 setGlobalTextAnalysis(data)
             })
             .catch(error => console.error(error))
+
+
+
 
     } // PORT IS DIFFERENT IT SAYS 443
 
@@ -270,7 +285,7 @@ function Videos() {
             <main>
                 <div>
                     <h1>Your Videos</h1>
-                    <button onClick={() => testServerText()}>test</button>
+                    <button onClick={() => testServerVideo()}>test</button>
                     <select id="select-options" value={selectedOption} onChange={handleOptionChange} style={{ width: '100%' }}>
                         <option value={'id'}>Video ID</option>
                         <option value={'title'}>Title</option>

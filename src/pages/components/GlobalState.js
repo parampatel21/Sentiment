@@ -6,6 +6,7 @@ export const GlobalProvider = ({ children }) => {
     const [globalPerformance, setGlobalPerformance] = useState({});
     const [globalUser, setGlobalUser] = useState(null);
     const [globalTextAnalysis, setGlobalTextAnalysis] = useState('');
+    const [globalVideoAnalysis, setGlobalVideoAnalysis] = useState('');
 
     useEffect(() => {
         // Retrieve globalUser data from local storage, if it exists
@@ -46,10 +47,24 @@ export const GlobalProvider = ({ children }) => {
         localStorage.setItem('globalTextAnalysis', JSON.stringify(globalTextAnalysis));
     }, [globalTextAnalysis]);
 
+    useEffect(() => {
+        // Retrieve globalPerformances data from local storage, if it exists
+        const storedVideo = localStorage.getItem('globalVideoAnalysis');
+        if (storedVideo) {
+            setGlobalVideoAnalysis(JSON.parse(storedVideo));
+        }
+    }, []);
+
+    useEffect(() => {
+        // Store setGlobalPerformances data in local storage whenever it changes
+        localStorage.setItem('globalVideoAnalysis', JSON.stringify(globalVideoAnalysis));
+    }, [globalVideoAnalysis]);
+
     return (
         // When calling GlobalContext, [0]=performance, [1]=user, [2]=textAnalysis
         <GlobalContext.Provider value={[[globalPerformance, setGlobalPerformance],
-        [globalUser, setGlobalUser], [globalTextAnalysis, setGlobalTextAnalysis]]}>
+        [globalUser, setGlobalUser], [globalTextAnalysis, setGlobalTextAnalysis],
+        [globalVideoAnalysis, setGlobalVideoAnalysis]]}>
             {children}
         </GlobalContext.Provider>
     );

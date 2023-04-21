@@ -12,6 +12,7 @@ import Navbar from './components/Navbar'
 function VideoID() {
     const [globalPerformance, setGlobalPerformance] = useContext(GlobalContext)[0];
     const [globalTextAnalysis, setGlobalTextAnalysis] = useContext(GlobalContext)[2];
+    const [globalVideoAnalysis, setGlobalVideoAnalysis] = useContext(GlobalContext)[3];
     const [performance, setPerformance] = useState(globalPerformance);
     const objectId = useParams().id;
     const scriptRef = useRef();
@@ -37,6 +38,11 @@ function VideoID() {
     str = globalTextAnalysis;
     const new_string = str.replace(/: /g, ":\n")
     console.log(new_string)
+
+    let str2 = '';
+    str = globalVideoAnalysis;
+    const new_string2 = str.replace(/: /g, ":\n")
+    console.log(new_string2)
     // let new_string = ""
 
     useEffect(() => {
@@ -273,6 +279,7 @@ function VideoID() {
                 <section className='hero'>
                     <div>
                         <p style={{ whiteSpace: 'pre-wrap' }}>{new_string}</p>
+                        <p style={{ whiteSpace: 'pre-wrap' }}>{new_string2}</p>
                     </div>
                 </section>
 

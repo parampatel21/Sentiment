@@ -24,11 +24,17 @@ function ReportID() {
     const [data, setData] = useState([]);
     const [textAnalysis, setTextAnalysis] = useState('Not yet set')
     const [globalTextAnalysis, setGlobalTextAnalysis] = useContext(GlobalContext)[2];
+    const [globalVideoAnalysis, setGlobalVideoAnalysis] = useContext(GlobalContext)[3];
 
     let str = '';
     str = globalTextAnalysis;
     const new_string = str.replace(/: /g, ":\n")
     console.log(new_string)
+
+    let str2 = '';
+    str = globalVideoAnalysis;
+    const new_string2 = str.replace(/: /g, ":\n")
+    console.log(new_string2)
 
     useEffect(() => {
         setTextAnalysis(new_string);
@@ -129,6 +135,7 @@ function ReportID() {
                     <h4>Script: {data.script}</h4>
                     <br/>
                     <h4 style={{ whiteSpace: 'pre-wrap' }}>Report: {new_string}</h4>
+                    <h4 style={{ whiteSpace: 'pre-wrap' }}>Report: {new_string2}</h4>
 
 
                 </div>
