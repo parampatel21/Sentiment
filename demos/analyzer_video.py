@@ -37,6 +37,7 @@ def index():
     index = data_dict['index']
     print(index)
     index = int(index)
+    # return jsonify(analyzeVideo(30, uid, index, '.avi'))
     depth = 30
     tag = 'avi'
     index = int(index)
@@ -96,6 +97,6 @@ def index():
         return file3.read()
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=443, ssl_context=('cert.pem', 'key.pem'), debug=True)
+    app.run(host='0.0.0.0', port=444, ssl_context=('cert.pem', 'key.pem'), debug=True)
 
 

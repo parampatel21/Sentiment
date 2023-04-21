@@ -32,7 +32,6 @@ def index():
         firebase_admin.initialize_app(cred,{'storageBucket' : 'sentiment-6696b.appspot.com'})
 
     db = firestore.client()
-    data_dict['selector']
     uid = data_dict['uid']
     index = data_dict['index']
     print(index)

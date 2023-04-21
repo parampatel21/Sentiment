@@ -222,10 +222,22 @@ function Videos() {
             setGlobalPerformance(temp);
         }
 
-    const testServer = () => {
+    const testServerText = () => {
         fetch('https://134.209.213.235:443', {
             method: 'POST',
-            body:  '{"selector": "1", "uid": "XrD8vDF13QQgv6HLEZz9brdo54N2", "index":"1"}'
+            body:  '{"uid": "XrD8vDF13QQgv6HLEZz9brdo54N2", "index":"1"}'
+        })
+        .then(response => response.text())
+        .then(data => console.log(data))
+        .catch(error => console.error(error))
+
+    } // PORT IS DIFFERENT IT SAYS 443
+
+
+    const testServerVideo = () => {
+        fetch('https://134.209.213.235:444', {
+            method: 'POST',
+            body:  '{"uid": "XrD8vDF13QQgv6HLEZz9brdo54N2", "index":"1"}'
         })
         .then(response => response.text())
         .then(data => console.log(data))
@@ -239,7 +251,7 @@ function Videos() {
             <main>
                 <div>
                     <h1>Your Videos</h1>
-                    <button onClick={() => testServer()}>test</button>
+                    <button onClick={() => testServerText()}>test</button>
                     <select id="select-options" value={selectedOption} onChange={handleOptionChange} style={{ width: '100%' }}>
                         <option value={'id'}>Video ID</option>
                         <option value={'title'}>Title</option>
