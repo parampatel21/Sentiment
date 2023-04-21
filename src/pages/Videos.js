@@ -225,7 +225,7 @@ function Videos() {
     const testServer = () => {
         fetch('https://134.209.213.235:443', {
             method: 'POST',
-            body:  '{"selector": "getRunningCount", "uid": "OU38vh6cSqTeku8yqgeWAhV81t62"}'
+            body:  '{"selector": "1", "uid": "XrD8vDF13QQgv6HLEZz9brdo54N2"}'
         })
         .then(response => response.text())
         .then(data => console.log(data))

@@ -13,6 +13,7 @@ import time
 import pandas as pd
 import numpy as np
 import re
+import json
 
 app = Flask(__name__)
 CORS(app)
@@ -26,9 +27,10 @@ def index():
     # Get path to serviceAccKey
     cwd = os.path.dirname(os.path.realpath("serviceAccountKey.json"))
 
-    #Conect to firestore DB via seviceAccKey
-    cred = credentials.Certificate(cwd + "/serviceAccountKey.json")
-    firebase_admin.initialize_app(cred,{'storageBucket' : 'sentiment-6696b.appspot.com'})
+    if not firebase_admin._apps:
+        cred = credentials.Certificate(cwd + "/serviceAccountKey.json")
+        firebase_admin.initialize_app(cred,{'storageBucket' : 'sentiment-6696b.appspot.com'})
+
     db = firestore.client()
 
     #Get the timezone object for New York
@@ -169,6 +171,6 @@ def analyzeVideo(depth, uid, index, tag):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=443, ssl_context=('cert.pem', 'key.pem', debug=True))
+    app.run(host='0.0.0.0', port=443, ssl_context=('cert.pem', 'key.pem'), debug=True)
 
 
