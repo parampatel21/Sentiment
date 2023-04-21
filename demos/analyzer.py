@@ -166,3 +166,9 @@ def analyzeVideo(depth, uid, index, tag):
         return f"IOError: {e}"
     except:
         return f"Unkown Error: {e}"
+
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=443, ssl_context=('cert.pem', 'key.pem', debug=True))
+
+
