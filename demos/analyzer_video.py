@@ -32,7 +32,6 @@ def index():
         firebase_admin.initialize_app(cred,{'storageBucket' : 'sentiment-6696b.appspot.com'})
 
     db = firestore.client()
-    data_dict['selector']
     uid = data_dict['uid']
     index = data_dict['index']
     print(index)
@@ -42,8 +41,6 @@ def index():
     tag = 'avi'
     index = int(index)
     # Load the video file
-    # downloadFile(uid= uid, index=index, tag= tag)
-    index = int(index)
     bucket = storage.bucket()
     blob = bucket.blob(uid + "_" + str(index) + str(tag))
     blob.download_to_filename(filename=uid + "_" + str(index) + str(tag) )
@@ -97,6 +94,6 @@ def index():
         return file3.read()
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=444, ssl_context=('cert.pem', 'key.pem'), debug=True)
+    app.run(host='0.0.0.0', port=8443, ssl_context=('cert.pem', 'key.pem'), debug=True)
 
 

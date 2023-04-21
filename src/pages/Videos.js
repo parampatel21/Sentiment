@@ -235,7 +235,7 @@ function Videos() {
 
 
     const testServerVideo = () => {
-        fetch('https://134.209.213.235:444', {
+        fetch('https://134.209.213.235:8443', {
             method: 'POST',
             body:  '{"uid": "XrD8vDF13QQgv6HLEZz9brdo54N2", "index":"1"}'
         })
@@ -251,7 +251,7 @@ function Videos() {
             <main>
                 <div>
                     <h1>Your Videos</h1>
-                    <button onClick={() => testServerText()}>test</button>
+                    <button onClick={() => testServerVideo()}>test</button>
                     <select id="select-options" value={selectedOption} onChange={handleOptionChange} style={{ width: '100%' }}>
                         <option value={'id'}>Video ID</option>
                         <option value={'title'}>Title</option>
