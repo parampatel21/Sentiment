@@ -38,7 +38,7 @@ def index():
     index = int(index)
     # return jsonify(analyzeVideo(30, uid, index, '.avi'))
     depth = 30
-    tag = 'avi'
+    tag = '.avi'
     index = int(index)
     # Load the video file
     bucket = storage.bucket()
