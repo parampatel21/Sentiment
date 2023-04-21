@@ -59,6 +59,7 @@ def index():
     string = '\nText Analysis - Emotion\n----------------------------\nRaw Emotion Scores:\n'
     for emotion, score in results['raw_emotion_scores'].items():
         string = string + f'{emotion}: {score}\n'
+    #improvement
     string += '\nAreas of possible improvment:\n\tYour lowest emotion scores are as follows. \n\tConsider adjusting your performance to improve on these aspects:\n\n'
     for emotion, score in results['lowest_emotions'].items():
         string = string + f'{emotion}: {score}\n'
