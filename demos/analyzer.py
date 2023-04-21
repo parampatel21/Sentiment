@@ -1,5 +1,7 @@
 import os
 import firebase_admin
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 import pytz
 from nrclex import NRCLex
 import cv2
@@ -12,18 +14,35 @@ import pandas as pd
 import numpy as np
 import re
 
-# Get path to serviceAccKey
-cwd = os.path.dirname(os.path.realpath("serviceAccountKey.json"))
+app = Flask(__name__)
+CORS(app)
 
-#Conect to firestore DB via seviceAccKey
-cred = credentials.Certificate(cwd + "/serviceAccountKey.json")
-firebase_admin.initialize_app(cred,{'storageBucket' : 'sentiment-6696b.appspot.com'})
-db = firestore.client()
+@app.route('/', methods=['POST'])
+def index():
+    data = request.get_data()
+    data_dict = json.loads(data)
+    print(data_dict)
 
-#Get the timezone object for New York
-tz_NY = pytz.timezone('America/New_York') 
-# Get the current time in New York
-datetime_NY = datetime.now(tz_NY)
+    # Get path to serviceAccKey
+    cwd = os.path.dirname(os.path.realpath("serviceAccountKey.json"))
+
+    #Conect to firestore DB via seviceAccKey
+    cred = credentials.Certificate(cwd + "/serviceAccountKey.json")
+    firebase_admin.initialize_app(cred,{'storageBucket' : 'sentiment-6696b.appspot.com'})
+    db = firestore.client()
+
+    #Get the timezone object for New York
+    tz_NY = pytz.timezone('America/New_York') 
+    # Get the current time in New York
+    datetime_NY = datetime.now(tz_NY)
+
+    selector = data_dict['selector']
+    uid = data_dict['uid']
+    index = data_dict['uid']
+    if selector == 1:
+        return analyze_text(uid, index)
+    elif selector == 2:
+        return analyzeVideo(30, uid, index, '.avi')
 
 def getScript(uid, index):
     try:
