@@ -64,7 +64,7 @@ def index():
                 file2.write(str(row) + "\n")
                 
         file2.write("\n")
-        file2.write("Areas of possible improvment:\n")
+        file2.write("Areas of possible improvement:\n")
         file2.write("""\tFinal row is average value of final presentation; 
     Adjust according to desired emotion to be displayed during presentation\n""")
         file2.write("\n")
