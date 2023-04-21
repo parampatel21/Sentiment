@@ -82,9 +82,11 @@ def index():
         col_averages = df[cols_to_average].mean(skipna=True)
 
         # Insert new row for column averages with NULL value for 'box0'
-        df = df.append(pd.Series([np.nan] * len(df.columns), index=df.columns), ignore_index=True)
-        df.iloc[-1, df.columns.get_loc('box0')] = 'NULL'
-        df.iloc[-1, df.columns != 'box0'] = col_averages.values
+        new_row = pd.Series([np.nan] * len(df.columns), index=df.columns)
+        new_row['box0'] = 'NULL'
+        new_row[new_row.index != 'box0'] = col_averages.values
+        df = df.append(new_row, ignore_index=True)
+
 
         # Display the modified dataframe
         file2.write(str(df) + "\n")
