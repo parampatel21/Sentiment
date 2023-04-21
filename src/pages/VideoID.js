@@ -37,7 +37,6 @@ function VideoID() {
     str = globalTextAnalysis;
     const new_string = str.replace(/: /g, ":\n")
     console.log(new_string)
-    // let new_string = ""
 
     useEffect(() => {
         setTextAnalysis(new_string);

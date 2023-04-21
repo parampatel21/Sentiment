@@ -270,7 +270,7 @@ function Videos() {
             <main>
                 <div>
                     <h1>Your Videos</h1>
-                    <button onClick={() => testServerText()}>test</button>
+                    <button onClick={() => testServerVideo()}>test</button>
                     <select id="select-options" value={selectedOption} onChange={handleOptionChange} style={{ width: '100%' }}>
                         <option value={'id'}>Video ID</option>
                         <option value={'title'}>Title</option>

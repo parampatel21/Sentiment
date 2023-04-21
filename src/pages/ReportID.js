@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useContext } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { Form } from 'react-bootstrap'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
@@ -22,16 +22,8 @@ function ReportID() {
     const [title, setTitle] = useState('');
     const objectId = useParams().id;
     const [data, setData] = useState([]);
-    const [textAnalysis, setTextAnalysis] = useState('Not yet set')
-    const [globalTextAnalysis, setGlobalTextAnalysis] = useContext(GlobalContext)[2];
-
-    let str = '';
-    str = globalTextAnalysis;
-    const new_string = str.replace(/: /g, ":\n")
-    console.log(new_string)
 
     useEffect(() => {
-        setTextAnalysis(new_string);
         const docRef = firestore.collection(uid).doc(objectId.toString());
         docRef.get().then((doc) => {
             const data = doc.data();
@@ -118,20 +110,34 @@ function ReportID() {
 
             <main>
                 <section className="hero">
-                    <h1>Here's your Report</h1>
-                    <p>Welcome to your report page! Here, you can view, edit, and manage your report.</p>
+                    <h1>Here's your Script</h1>
+                    <p>Welcome to your script editor! Here, you can view, edit, and manage all of your scripts in one place. Whether you're a seasoned writer or just starting out, this editor is designed to make your writing process as smooth and streamlined as possible.</p>
+                    <p>We've designed this editor to be as intuitive as possible, but if you have any questions or run into any issues, our support team is always here to help. Just click the "About" button in the navbar above to get in touch.</p>
+                    <p>Happy writing!</p>
                 </section>
 
-                <div>
+                <Form.Group id="title">
+                    <Form.Label>Title</Form.Label>
+                    <Form.Control type="text" ref={titleRef} defaultValue={data.title} required />
+                </Form.Group>
 
-                    <h2>Title: {data.title}</h2>
-                    <br/>
-                    <h4>Script: {data.script}</h4>
-                    <br/>
-                    <h4 style={{ whiteSpace: 'pre-wrap' }}>Report: {new_string}</h4>
+                {/* Handle form submission */}
+                <Form onSubmit={handleSubmit}>
+                    {/* Form components (Label & Text Box) for Video Title */}
+                    <Form.Group id="title">
+                        <Form.Label>Type up your script here</Form.Label>
+                        <Form.Control style={{ width: '100%', height: '100%' }} defaultValue={data.script} type="text" as='textarea' ref={scriptRef} />
+                    </Form.Group>
+                    <div style={{ marginTop: '5px' }}>
+                        <Form.Label>Upload script here:&nbsp;</Form.Label>
+                        <input type="file" onChange={handleFileSelect} />
+                    </div>
+                    {/* Disable the submission button if already pressed and submission is in-progress */}
+                    <section className="call-to-action">
+                        <a className='hero-button' onClick={handleSubmit} href='/performance-id'>Save Script</a>
+                    </section>
+                </Form>
 
-
-                </div>
             </main>
             <footer>
                 <p>&copy; 2023 Sentiment. All rights reserved.</p>
