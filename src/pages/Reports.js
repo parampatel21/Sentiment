@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { useAuth } from '../contexts/AuthContext'
-import { useNavigate } from 'react-router-dom'
+import { GlobalContext } from './components/GlobalState';
+import { useNavigate, Link } from 'react-router-dom'
 import { firestore, storage } from '../firebase';
 import Navbar from './components/Navbar';
 import '../styles/HomePage.css'
@@ -13,6 +14,13 @@ function Reports() {
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const [reports, setReports] = useState([])
+    const [globalTextAnalysis, setGlobalTextAnalysis] = useContext(GlobalContext)[2]
+
+    let str = '';
+    str = globalTextAnalysis;
+    const new_string = str.replace(/: /g, ":\n")
+    console.log(new_string)
+    // let new_string = ""
 
     const handleOptionChange = (event) => {
         setSelectedOption(event.target.value);
@@ -172,7 +180,7 @@ function Reports() {
         docRef.get().then((doc) => {
             if (doc.exists) {
                 const data = doc.data();
-                const text = 'Title: ' + data.title + '\nScript: ' + data.script;
+                const text = 'Title: ' + data.title + '\n\nScript: ' + data.script + '\n\nReport: ' + new_string;
                 console.log(text);
                 // Download text file
                 const file = new Blob([text], { type: 'text/plain' });
@@ -190,6 +198,23 @@ function Reports() {
         }).catch((error) => {
             console.log("Error getting document:", error);
         });
+    }
+
+    const handleSelect = (objectId) => {
+
+        fetch('https://134.209.213.235:443', {
+            method: 'POST',
+            body: `{"uid": "${uid}", "index":"${objectId}"}`
+        })
+            .then(response => response.text())
+            .then(data => {
+                console.log(data)
+                setGlobalTextAnalysis(data)
+            })
+            .catch(error => {
+                console.error(error)
+                navigate(`/reports/${objectId}`)
+            })
     }
 
     useEffect(() => {
@@ -217,7 +242,7 @@ function Reports() {
                     &nbsp;
                     {reports.map(object => (
                         <div key={object.id} style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                            <a href={`/reports/${object.id}`} style={{ width: '100%' }} className='list-item'>{object.title}</a>
+                            <Link to={`/reports/${object.id}`} style={{ width: '100%' }} onClick={() => handleSelect(object.id)} className='list-item'>{object.title}</Link>
                             <button style={{ display: 'inline-block' }} className='hero-button' onClick={() => handleDelete(object.id)}>Delete</button>
                             &nbsp;
                             <button style={{ display: 'inline-block' }} className='hero-button' onClick={() => handleUpdate(object.id)}>Update</button>

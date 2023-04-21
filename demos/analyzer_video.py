@@ -38,7 +38,7 @@ def index():
     index = int(index)
     # return jsonify(analyzeVideo(30, uid, index, '.avi'))
     depth = 30
-    tag = 'avi'
+    tag = '.avi'
     index = int(index)
     # Load the video file
     bucket = storage.bucket()
@@ -81,10 +81,16 @@ def index():
         # Calculate column-wise averages, except for 'box0'
         col_averages = df[cols_to_average].mean(skipna=True)
 
-        # Insert new row for column averages with NULL value for 'box0'
-        df = df.append(pd.Series([np.nan] * len(df.columns), index=df.columns), ignore_index=True)
-        df.iloc[-1, df.columns.get_loc('box0')] = 'NULL'
-        df.iloc[-1, df.columns != 'box0'] = col_averages.values
+        # create a new DataFrame with the same columns as original plus one extra row
+        new_row = pd.DataFrame(columns=df.columns, index=[len(df)])
+        # assign NULL to the 'box0' column in the new row
+        new_row.loc[len(df), 'box0'] = 'NULL'
+        # assign column averages to all columns except 'box0' in the new row
+        new_row.loc[len(df), new_row.columns != 'box0'] = col_averages.values
+        # concatenate the original DataFrame with the new row
+        df = pd.concat([df, new_row])
+
+
 
         # Display the modified dataframe
         file2.write(str(df) + "\n")
